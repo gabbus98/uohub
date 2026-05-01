@@ -1,0 +1,209 @@
+<section class="rw-shell" id="consulta">
+  <div class="rw-toolbar">
+    <div class="rw-toolbar-main">
+      <label class="rw-field">
+        <span>Skill craft</span>
+        <select [ngModel]="selectedSkill()" (ngModelChange)="setSkill($event)">
+          @for (skill of skillLevels; track skill) {
+            <option [value]="skill">{{ skill }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="rw-field rw-search">
+        <span>Cerca arma</span>
+        <input
+          type="search"
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+          placeholder="Arco, balestra..."
+        />
+      </label>
+    </div>
+
+    <div class="rw-segments" aria-label="Filtro tipo arma">
+      @for (type of ['Tutti', 'Arco', 'Balestra']; track type) {
+        <button
+          type="button"
+          [class.active]="selectedType() === type"
+          (click)="setType(type)"
+        >
+          {{ type }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="rw-summary">
+    <div class="rw-metric">
+      <span class="value">{{ filteredWeapons().length }}</span>
+      <span class="label">armi visibili</span>
+    </div>
+    <div class="rw-metric">
+      <span class="value">{{ bestSpeed() }}</span>
+      <span class="label">miglior rapidita</span>
+    </div>
+    <div class="rw-metric">
+      <span class="value">{{ bestPower() }}</span>
+      <span class="label">miglior potenza</span>
+    </div>
+    <div class="rw-metric">
+      <span class="value">{{ bestWear() }}</span>
+      <span class="label">min usura</span>
+    </div>
+  </div>
+
+  <div class="rw-table-wrap">
+    <table class="rw-table">
+      <thead>
+        <tr>
+          <th>Arma</th>
+          <th>Tipo</th>
+          <th>Mani</th>
+          <th>Rap.</th>
+          <th>Pot.</th>
+          <th>Git.</th>
+          <th>Usura</th>
+          <th>Speciale</th>
+          <th>Abilita</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (weapon of filteredWeapons(); track weapon.name) {
+          @let row = weapon.stats[selectedSkill()];
+          <tr [class.not-craftable]="!row.craftable">
+            <td>
+              <strong>{{ weapon.name }}</strong>
+              @if (!row.craftable) {
+                <span class="rw-chip red">Non craftabile</span>
+              }
+            </td>
+            <td><span class="rw-chip">{{ weapon.type }}</span></td>
+            <td>{{ row.hands }}</td>
+            <td [class.best]="isBest(weapon, 'speed')">{{ row.speed }}</td>
+            <td [class.best]="isBest(weapon, 'power')">{{ row.power }}</td>
+            <td [class.best]="isBest(weapon, 'range')">{{ row.range }}</td>
+            <td [class.best]="isBest(weapon, 'wear')">{{ row.wear }}</td>
+            <td>{{ row.special }}</td>
+            <td>
+              <div class="rw-abilities">
+                <span>{{ row.primary }}</span>
+                <span>{{ row.secondary }}</span>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="9" class="rw-empty">Nessuna arma trovata con questi filtri.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wiki-section" id="confronto">
+  <h2 class="wiki-h2">Confronto rapido</h2>
+
+  <div class="rw-compare-grid">
+    <div class="rw-compare-card">
+      <div class="rw-card-title">Slot A</div>
+      <label class="rw-field">
+        <span>Arma</span>
+        <select [ngModel]="leftWeapon()" (ngModelChange)="leftWeapon.set($event)">
+          @for (weapon of weapons; track weapon.name) {
+            <option [value]="weapon.name">{{ weapon.name }}</option>
+          }
+        </select>
+      </label>
+      <label class="rw-field">
+        <span>Skill</span>
+        <select [ngModel]="leftSkill()" (ngModelChange)="setLeftSkill($event)">
+          @for (skill of skillLevels; track skill) {
+            <option [value]="skill">{{ skill }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <div class="rw-compare-card">
+      <div class="rw-card-title">Slot B</div>
+      <label class="rw-field">
+        <span>Arma</span>
+        <select [ngModel]="rightWeapon()" (ngModelChange)="rightWeapon.set($event)">
+          @for (weapon of weapons; track weapon.name) {
+            <option [value]="weapon.name">{{ weapon.name }}</option>
+          }
+        </select>
+      </label>
+      <label class="rw-field">
+        <span>Skill</span>
+        <select [ngModel]="rightSkill()" (ngModelChange)="setRightSkill($event)">
+          @for (skill of skillLevels; track skill) {
+            <option [value]="skill">{{ skill }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="rw-table-wrap">
+    <table class="rw-table rw-compare-table">
+      <thead>
+        <tr>
+          <th>Campo</th>
+          <th>{{ leftWeapon() }} @ {{ leftSkill() }}</th>
+          <th>{{ rightWeapon() }} @ {{ rightSkill() }}</th>
+          <th>Differenza</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (field of compareFields; track field.key) {
+          @let changed = isDifferent(field.key);
+          @let delta = numericDelta(field.key);
+          <tr [class.changed]="changed">
+            <td>{{ field.label }}</td>
+            <td>{{ getValue(leftStats(), field.key) }}</td>
+            <td>{{ getValue(rightStats(), field.key) }}</td>
+            <td>
+              @if (delta !== null && delta !== 0) {
+                <span [class.positive]="delta > 0" [class.negative]="delta < 0">
+                  {{ delta > 0 ? '+' : '' }}{{ delta }}
+                </span>
+              } @else if (changed) {
+                <span class="rw-chip gold">diverso</span>
+              } @else {
+                <span class="muted">uguale</span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wiki-section" id="legni">
+  <h2 class="wiki-h2">Legni e usura</h2>
+  <p class="wiki-p">
+    La composizione del danno varia in base al legno usato per craftare l'arma. I valori di usura nella tabella principale
+    sono riferiti al legno comune. Millenario e Costiero hanno valori dedicati dove indicato.
+  </p>
+
+  <div class="rw-wood-grid">
+    @for (wood of woods; track wood.name) {
+      <article class="rw-wood-card">
+        <div>
+          <strong>{{ wood.name }}</strong>
+          <span class="rw-chip" [class.red]="wood.tone === 'red'" [class.blue]="wood.tone === 'blue'" [class.green]="wood.tone === 'green'" [class.gold]="wood.tone === 'gold'">
+            {{ wood.damage }}
+          </span>
+        </div>
+        <div class="rw-wood-stats">
+          <span>Archi: <b>{{ wood.bowWear }}</b></span>
+          <span>Balestre: <b>{{ wood.crossbowWear }}</b></span>
+        </div>
+      </article>
+    }
+  </div>
+</section>

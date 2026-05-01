@@ -1,0 +1,112 @@
+<!-- Riepilogo cap -->
+<div class="card" style="margin-bottom:1.5rem">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1rem">
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--text);font-weight:600">Totale Skill</div>
+      <div style="font-size:.82rem;color:var(--text-3);font-style:italic">Cap massimo: {{ cap }} punti · Max per skill: {{ skillMax }}</div>
+    </div>
+    <div style="text-align:right">
+      <span style="font-family:'Cinzel',serif;font-size:2rem;font-weight:700;" [style.color]="barColor()">{{ total() }}</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-3)"> / {{ cap }}</span>
+    </div>
+  </div>
+
+  <!-- Barra progresso -->
+  <div style="background:var(--border);border-radius:99px;height:8px;overflow:hidden;margin-bottom:.75rem">
+    <div
+      style="height:100%;border-radius:99px;transition:width .3s,background .3s"
+      [style.width]="fillPercent() + '%'"
+      [style.background]="barColor()"
+    ></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem">
+    <div style="display:flex;gap:1.5rem">
+      <span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Usati</span><br>
+        <span style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;" [style.color]="barColor()">{{ total() }}</span>
+      </span>
+      <span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Rimanenti</span><br>
+        <span style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;" [style.color]="overCap() ? 'var(--red)' : 'var(--green)'">{{ remaining() }}</span>
+      </span>
+      <span>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Skill</span><br>
+        <span style="font-family:'Cinzel',serif;font-size:1.1rem;font-weight:700;color:var(--text)">{{ rows().length }}</span>
+      </span>
+    </div>
+
+    @if (overCap()) {
+      <div class="callout danger" style="margin:0;padding:.45rem .85rem;font-size:.82rem">
+        <span class="callout-icon">⚠</span>
+        <div>Superi il cap di <strong>{{ -remaining() }}</strong> punti</div>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Tabella skill -->
+<div class="table-wrap" style="margin-bottom:1rem">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:55%">Skill</th>
+        <th style="width:30%">Valore</th>
+        <th style="width:15%"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.id) {
+        <tr>
+          <td>
+            <select
+              [ngModel]="row.name"
+              (ngModelChange)="updateName(row.id, $event)"
+              style="background:var(--bg-card);border:1px solid var(--border-strong);border-radius:4px;padding:.3rem .5rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.78rem;outline:none;width:100%"
+            >
+              @for (s of skillList; track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </select>
+          </td>
+          <td>
+            <div style="display:flex;align-items:center;gap:.5rem">
+              <input
+                type="range"
+                [ngModel]="row.value"
+                (ngModelChange)="updateValue(row.id, $event)"
+                min="0" max="100" step="1"
+                style="flex:1;accent-color:var(--accent)"
+              />
+              <input
+                type="number"
+                [ngModel]="row.value"
+                (ngModelChange)="updateValue(row.id, $event)"
+                min="0" max="100"
+                style="width:52px;background:var(--bg-card);border:1px solid var(--border-strong);border-radius:4px;padding:.25rem .4rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.82rem;text-align:center;outline:none"
+              />
+            </div>
+          </td>
+          <td style="text-align:center">
+            <button
+              (click)="removeRow(row.id)"
+              style="background:none;border:none;color:var(--text-3);cursor:pointer;font-size:1rem;transition:color .15s;padding:.2rem .4rem"
+              title="Rimuovi"
+            >✕</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- Azioni -->
+<div style="display:flex;gap:.75rem;flex-wrap:wrap">
+  <button class="btn-guild-header" (click)="addRow()" style="font-size:.75rem">+ Aggiungi Skill</button>
+  @if (rows().length > 0) {
+    <button
+      (click)="reset()"
+      style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.07em;padding:.3rem .8rem;background:none;color:var(--text-3);border:1px solid var(--border-strong);border-radius:5px;cursor:pointer;transition:all .2s"
+    >Reset</button>
+  }
+</div>

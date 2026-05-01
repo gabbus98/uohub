@@ -1,0 +1,70 @@
+<div class="card" style="margin-bottom:1.5rem">
+  <div style="margin-bottom:1rem">
+    <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--text);font-weight:600;margin-bottom:.25rem">Formattatore per Bacheca</div>
+    <div style="font-size:.82rem;color:var(--text-3);font-style:italic">
+      Incolla il testo della bacheca. La prima riga diventa il titolo. Usa <code>---</code> per forzare un'interruzione di post.
+    </div>
+  </div>
+
+  <textarea
+    [ngModel]="inputText()"
+    (ngModelChange)="onInput($event)"
+    placeholder="Inserisci il titolo e il testo del messaggio in bacheca.&#10;Lascia la prima riga vuota se non vuoi il titolo."
+    style="width:100%;height:200px;background:var(--bg-card);border:1px solid var(--border-strong);border-radius:6px;padding:.65rem .85rem;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.55;resize:vertical;outline:none;box-sizing:border-box"
+  ></textarea>
+
+  @if (inputText().trim()) {
+    <div style="display:flex;justify-content:flex-end;margin-top:.5rem">
+      <button
+        (click)="reset()"
+        style="font-family:'Cinzel',serif;font-size:.72rem;letter-spacing:.07em;padding:.3rem .8rem;background:none;color:var(--text-3);border:1px solid var(--border-strong);border-radius:5px;cursor:pointer;transition:all .2s"
+      >Reset</button>
+    </div>
+  }
+</div>
+
+@if (title() || posts().length) {
+  <div style="display:flex;flex-direction:column;gap:.75rem">
+
+    @if (title(); as t) {
+      <div class="card" style="padding:.75rem 1rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Titolo</span>
+          <button
+            (click)="copyPost(-1)"
+            style="background:none;border:1px solid var(--border-strong);border-radius:4px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;color:var(--text-3);transition:all .15s;white-space:nowrap"
+            [style.color]="copiedIndex() === -1 ? 'var(--green)' : 'var(--text-3)'"
+            [style.borderColor]="copiedIndex() === -1 ? 'var(--green)' : 'var(--border-strong)'"
+          >{{ copiedIndex() === -1 ? '✓ Copiato' : '⎘ Copia' }}</button>
+        </div>
+        <pre style="margin:0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text);white-space:pre-wrap;word-break:break-word">{{ t }}</pre>
+      </div>
+    }
+
+    @if (posts().length) {
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+        <div style="font-family:'Cinzel',serif;font-size:.95rem;font-weight:600;color:var(--text)">
+          Post generati
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text-3)">
+          {{ posts().length }} / 39
+        </span>
+      </div>
+
+      @for (post of posts(); track $index) {
+        <div class="card" style="padding:.75rem 1rem">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin-bottom:.5rem">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em">Post {{ $index + 1 }}</span>
+            <button
+              (click)="copyPost($index)"
+              style="background:none;border:1px solid var(--border-strong);border-radius:4px;padding:.2rem .55rem;font-size:.75rem;cursor:pointer;transition:all .15s;white-space:nowrap"
+              [style.color]="copiedIndex() === $index ? 'var(--green)' : 'var(--text-3)'"
+              [style.borderColor]="copiedIndex() === $index ? 'var(--green)' : 'var(--border-strong)'"
+            >{{ copiedIndex() === $index ? '✓ Copiato' : '⎘ Copia' }}</button>
+          </div>
+          <pre style="margin:0;font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text);white-space:pre-wrap;word-break:break-word">{{ post }}</pre>
+        </div>
+      }
+    }
+  </div>
+}

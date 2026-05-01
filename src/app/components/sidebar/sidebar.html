@@ -1,0 +1,29 @@
+<aside [class.open]="open">
+  @for (section of sections; track section.label) {
+    <div class="nav-section">
+      <div
+        class="nav-section-header"
+        [class.collapsed]="isSectionCollapsed(section.label)"
+        (click)="toggleSection(section.label)"
+      >
+        {{ section.label }}
+        <span class="chevron">▾</span>
+      </div>
+      <div class="nav-items" [class.collapsed]="isSectionCollapsed(section.label)">
+        @for (item of section.items; track item.id) {
+          <div
+            class="nav-item"
+            [class.active]="isActive(item.id)"
+            (click)="navigate(item)"
+          >
+            <span class="icon">{{ item.icon }}</span>
+            {{ item.label }}
+            @if (item.guild && !auth.guildAuth()) {
+              <span class="lock">🔒</span>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  }
+</aside>

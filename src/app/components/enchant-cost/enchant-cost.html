@@ -1,0 +1,135 @@
+<div class="enchant-panel">
+  <div class="enchant-section">
+    <div class="enchant-section-head">
+      <div>
+        <h2>Rune maggiori</h2>
+        <p>{{ maxMajorLevelTotal - remainingMajorLevels }} / {{ maxMajorLevelTotal }} livelli usati</p>
+      </div>
+      @if (canAddMajorRune) {
+        <button class="enchant-btn" (click)="addMajorRune()">+ Aggiungi runa maggiore</button>
+      }
+    </div>
+
+    @if (majorRunes.length === 0) {
+      <div class="enchant-empty">Nessuna runa maggiore selezionata.</div>
+    }
+
+    @for (rune of majorRunes; track rune.id) {
+      <div class="rune-row">
+        <div class="rune-controls">
+          <label>
+            <span>Runa</span>
+            <select [ngModel]="rune.name" (ngModelChange)="changeName(rune, $event, 'major')">
+              @for (option of availableMajorRunes(rune); track option.label) {
+                <option [value]="option.label">{{ option.label || '-' }}</option>
+              }
+            </select>
+          </label>
+
+          @if (rune.name) {
+            <label>
+              <span>Da</span>
+              <select [ngModel]="rune.from" (ngModelChange)="changeFrom(rune, $event, 'major')">
+                @for (level of fromOptions(rune); track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>A</span>
+              <select [ngModel]="rune.level" (ngModelChange)="changeLevel(rune, $event, 'major')">
+                @for (level of majorLevelOptions(rune); track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </label>
+          }
+        </div>
+
+        <div class="rune-cost">
+          @for (item of costEntries(rune, 'major'); track item.label) {
+            <span class="cost-pill"><span>{{ item.label }}</span> {{ item.value }}</span>
+          }
+        </div>
+
+        <button class="remove-btn" title="Rimuovi" (click)="removeMajorRune(rune.id)">x</button>
+      </div>
+    }
+  </div>
+
+  <div class="enchant-section">
+    <div class="enchant-section-head">
+      <div>
+        <h2>Rune minori</h2>
+        <p>{{ minorRunes.length }} / {{ minorRuneLimit }} slot usati</p>
+      </div>
+      @if (canAddMinorRune) {
+        <button class="enchant-btn" (click)="addMinorRune()">+ Aggiungi runa minore</button>
+      }
+    </div>
+
+    @if (minorRunes.length === 0) {
+      <div class="enchant-empty">Nessuna runa minore selezionata.</div>
+    }
+
+    @for (rune of minorRunes; track rune.id) {
+      <div class="rune-row">
+        <div class="rune-controls">
+          <label>
+            <span>Runa</span>
+            <select [ngModel]="rune.name" (ngModelChange)="changeName(rune, $event, 'minor')">
+              @for (option of availableMinorRunes(rune); track option.label) {
+                <option [value]="option.label">{{ option.label || '-' }}</option>
+              }
+            </select>
+          </label>
+
+          @if (rune.name) {
+            <label>
+              <span>Da</span>
+              <select [ngModel]="rune.from" (ngModelChange)="changeFrom(rune, $event, 'minor')">
+                @for (level of fromOptions(rune); track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              <span>A</span>
+              <select [ngModel]="rune.level" (ngModelChange)="changeLevel(rune, $event, 'minor')">
+                @for (level of [1, 2, 3]; track level) {
+                  <option [value]="level">{{ level }}</option>
+                }
+              </select>
+            </label>
+          }
+        </div>
+
+        <div class="rune-cost">
+          @for (item of costEntries(rune, 'minor'); track item.label) {
+            <span class="cost-pill"><span>{{ item.label }}</span> {{ item.value }}</span>
+          }
+        </div>
+
+        <button class="remove-btn" title="Rimuovi" (click)="removeMinorRune(rune.id)">x</button>
+      </div>
+    }
+  </div>
+
+  <div class="total-cost">
+    <h3>Costo totale</h3>
+    @if (totalCostEntries.length) {
+      <div class="total-grid">
+        @for (item of totalCostEntries; track item.label) {
+          <div>
+            <span>{{ item.label }}</span>
+            <strong>{{ item.value }}</strong>
+          </div>
+        }
+      </div>
+    } @else {
+      <p>Seleziona una runa per vedere i materiali.</p>
+    }
+  </div>
+</div>

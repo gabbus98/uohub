@@ -1,0 +1,82 @@
+@if (article(); as art) {
+  @if (currentId() !== 'home' && currentId() !== 'tools') {
+    @if (art.cat) {
+      <div class="breadcrumb">
+        <a (click)="navigate('home')">Wiki</a>
+        <span>/</span>
+        @if (isToolPage()) {
+          <a (click)="navigate('tools')">Tool</a>
+        } @else {
+          <span class="current">{{ art.cat }}</span>
+        }
+        <span>/</span>
+        <span class="current">{{ art.title }}</span>
+      </div>
+    }
+
+    <div class="article-header">
+      <p class="article-eyebrow">{{ art.cat }}</p>
+      <h1 class="article-title">{{ art.title }}</h1>
+      @if (art.desc) {
+        <p class="article-desc">{{ art.desc }}</p>
+      }
+      @if (art.tags?.length) {
+        <div class="article-meta">
+          @for (tag of art.tags; track tag.t) {
+            <span class="tag {{ tag.cls || '' }}">{{ tag.t }}</span>
+          }
+        </div>
+      }
+    </div>
+
+    @if (displayedToc().length) {
+      <div class="toc">
+        <div class="toc-title" [class.collapsed]="tocCollapsed()" (click)="toggleToc()">
+          Contenuti <span class="chv">▾</span>
+        </div>
+        @if (!tocCollapsed()) {
+          <ul class="toc-list">
+            @for (item of displayedToc(); track item.id; let i = $index) {
+              <li>
+                <a (click)="scrollToSection(item.id)">{{ i + 1 }}. {{ item.label }}</a>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+    }
+  }
+
+  @if (currentId() === 'bestiario') {
+    <app-bestiary />
+  } @else if (currentId() === 'tools') {
+    <app-tools-landing />
+  } @else if (currentId() === 'tool-skill-calc') {
+    <app-skill-calc />
+  } @else if (currentId() === 'tool-bb-split') {
+    <app-bb-split />
+  } @else if (currentId() === 'tool-enchant-cost') {
+    <app-enchant-cost />
+  } @else if (currentId() === 'archi-balestre') {
+    <app-ranged-weapons />
+  } @else {
+    <div [innerHTML]="safeBody()"></div>
+  }
+
+  @if (currentId() !== 'home' && currentId() !== 'tools' && (art.prev || art.next)) {
+    <div class="article-nav">
+      @if (art.prev) {
+        <button class="anav-btn" (click)="navigate(art.prev.id)">
+          <span class="dir">← Precedente</span>
+          <span class="anav-title">{{ art.prev.title }}</span>
+        </button>
+      }
+      @if (art.next) {
+        <button class="anav-btn" (click)="navigate(art.next.id)">
+          <span class="dir">Successivo →</span>
+          <span class="anav-title">{{ art.next.title }}</span>
+        </button>
+      }
+    </div>
+  }
+}

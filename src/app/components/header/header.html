@@ -1,0 +1,36 @@
+<header>
+  <button class="btn-icon" (click)="sidebarToggle.emit()" title="Menu">☰</button>
+  <a class="logo" (click)="wiki.navigate('home')">How to <span>The Miracle</span> Shard</a>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input
+      type="text"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="onSearchInput($event)"
+      placeholder="Cerca nella wiki..."
+      autocomplete="off"
+    />
+    @if (showResults()) {
+      <div class="search-results">
+        @if (searchResults().length === 0) {
+          <div class="sr-item"><div class="sr-title" style="color:var(--text-3)">Nessun risultato</div></div>
+        }
+        @for (r of searchResults(); track r.id) {
+          <div class="sr-item" (click)="selectResult(r.id)">
+            <div class="sr-title">{{ r.title }}</div>
+            <div class="sr-path">{{ r.cat }}</div>
+            @if (r.desc) {
+              <div class="sr-excerpt">{{ r.desc }}</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-guild-header" (click)="openGuildModal()">{{ guildLabel }}</button>
+    <button class="btn-icon" (click)="theme.toggle()" title="Tema">{{ themeIcon }}</button>
+  </div>
+</header>

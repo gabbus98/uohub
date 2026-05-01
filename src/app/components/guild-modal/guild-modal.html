@@ -1,0 +1,32 @@
+@if (auth.modalOpen()) {
+  <div class="overlay" (click)="closeOverlay($event)">
+    <div class="modal">
+      <button class="modal-x" (click)="auth.closeModal()">✕</button>
+      <h3>⚔ Accesso Gilda</h3>
+      <p class="sub">Area riservata ai membri dell'Ordine dei Cacciatori Grigi.</p>
+      <div class="fld">
+        <label>Utente</label>
+        <input
+          type="text"
+          [ngModel]="username()"
+          (ngModelChange)="username.set($event)"
+          placeholder="nome.personaggio"
+          autocomplete="username"
+        />
+      </div>
+      <div class="fld">
+        <label>Password</label>
+        <input
+          type="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          (keydown.enter)="doLogin()"
+        />
+      </div>
+      <button class="btn-login" (click)="doLogin()">Entra</button>
+      <p class="modal-err">{{ auth.loginError() }}</p>
+    </div>
+  </div>
+}

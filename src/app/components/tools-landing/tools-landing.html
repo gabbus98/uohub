@@ -1,0 +1,15 @@
+<div class="home-hero" style="padding:1.5rem 0 1rem">
+  <p class="eyebrow">Strumenti Interattivi</p>
+  <h1 style="font-family:'Cinzel',serif;font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text)">Tool &amp; Calcolatori</h1>
+  <p>Strumenti utili per pianificare il tuo personaggio e consultare dati di gioco.</p>
+</div>
+
+<div class="home-grid">
+  @for (tool of tools; track tool.id) {
+    <div class="home-card" (click)="wiki.navigate(tool.id)">
+      <div class="hc-icon">{{ tool.icon }}</div>
+      <div class="hc-title">{{ tool.title }}</div>
+      <div class="hc-desc">{{ tool.desc }}</div>
+    </div>
+  }
+</div>

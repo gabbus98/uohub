@@ -1,0 +1,15 @@
+<div class="sidebar-overlay" [class.open]="sidebarOpen()" (click)="closeSidebar()"></div>
+
+<app-header (sidebarToggle)="toggleSidebar()" />
+
+<div class="layout">
+  <app-sidebar [open]="sidebarOpen()" (close)="closeSidebar()" />
+
+  <div class="content-wrap">
+    <div class="content">
+      <app-article-view />
+    </div>
+  </div>
+</div>
+
+<app-guild-modal />
