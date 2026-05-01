@@ -1,0 +1,248 @@
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.ts:31:10:
+[37m      31 │         c.[32mhabitat[37m.toLowerCase().includes(q) ||
+         ╵           [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:6:31:
+[37m      6 │     hp: '120', danno: '15–25'[32m, habit[37mat: 'Montagne Karath',
+        ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:13:30:
+[37m      13 │     hp: '80', danno: '10–18'[32m, habit[37mat: 'Paludi di Moren',
+         ╵                             [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:20:31:
+[37m      20 │     hp: '380', danno: '40–65'[32m, habit[37mat: 'Foresta di Vethgar',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:27:31:
+[37m      27 │     hp: '520', danno: '55–80'[32m, habit[37mat: 'Pianure Ardenti',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:34:31:
+[37m      34 │     hp: '250', danno: '30–45'[32m, habit[37mat: 'Miniera Abbandonata',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:41:31:
+[37m      41 │     hp: '430', danno: '50–70'[32m, habit[37mat: 'Miniera Abbandonata —...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:48:31:
+[37m      48 │     hp: '110', danno: '12–22'[32m, habit[37mat: 'Cripta di Solveth',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:55:31:
+[37m      55 │     hp: '350', danno: '38–58'[32m, habit[37mat: 'Cripta di Solveth — A...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:62:31:
+[37m      62 │     hp: '180', danno: '22–35'[32m, habit[37mat: 'Caverne dell\'Agonia �...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:69:32:
+[37m      69 │ ...hp: '600', danno: '70–100'[32m, habit[37mat: 'Caverne dell\'Agonia �...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:76:31:
+[37m      76 │     hp: '300', danno: '40–60'[32m, habit[37mat: 'Abisso di Varroth',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:83:35:
+[37m      83 │ ... '8.000', danno: '150–280'[32m, habit[37mat: 'Abisso di Varroth — C...
+         ╵                              [32m~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:46:49:
+[37m      46 │               <li><strong>Habitat:</strong> {{ c.[32mhabitat[37m }}</li>
+         ╵                                                  [32m~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.ts:31:10:
+[37m      31 │         c.[32mhabitat[37m.toLowerCase().includes(q) ||
+         ╵           [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:6:31:
+[37m      6 │     hp: '120', danno: '15–25'[32m, habit[37mat: 'Montagne Karath',
+        ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:13:30:
+[37m      13 │     hp: '80', danno: '10–18'[32m, habit[37mat: 'Paludi di Moren',
+         ╵                             [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:20:31:
+[37m      20 │     hp: '380', danno: '40–65'[32m, habit[37mat: 'Foresta di Vethgar',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:27:31:
+[37m      27 │     hp: '520', danno: '55–80'[32m, habit[37mat: 'Pianure Ardenti',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:34:31:
+[37m      34 │     hp: '250', danno: '30–45'[32m, habit[37mat: 'Miniera Abbandonata',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:41:31:
+[37m      41 │     hp: '430', danno: '50–70'[32m, habit[37mat: 'Miniera Abbandonata —...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:48:31:
+[37m      48 │     hp: '110', danno: '12–22'[32m, habit[37mat: 'Cripta di Solveth',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:55:31:
+[37m      55 │     hp: '350', danno: '38–58'[32m, habit[37mat: 'Cripta di Solveth — A...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:62:31:
+[37m      62 │     hp: '180', danno: '22–35'[32m, habit[37mat: 'Caverne dell\'Agonia �...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:69:32:
+[37m      69 │ ...hp: '600', danno: '70–100'[32m, habit[37mat: 'Caverne dell\'Agonia �...
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:76:31:
+[37m      76 │     hp: '300', danno: '40–60'[32m, habit[37mat: 'Abisso di Varroth',
+         ╵                              [32m~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2353: Object literal may only specify known properties, and 'habitat' does not exist in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:83:35:
+[37m      83 │ ... '8.000', danno: '150–280'[32m, habit[37mat: 'Abisso di Varroth — C...
+         ╵                              [32m~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:46:49:
+[37m      46 │               <li><strong>Habitat:</strong> {{ c.[32mhabitat[37m }}</li>
+         ╵                                                  [32m~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.ts:31:10:
+[37m      31 │         c.[32mhabitat[37m.toLowerCase().includes(q) ||
+         ╵           [32m~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:46:49:
+[37m      46 │               <li><strong>Habitat:</strong> {{ c.[32mhabitat[37m }}</li>
+         ╵                                                  [32m~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.ts:31:10:
+[37m      31 │         c.[32mhabitat[37m.toLowerCase().includes(q) ||
+         ╵           [32m~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'habitat' does not exist on type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:46:49:
+[37m      46 │               <li><strong>Habitat:</strong> {{ c.[32mhabitat[37m }}</li>
+         ╵                                                  [32m~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m

@@ -28,11 +28,27 @@ export interface Creature {
   dungeon: string;
   hp: string;
   danno: string;
-  habitat: string;
-  drop: string;
-  strategia: string;
-  resistenze: string;
+  salute?: string;
+  stamina?: string;
+  mana?: string;
+  str?: string;
+  dex?: string;
+  int?: string;
+  ar?: string;
+  drop?: string;
+  strategia?: string;
+  resistenze?: string | Partial<Record<ResistanceType, string>>;
 }
+
+export type ResistanceType =
+  | 'Fuoco'
+  | 'Freddo'
+  | 'Energia'
+  | 'Veleno'
+  | 'Psionico'
+  | 'Sacro'
+  | 'Malefico'
+  | 'Magia';
 
 export interface SearchResult {
   id: string;

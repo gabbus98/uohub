@@ -1,0 +1,94 @@
+<div class="armor-tool">
+  <div class="armor-intro">
+    <h2>Armature metalliche infuse</h2>
+    <p>Calcola lingotti, sangue e passaggi per un'armatura in metallo infuso.</p>
+  </div>
+
+  <div class="armor-card">
+    <label class="field">
+      <span>Tipo di armatura</span>
+      <select [ngModel]="selectedArmorValue()" (ngModelChange)="setArmor($event)">
+        <option value="">Seleziona armatura</option>
+        @for (armor of armorTypes; track armor.value) {
+          <option [value]="armor.value">{{ armor.label }} - {{ armor.ingots }} lingotti</option>
+        }
+      </select>
+    </label>
+
+    @if (selectedArmor()) {
+      <div class="mode-group">
+        <span>Composizione</span>
+        <label>
+          <input type="radio" name="armor-mode" value="single" [ngModel]="mode()" (ngModelChange)="setMode('single')" />
+          Singolo metallo
+        </label>
+        <label>
+          <input type="radio" name="armor-mode" value="multi" [ngModel]="mode()" (ngModelChange)="setMode('multi')" />
+          Lega
+        </label>
+      </div>
+
+      <div class="metal-grid">
+        <label class="field">
+          <span>{{ mode() === 'single' ? 'Metallo' : 'Primo metallo' }}</span>
+          <select [ngModel]="primaryMetalLabel()" (ngModelChange)="setPrimaryMetal($event)">
+            <option value="">Seleziona metallo</option>
+            @for (metal of availablePrimaryMetals(); track metal.label) {
+              <option [value]="metal.label">{{ metal.label }} - {{ metal.magres ? 'Res: ' + metal.magres : metal.extra }}</option>
+            }
+          </select>
+        </label>
+
+        @if (mode() === 'multi') {
+          <label class="field">
+            <span>Secondo metallo</span>
+            <select [ngModel]="secondaryMetalLabel()" (ngModelChange)="setSecondaryMetal($event)">
+              <option value="">Seleziona metallo</option>
+              @for (metal of availableSecondaryMetals(); track metal.label) {
+                <option [value]="metal.label">{{ metal.label }} - {{ metal.magres ? 'Res: ' + metal.magres : metal.extra }}</option>
+              }
+            </select>
+          </label>
+        }
+      </div>
+    }
+  </div>
+
+  @if (primaryMetal(); as metal) {
+    <div class="metal-preview">
+      <span class="swatch" [style.background]="metal.color"></span>
+      <strong>{{ metal.label }}</strong>
+      <span>{{ metal.magres ? 'Resistenza ' + metal.magres : metal.extraLong }}</span>
+    </div>
+  }
+
+  @if (canCalculate()) {
+    <div class="bonus-card">
+      <span>Bonus</span>
+      <strong>{{ bonus() }}</strong>
+    </div>
+
+    <div class="result-grid">
+      <section class="armor-card">
+        <h3>Risorse necessarie</h3>
+        <div class="resource-list">
+          @for (item of resources(); track item.label) {
+            <div>
+              <span>{{ item.label }}</span>
+              <strong>{{ item.value }}</strong>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="armor-card">
+        <h3>Istruzioni</h3>
+        <ol class="instruction-list">
+          @for (item of instructions(); track item) {
+            <li>{{ item }}</li>
+          }
+        </ol>
+      </section>
+    </div>
+  }
+</div>

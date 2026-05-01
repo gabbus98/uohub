@@ -88,7 +88,8 @@ export class WikiService {
         items: [
           { id: 'tool-skill-calc', icon: '🧮', label: 'Skill Calculator' },
           { id: 'tool-bb-split', icon: '✂️', label: 'Formattatore Bacheca' },
-          { id: 'tool-enchant-cost', icon: '✨', label: 'Costo Incantamento' }
+          { id: 'tool-enchant-cost', icon: '✨', label: 'Costo Incantamento' },
+          { id: 'tool-armor-cost', icon: '🛡️', label: 'Armature Infuse' }
         ]
       }
     ];

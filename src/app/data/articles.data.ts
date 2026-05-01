@@ -29,6 +29,13 @@ export const ARTICLES: Record<string, Article> = {
     body: ''
   },
 
+  'tool-armor-cost': {
+    cat: 'Tool', title: 'Armature Metalliche Infuse',
+    desc: 'Calcola il costo di armature in metallo infuso o in lega infusa.',
+    tags: [{ t: 'Calcolatore', cls: 'blue' }, { t: 'Armature', cls: 'gold' }],
+    body: ''
+  },
+
   'home': {
     title: 'The Last Hunt Wiki',
     body: `

@@ -8,6 +8,7 @@ import { SkillCalcComponent } from '../skill-calc/skill-calc';
 import { BbSplitComponent } from '../bb-split/bb-split';
 import { RangedWeaponsComponent } from '../ranged-weapons/ranged-weapons';
 import { EnchantCostComponent } from '../enchant-cost/enchant-cost';
+import { ArmorCostComponent } from '../armor-cost/armor-cost';
 
 @Component({
   selector: 'app-article-view',
@@ -18,6 +19,7 @@ import { EnchantCostComponent } from '../enchant-cost/enchant-cost';
     BbSplitComponent,
     RangedWeaponsComponent,
     EnchantCostComponent,
+    ArmorCostComponent,
   ],
   templateUrl: './article-view.html'
 })

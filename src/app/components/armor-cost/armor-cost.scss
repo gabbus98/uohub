@@ -1,0 +1,151 @@
+.armor-tool {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.armor-intro {
+  text-align: center;
+}
+
+.armor-intro h2,
+.armor-card h3 {
+  font-family: 'Cinzel', serif;
+  color: var(--text);
+  margin: 0;
+}
+
+.armor-intro h2 {
+  font-size: 1.35rem;
+}
+
+.armor-intro p {
+  color: var(--text-3);
+  font-style: italic;
+  font-size: .95rem;
+}
+
+.armor-card,
+.bonus-card,
+.metal-preview {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.25rem;
+}
+
+.field {
+  display: grid;
+  gap: .35rem;
+}
+
+.field span,
+.mode-group > span,
+.bonus-card span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .66rem;
+  color: var(--text-3);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.field select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  color: var(--text);
+  font-family: 'Crimson Pro', serif;
+  font-size: 1rem;
+  padding: .5rem .65rem;
+  outline: none;
+}
+
+.mode-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin-top: 1rem;
+}
+
+.mode-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.mode-group input {
+  accent-color: var(--accent);
+}
+
+.metal-grid,
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.metal-preview {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .65rem;
+  color: var(--text-2);
+}
+
+.swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--border-strong);
+}
+
+.bonus-card {
+  text-align: center;
+}
+
+.bonus-card strong {
+  display: block;
+  margin-top: .25rem;
+  color: var(--accent);
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+}
+
+.resource-list {
+  display: grid;
+  gap: .5rem;
+  margin-top: .85rem;
+}
+
+.resource-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  background: var(--bg-card-alt);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .55rem .7rem;
+}
+
+.resource-list span,
+.instruction-list {
+  color: var(--text-2);
+}
+
+.resource-list strong {
+  color: var(--accent);
+  font-family: 'Cinzel', serif;
+}
+
+.instruction-list {
+  padding-left: 1.2rem;
+  margin-top: .85rem;
+}
+
+.instruction-list li {
+  margin-bottom: .5rem;
+}

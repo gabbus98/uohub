@@ -24,7 +24,7 @@
     </div>
 
     @if (g.open) {
-      <div class="bestiary-group-body grid-2">
+      <div class="bestiary-group-body">
         @for (c of g.creatures; track c.nome) {
           <div class="card bestiary-card">
             <div class="card-title">
@@ -32,22 +32,39 @@
               {{ c.nome }}
               <span class="bestiary-badge {{ c.tipo }}">{{ badgeLabel(c.tipo) }}</span>
             </div>
-            <div class="stat-block">
-              <div class="stat-item">
-                <span class="stat-value">{{ c.hp }}</span>
-                <span class="stat-label">HP</span>
+            <div class="mob-attributes">
+              <div class="mob-panel">
+                <div class="mob-panel-title">Caratteristiche</div>
+                <div class="mob-stat-grid">
+                  <div><span>STR</span><strong>{{ statValue(c, 'str') }}</strong></div>
+                  <div><span>Salute</span><strong>{{ statValue(c, 'salute') }}</strong></div>
+                  <div><span>DEX</span><strong>{{ statValue(c, 'dex') }}</strong></div>
+                  <div><span>Stamina</span><strong>{{ statValue(c, 'stamina') }}</strong></div>
+                  <div><span>INT</span><strong>{{ statValue(c, 'int') }}</strong></div>
+                  <div><span>Mana</span><strong>{{ statValue(c, 'mana') }}</strong></div>
+                </div>
               </div>
-              <div class="stat-item">
-                <span class="stat-value" style="font-size:1rem;padding-top:.25rem">{{ c.danno }}</span>
-                <span class="stat-label">Danno</span>
+
+              <div class="mob-panel">
+                <div class="mob-panel-title">Combattimento</div>
+                <div class="mob-stat-grid compact">
+                  <div><span>Danni</span><strong>{{ c.danno }}</strong></div>
+                  <div><span>AR</span><strong>{{ statValue(c, 'ar') }}</strong></div>
+                </div>
               </div>
             </div>
-            <ul class="wiki-ul" style="margin-top:.75rem">
-              <li><strong>Habitat:</strong> {{ c.habitat }}</li>
-              <li><strong>Drop:</strong> {{ c.drop }}</li>
-              <li><strong>Strategia:</strong> {{ c.strategia }}</li>
-              <li><strong>Resistenze:</strong> {{ c.resistenze }}</li>
-            </ul>
+            <div class="res-panel">
+              <div class="res-panel-title">Resistenze</div>
+              <div class="res-grid">
+                @for (type of resistanceTypes; track type) {
+                  @let value = resistanceValue(c, type);
+                  <div class="res-cell" [class]="resistanceClass(value)">
+                    <span>{{ type }}</span>
+                    <strong>{{ value }}</strong>
+                  </div>
+                }
+              </div>
+            </div>
           </div>
         }
       </div>

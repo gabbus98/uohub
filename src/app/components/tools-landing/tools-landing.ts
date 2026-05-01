@@ -12,5 +12,6 @@ export class ToolsLandingComponent {
     { id: 'tool-skill-calc', icon: '🧮', title: 'Skill Calculator', desc: 'Pianifica la tua build: somma le skill e controlla il cap da 700 punti.' },
     { id: 'tool-bb-split', icon: '✂️', title: 'Formattatore per Bacheca', desc: 'Spezza un testo lungo in piu post da bacheca rispettando i limiti di peso UO.' },
     { id: 'tool-enchant-cost', icon: '✨', title: 'Costo Incantamento', desc: 'Calcola materiali e componenti per rune maggiori e minori.' },
+    { id: 'tool-armor-cost', icon: '🛡️', title: 'Armature Infuse', desc: 'Calcola lingotti, sangue e bonus per armature metalliche infuse.' },
   ];
 }
