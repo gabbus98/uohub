@@ -23,7 +23,7 @@ export interface Article {
 
 export interface Creature {
   nome: string;
-  tipo: 'comune' | 'raro' | 'boss';
+  tipo: 'comune' | 'non-comune' | 'raro' | 'boss';
   icona: string;
   dungeon: string;
   hp: string;
@@ -35,6 +35,14 @@ export interface Creature {
   dex?: string;
   int?: string;
   ar?: string;
+  fuoco?: string;
+  freddo?: string;
+  energia?: string;
+  veleno?: string;
+  psionico?: string;
+  sacro?: string;
+  malefico?: string;
+  magia?: string;
   drop?: string;
   strategia?: string;
   resistenze?: string | Partial<Record<ResistanceType, string>>;

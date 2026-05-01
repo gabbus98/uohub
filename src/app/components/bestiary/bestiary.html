@@ -7,6 +7,7 @@
   />
   <button class="filter-btn" [class.active]="activeFilter()==='all'"    (click)="setFilter('all')">Tutte</button>
   <button class="filter-btn" [class.active]="activeFilter()==='comune'" (click)="setFilter('comune')">Comune</button>
+  <button class="filter-btn" [class.active]="activeFilter()==='non-comune'" (click)="setFilter('non-comune')">Non comune</button>
   <button class="filter-btn" [class.active]="activeFilter()==='raro'"   (click)="setFilter('raro')">Raro</button>
   <button class="filter-btn" [class.active]="activeFilter()==='boss'"   (click)="setFilter('boss')">Boss</button>
 </div>
@@ -20,6 +21,16 @@
     <div class="bestiary-group-header" (click)="toggleGroup(g)">
       <span class="bg-title">{{ g.dungeon }}</span>
       <span class="bg-count">{{ g.creatures.length }} creatura{{ g.creatures.length !== 1 ? 'e' : '' }}</span>
+      @if (bestGroupDamageElement(g); as damage) {
+        <span class="group-damage-badge">
+          Danno: <strong>{{ damage.type }}</strong>
+        </span>
+      }
+      @if (armorRecommendation(g); as armor) {
+        <span class="group-armor-badge">
+          Armor: <strong>{{ armor }}</strong>
+        </span>
+      }
       <span class="bg-chevron">{{ g.open ? '▾' : '▸' }}</span>
     </div>
 

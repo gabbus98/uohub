@@ -246,3 +246,94 @@
          ╵                [32m~~~~~~~~~~~~~~~~~[0m
 
 [39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'bestGroupDamageElement' does not exist on type 'BestiaryComponent'. Did you mean 'bestDamageElement'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32mbestGroupDamageElement[37m(g); as bestElement) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'bestGroupDamageElement' does not exist on type 'BestiaryComponent'. Did you mean 'bestDamageElement'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32mbestGroupDamageElement[37m(g); as bestElement) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'bestGroupDamageElement' does not exist on type 'BestiaryComponent'. Did you mean 'bestDamageElement'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32mbestGroupDamageElement[37m(g); as bestElement) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2551: Property 'bestGroupDamageElement' does not exist on type 'BestiaryComponent'. Did you mean 'bestDamageElement'?[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32mbestGroupDamageElement[37m(g); as bestElement) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'armorRecommendation' does not exist on type 'BestiaryComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32marmorRecommendation[37m(g); as armor) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2339: Property 'armorRecommendation' does not exist on type 'BestiaryComponent'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/components/bestiary/bestiary.html:24:11:
+[37m      24 │       @if ([32marmorRecommendation[37m(g); as armor) {
+         ╵            [32m~~~~~~~~~~~~~~~~~~~[0m
+
+  Error occurs in the template of component BestiaryComponent.
+
+    src/app/components/bestiary/bestiary.ts:15:15:
+[37m      15 │   templateUrl: [32m'./bestiary.html'[37m
+         ╵                [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2741: Property 'danno' is missing in type '{ nome: string; tipo: "boss"; icona: string; dungeon: string; hp: string; ar: string; fuoco: string; freddo: string; energia: string; veleno: string; psionico: string; sacro: string; malefico: string; magia: string; }' but required in type 'Creature'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/data/creatures.data.ts:181:2:
+[37m      181 │   [32m{[37m
+          ╵   [32m^[0m
+
+  'danno' is declared here.
+
+    src/app/models/article.model.ts:30:2:
+[37m      30 │   [32mdanno[37m: string;
+         ╵   [32m~~~~~[0m
+
+[39m[22m
