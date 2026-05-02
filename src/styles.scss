@@ -276,6 +276,7 @@ tr:hover td { background: var(--bg-hover); }
 .bestiary-badge.non-comune { background: rgba(44,82,130,.12); color: var(--blue); }
 .bestiary-badge.raro { background: rgba(154,112,16,.12); color: var(--gold); }
 .bestiary-badge.boss { background: rgba(123,29,29,.12); color: var(--red); }
+.bestiary-badge.tamabile { background: rgba(45,106,79,.14); color: var(--green); }
 .bestiary-group { margin-bottom: 1.5rem; }
 .bestiary-group-header { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 7px; cursor: pointer; user-select: none; transition: border-color .2s, background .2s; margin-bottom: .75rem; }
 .bestiary-group-header:hover { border-color: var(--accent); background: var(--bg-hover); }
@@ -290,8 +291,18 @@ tr:hover td { background: var(--bg-hover); }
 .group-damage-badge strong { color: var(--accent); }
 .group-armor-badge strong { color: var(--blue); }
 .group-damage-badge + .bg-chevron, .group-armor-badge + .bg-chevron { margin-left: .25rem; }
-.bestiary-card { min-height: 480px; padding: .85rem; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: border-color .2s, transform .2s, box-shadow .2s; }
+.bestiary-card { min-height: 0; padding: .85rem; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: border-color .2s, transform .2s, box-shadow .2s; }
 .bestiary-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 20px var(--shadow); }
+.bestiary-card.boss-card { background: rgba(123,29,29,.22); border-color: rgba(123,29,29,.65); box-shadow: inset 0 0 0 1px rgba(123,29,29,.18); }
+.bestiary-card.boss-card:hover { border-color: var(--red); box-shadow: 0 6px 20px rgba(123,29,29,.25), inset 0 0 0 1px rgba(123,29,29,.25); }
+.bestiary-card.boss-card .mob-panel,
+.bestiary-card.boss-card .res-panel { background: rgba(123,29,29,.12); border-color: rgba(123,29,29,.35); }
+.bestiary-card.boss-card .res-cell { background: rgba(42,31,14,.22); border-color: rgba(123,29,29,.28); }
+.bestiary-card.tamabile-card { background: rgba(45,106,79,.18); border-color: rgba(45,106,79,.55); box-shadow: inset 0 0 0 1px rgba(45,106,79,.14); }
+.bestiary-card.tamabile-card:hover { border-color: var(--green); box-shadow: 0 6px 20px rgba(45,106,79,.22), inset 0 0 0 1px rgba(45,106,79,.22); }
+.bestiary-card.tamabile-card .mob-panel,
+.bestiary-card.tamabile-card .res-panel { background: rgba(45,106,79,.10); border-color: rgba(45,106,79,.30); }
+.bestiary-card.tamabile-card .res-cell { background: rgba(42,31,14,.18); border-color: rgba(45,106,79,.24); }
 .bestiary-card .card-title { font-size: .84rem; line-height: 1.25; gap: .4rem; margin-bottom: .55rem; }
 .bestiary-card .card-title .icon { font-size: 1.15rem; }
 .bestiary-card .bestiary-badge { font-size: .55rem; letter-spacing: .07em; padding: .12rem .35rem; }
@@ -300,6 +311,11 @@ tr:hover td { background: var(--bg-hover); }
 .bestiary-details li::before { display: none; }
 .bestiary-details strong { color: var(--text); }
 .mob-attributes { display: grid; gap: .55rem; }
+.mob-attributes summary { list-style: none; cursor: pointer; border: 1px solid var(--border); border-radius: 7px; background: var(--bg-card-alt); padding: .45rem .55rem; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .1em; color: var(--text-3); text-transform: uppercase; }
+.mob-attributes summary::-webkit-details-marker { display: none; }
+.mob-attributes summary::after { content: '+'; float: right; color: var(--accent); font-size: .72rem; line-height: 1; }
+.mob-attributes[open] summary { margin-bottom: .55rem; }
+.mob-attributes[open] summary::after { content: '-'; }
 .mob-panel { min-height: 106px; border: 1px solid var(--border); border-radius: 7px; background: var(--bg-card-alt); padding: .55rem; }
 .mob-panel-title { display: flex; align-items: center; gap: .5rem; font-family: 'Cinzel', serif; font-size: .72rem; color: var(--text); text-align: center; margin-bottom: .45rem; }
 .mob-panel-title::before, .mob-panel-title::after { content: ''; height: 1px; background: var(--border-strong); flex: 1; }

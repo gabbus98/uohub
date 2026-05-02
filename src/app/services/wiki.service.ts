@@ -1,5 +1,6 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { ARTICLES } from '../data/articles.data';
+import { CREATURES } from '../data/creatures.data';
 import { Article, SearchResult } from '../models/article.model';
 
 export interface SidebarItem {
@@ -38,6 +39,30 @@ export class WikiService {
           art.body.replace(/<[^>]+>/g, ' ')
         ).toLowerCase()
       }));
+
+    const bestiaryIndex = this.searchIndex.find(item => item.id === 'bestiario');
+    if (bestiaryIndex) {
+      bestiaryIndex.text += ' ' + CREATURES
+        .map(creature => [
+          creature.nome,
+          creature.tipo,
+          creature.dungeon,
+          creature.danno,
+          creature.hp,
+          creature.fuoco,
+          creature.freddo,
+          creature.energia,
+          creature.veleno,
+          creature.psionico,
+          creature.sacro,
+          creature.malefico,
+          creature.magia,
+          creature.drop,
+          creature.strategia,
+        ].filter(Boolean).join(' '))
+        .join(' ')
+        .toLowerCase();
+    }
   }
 
   navigate(id: string) {

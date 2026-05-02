@@ -29,6 +29,18 @@ export const DUNGEON_ARMOR_RECOMMENDATIONS: Record<string, string> = {
 
 export const CREATURES: Creature[] = [
   {
+    nome: 'Rapace Celestiale', tipo: 'tamabile', icona: '', dungeon: 'Fortezza Deva',
+    hp: '120', danno: '15–25', 
+    fuoco: '-40%',
+    freddo: '30%',
+    energia: '-50%',
+    veleno: '0%',
+    psionico: '0%',
+    sacro: '60%',
+    malefico: '-50%',
+    magia: '20%',
+  },
+  {
     nome: 'Cacciatore del profondo', tipo: 'comune', icona: '', dungeon: 'Fortezza Deva',
     hp: '120', danno: '15–25', 
     fuoco: '-40%',

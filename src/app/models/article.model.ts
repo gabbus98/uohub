@@ -23,7 +23,9 @@ export interface Article {
 
 export interface Creature {
   nome: string;
-  tipo: 'comune' | 'non-comune' | 'raro' | 'boss';
+  tipo: 'comune' | 'non-comune' | 'raro' | 'boss' | 'tamabile';
+  tags?: CreatureTag[];
+  tamabile?: boolean;
   icona: string;
   dungeon: string;
   hp: string;
@@ -57,6 +59,8 @@ export type ResistanceType =
   | 'Sacro'
   | 'Malefico'
   | 'Magia';
+
+export type CreatureTag = 'tamabile';
 
 export interface SearchResult {
   id: string;

@@ -14,6 +14,7 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
   raro: 1,
   'non-comune': 2,
   comune: 3,
+  tamabile: 4,
 };
 
 @Component({
@@ -80,7 +81,11 @@ export class BestiaryComponent {
   }
 
   badgeLabel(tipo: string) {
-    return { comune: 'COMUNE', 'non-comune': 'NON COMUNE', raro: 'RARO', boss: 'BOSS' }[tipo] || tipo;
+    return { comune: 'COMUNE', 'non-comune': 'NON COMUNE', raro: 'RARO', boss: 'BOSS', tamabile: 'TAMABILE' }[tipo] || tipo;
+  }
+
+  isTamabile(creature: Creature) {
+    return creature.tamabile || creature.tipo === 'tamabile' || creature.tags?.includes('tamabile');
   }
 
   statValue(creature: Creature, key: 'salute' | 'stamina' | 'mana' | 'str' | 'dex' | 'int' | 'ar') {

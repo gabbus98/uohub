@@ -37,13 +37,19 @@
     @if (g.open) {
       <div class="bestiary-group-body">
         @for (c of g.creatures; track c.nome) {
-          <div class="card bestiary-card">
+          <div class="card bestiary-card" [class.boss-card]="c.tipo === 'boss'" [class.tamabile-card]="c.tipo !== 'boss' && isTamabile(c)">
             <div class="card-title">
               <span class="icon">{{ c.icona }}</span>
               {{ c.nome }}
-              <span class="bestiary-badge {{ c.tipo }}">{{ badgeLabel(c.tipo) }}</span>
+              @if (c.tipo === 'boss') {
+                <span class="bestiary-badge boss">{{ badgeLabel(c.tipo) }}</span>
+              }
+              @if (isTamabile(c)) {
+                <span class="bestiary-badge tamabile">TAMABILE</span>
+              }
             </div>
-            <div class="mob-attributes">
+            <details class="mob-attributes">
+              <summary>Statistiche</summary>
               <div class="mob-panel">
                 <div class="mob-panel-title">Caratteristiche</div>
                 <div class="mob-stat-grid">
@@ -63,7 +69,7 @@
                   <div><span>AR</span><strong>{{ statValue(c, 'ar') }}</strong></div>
                 </div>
               </div>
-            </div>
+            </details>
             <div class="res-panel">
               <div class="res-panel-title">Resistenze</div>
               <div class="res-grid">
