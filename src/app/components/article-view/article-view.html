@@ -1,4 +1,6 @@
-@if (article(); as art) {
+@if (currentId() === 'admin-bestiario') {
+  <app-creature-admin />
+} @else if (article(); as art) {
   @if (currentId() !== 'home' && currentId() !== 'tools') {
     @if (art.cat) {
       <div class="breadcrumb">

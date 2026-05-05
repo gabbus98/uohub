@@ -1,3 +1,10 @@
+@if (loading()) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Caricamento creature...</p>
+}
+@if (error()) {
+  <p style="color:var(--red);font-style:italic;padding:1rem 0">{{ error() }}</p>
+}
+
 <div class="search-bar">
   <input
     type="text"
@@ -48,43 +55,70 @@
                 <span class="bestiary-badge tamabile">TAMABILE</span>
               }
             </div>
-            <details class="mob-attributes">
-              <summary>Statistiche</summary>
-              <div class="mob-panel">
-                <div class="mob-panel-title">Caratteristiche</div>
-                <div class="mob-stat-grid">
-                  <div><span>STR</span><strong>{{ statValue(c, 'str') }}</strong></div>
-                  <div><span>Salute</span><strong>{{ statValue(c, 'salute') }}</strong></div>
-                  <div><span>DEX</span><strong>{{ statValue(c, 'dex') }}</strong></div>
-                  <div><span>Stamina</span><strong>{{ statValue(c, 'stamina') }}</strong></div>
-                  <div><span>INT</span><strong>{{ statValue(c, 'int') }}</strong></div>
-                  <div><span>Mana</span><strong>{{ statValue(c, 'mana') }}</strong></div>
-                </div>
-              </div>
-
-              <div class="mob-panel">
-                <div class="mob-panel-title">Combattimento</div>
-                <div class="mob-stat-grid compact">
-                  <div><span>Danni</span><strong>{{ c.danno }}</strong></div>
-                  <div><span>AR</span><strong>{{ statValue(c, 'ar') }}</strong></div>
-                </div>
-              </div>
-            </details>
             <div class="res-panel">
               <div class="res-panel-title">Resistenze</div>
               <div class="res-grid">
                 @for (type of resistanceTypes; track type) {
                   @let value = resistanceValue(c, type);
-                  <div class="res-cell" [class]="resistanceClass(value)">
+                  <div class="res-cell" [class]="cellClasses(value, type)">
                     <span>{{ type }}</span>
                     <strong>{{ value }}</strong>
                   </div>
                 }
               </div>
             </div>
+            <button class="mob-toggle" (click)="expandedCreature.set(c)">Statistiche</button>
           </div>
         }
       </div>
     }
+  </div>
+}
+
+@if (expandedCreature(); as ec) {
+  <div class="mob-overlay" (click)="expandedCreature.set(null)">
+    <div class="card bestiary-card mob-expanded" [class.boss-card]="ec.tipo === 'boss'" [class.tamabile-card]="ec.tipo !== 'boss' && isTamabile(ec)" (click)="$event.stopPropagation()">
+      <button class="mob-close" (click)="expandedCreature.set(null)">×</button>
+      <div class="card-title">
+        <span class="icon">{{ ec.icona }}</span>
+        {{ ec.nome }}
+        @if (ec.tipo === 'boss') {
+          <span class="bestiary-badge boss">{{ badgeLabel(ec.tipo) }}</span>
+        }
+        @if (isTamabile(ec)) {
+          <span class="bestiary-badge tamabile">TAMABILE</span>
+        }
+      </div>
+      <div class="mob-panel">
+        <div class="mob-panel-title">Caratteristiche</div>
+        <div class="mob-stat-grid">
+          <div><span>STR</span><strong>{{ statValue(ec, 'str') }}</strong></div>
+          <div><span>Salute</span><strong>{{ statValue(ec, 'salute') }}</strong></div>
+          <div><span>DEX</span><strong>{{ statValue(ec, 'dex') }}</strong></div>
+          <div><span>Stamina</span><strong>{{ statValue(ec, 'stamina') }}</strong></div>
+          <div><span>INT</span><strong>{{ statValue(ec, 'int') }}</strong></div>
+          <div><span>Mana</span><strong>{{ statValue(ec, 'mana') }}</strong></div>
+        </div>
+      </div>
+      <div class="mob-panel">
+        <div class="mob-panel-title">Combattimento</div>
+        <div class="mob-stat-grid compact">
+          <div><span>Danni</span><strong>{{ ec.danno }}</strong></div>
+          <div><span>AR</span><strong>{{ statValue(ec, 'ar') }}</strong></div>
+        </div>
+      </div>
+      <div class="res-panel">
+        <div class="res-panel-title">Resistenze</div>
+        <div class="res-grid">
+          @for (type of resistanceTypes; track type) {
+            @let value = resistanceValue(ec, type);
+            <div class="res-cell" [class]="cellClasses(value, type)">
+              <span>{{ type }}</span>
+              <strong>{{ value }}</strong>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 }

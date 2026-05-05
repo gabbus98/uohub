@@ -9,6 +9,7 @@ import { BbSplitComponent } from '../bb-split/bb-split';
 import { RangedWeaponsComponent } from '../ranged-weapons/ranged-weapons';
 import { EnchantCostComponent } from '../enchant-cost/enchant-cost';
 import { ArmorCostComponent } from '../armor-cost/armor-cost';
+import { CreatureAdminComponent } from '../creature-admin/creature-admin';
 
 @Component({
   selector: 'app-article-view',
@@ -20,6 +21,7 @@ import { ArmorCostComponent } from '../armor-cost/armor-cost';
     RangedWeaponsComponent,
     EnchantCostComponent,
     ArmorCostComponent,
+    CreatureAdminComponent,
   ],
   templateUrl: './article-view.html'
 })

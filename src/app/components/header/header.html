@@ -30,7 +30,8 @@
   </div>
 
   <div class="header-actions">
-    <button class="btn-guild-header" (click)="openGuildModal()">{{ guildLabel }}</button>
+    <span class="header-user">{{ auth.currentUser()?.name || auth.currentUser()?.email }}</span>
+    <button class="btn-icon" (click)="auth.logout()" title="Esci">⏻</button>
     <button class="btn-icon" (click)="theme.toggle()" title="Tema">{{ themeIcon }}</button>
   </div>
 </header>

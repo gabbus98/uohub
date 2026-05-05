@@ -1,0 +1,123 @@
+<div class="admin-header">
+  <h2 class="admin-title">⚙ Gestione Creature</h2>
+  <button class="filter-btn active" (click)="openNew()">+ Nuova creatura</button>
+</div>
+
+@if (cs.loading()) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Caricamento...</p>
+}
+
+<!-- Lista creature -->
+@if (!showForm()) {
+  <div class="admin-list">
+    @for (c of cs.creatures(); track c.id) {
+      <div class="admin-row">
+        <span class="admin-row-icon">{{ c.icona }}</span>
+        <span class="admin-row-name">{{ c.nome }}</span>
+        <span class="bestiary-badge {{ c.tipo }}">{{ c.tipo }}</span>
+        <span class="admin-row-dungeon">{{ c.dungeon }}</span>
+        <div class="admin-row-actions">
+          <button class="filter-btn" (click)="openEdit(c)">Modifica</button>
+          <button class="filter-btn admin-delete-btn" (click)="askDelete(c.id)">Elimina</button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Form crea/modifica -->
+@if (showForm()) {
+  <div class="admin-form-wrap">
+    <h3 class="admin-form-title">{{ editing() ? 'Modifica — ' + editing()!.nome : 'Nuova creatura' }}</h3>
+
+    <div class="admin-form-grid">
+      <div class="fld">
+        <label>Nome *</label>
+        <input type="text" [ngModel]="form().nome" (ngModelChange)="updateField('nome', $event)" />
+      </div>
+      <div class="fld">
+        <label>Tipo *</label>
+        <select [ngModel]="form().tipo" (ngModelChange)="updateField('tipo', $event)">
+          @for (t of tipi; track t) { <option [value]="t">{{ t }}</option> }
+        </select>
+      </div>
+      <div class="fld">
+        <label>Icona</label>
+        <input type="text" [ngModel]="form().icona" (ngModelChange)="updateField('icona', $event)" placeholder="emoji" />
+      </div>
+      <div class="fld">
+        <label>Dungeon</label>
+        <input type="text" [ngModel]="form().dungeon" (ngModelChange)="updateField('dungeon', $event)" />
+      </div>
+      <div class="fld">
+        <label>HP</label>
+        <input type="text" [ngModel]="form().hp" (ngModelChange)="updateField('hp', $event)" />
+      </div>
+      <div class="fld">
+        <label>Danno</label>
+        <input type="text" [ngModel]="form().danno" (ngModelChange)="updateField('danno', $event)" />
+      </div>
+      <div class="fld">
+        <label>AR</label>
+        <input type="text" [ngModel]="form().ar" (ngModelChange)="updateField('ar', $event)" />
+      </div>
+      <div class="fld">
+        <label>Tamabile</label>
+        <input type="checkbox" [ngModel]="form().tamabile" (ngModelChange)="updateField('tamabile', $event)" />
+      </div>
+    </div>
+
+    <div class="admin-form-section">Caratteristiche</div>
+    <div class="admin-form-grid">
+      <div class="fld"><label>STR</label><input type="text" [ngModel]="form().str" (ngModelChange)="updateField('str', $event)" /></div>
+      <div class="fld"><label>DEX</label><input type="text" [ngModel]="form().dex" (ngModelChange)="updateField('dex', $event)" /></div>
+      <div class="fld"><label>INT</label><input type="text" [ngModel]="form().int" (ngModelChange)="updateField('int', $event)" /></div>
+      <div class="fld"><label>Salute</label><input type="text" [ngModel]="form().salute" (ngModelChange)="updateField('salute', $event)" /></div>
+      <div class="fld"><label>Stamina</label><input type="text" [ngModel]="form().stamina" (ngModelChange)="updateField('stamina', $event)" /></div>
+      <div class="fld"><label>Mana</label><input type="text" [ngModel]="form().mana" (ngModelChange)="updateField('mana', $event)" /></div>
+    </div>
+
+    <div class="admin-form-section">Resistenze</div>
+    <div class="admin-form-grid">
+      <div class="fld"><label>Fuoco</label><input type="text" [ngModel]="form().fuoco" (ngModelChange)="updateField('fuoco', $event)" placeholder="es. 50%" /></div>
+      <div class="fld"><label>Freddo</label><input type="text" [ngModel]="form().freddo" (ngModelChange)="updateField('freddo', $event)" placeholder="es. -20%" /></div>
+      <div class="fld"><label>Energia</label><input type="text" [ngModel]="form().energia" (ngModelChange)="updateField('energia', $event)" /></div>
+      <div class="fld"><label>Veleno</label><input type="text" [ngModel]="form().veleno" (ngModelChange)="updateField('veleno', $event)" /></div>
+      <div class="fld"><label>Psionico</label><input type="text" [ngModel]="form().psionico" (ngModelChange)="updateField('psionico', $event)" /></div>
+      <div class="fld"><label>Sacro</label><input type="text" [ngModel]="form().sacro" (ngModelChange)="updateField('sacro', $event)" /></div>
+      <div class="fld"><label>Male</label><input type="text" [ngModel]="form().malefico" (ngModelChange)="updateField('malefico', $event)" /></div>
+      <div class="fld"><label>Magia</label><input type="text" [ngModel]="form().magia" (ngModelChange)="updateField('magia', $event)" /></div>
+    </div>
+
+    <div class="admin-form-section">Extra</div>
+    <div class="fld">
+      <label>Drop</label>
+      <input type="text" [ngModel]="form().drop" (ngModelChange)="updateField('drop', $event)" />
+    </div>
+    <div class="fld">
+      <label>Strategia</label>
+      <textarea rows="3" [ngModel]="form().strategia" (ngModelChange)="updateField('strategia', $event)"></textarea>
+    </div>
+
+    <div class="admin-form-actions">
+      <button class="filter-btn" (click)="cancel()">Annulla</button>
+      <button class="filter-btn active" (click)="save()" [disabled]="saving()">
+        {{ saving() ? 'Salvataggio...' : (editing() ? 'Salva modifiche' : 'Crea creatura') }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Dialog conferma eliminazione -->
+@if (confirmDelete()) {
+  <div class="mob-overlay" (click)="confirmDelete.set(null)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>Conferma eliminazione</h3>
+      <p class="sub">Questa azione è irreversibile.</p>
+      <div class="admin-form-actions">
+        <button class="filter-btn" (click)="confirmDelete.set(null)">Annulla</button>
+        <button class="filter-btn admin-delete-btn active" (click)="doDelete()">Elimina</button>
+      </div>
+    </div>
+  </div>
+}

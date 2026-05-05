@@ -5,13 +5,13 @@
       <h3>⚔ Accesso Gilda</h3>
       <p class="sub">Area riservata ai membri dell'Ordine dei Cacciatori Grigi.</p>
       <div class="fld">
-        <label>Utente</label>
+        <label>Email</label>
         <input
-          type="text"
-          [ngModel]="username()"
-          (ngModelChange)="username.set($event)"
-          placeholder="nome.personaggio"
-          autocomplete="username"
+          type="email"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event)"
+          placeholder="nome@email.com"
+          autocomplete="email"
         />
       </div>
       <div class="fld">

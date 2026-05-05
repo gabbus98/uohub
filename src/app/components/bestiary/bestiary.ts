@@ -1,6 +1,7 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CREATURES, DUNGEON_ARMOR_RECOMMENDATIONS } from '../../data/creatures.data';
+import { CreatureService } from '../../services/creature.service';
+import { DUNGEON_ARMOR_RECOMMENDATIONS } from '../../data/creatures.data';
 import { Creature, ResistanceType } from '../../models/article.model';
 
 interface DungeonGroup {
@@ -23,8 +24,14 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
   templateUrl: './bestiary.html'
 })
 export class BestiaryComponent {
+  private creatureService = inject(CreatureService);
+
+  loading = this.creatureService.loading;
+  error = this.creatureService.error;
+
   searchQuery = signal('');
   activeFilter = signal<'all' | 'comune' | 'non-comune' | 'raro' | 'boss'>('all');
+  expandedCreature = signal<Creature | null>(null);
   resistanceTypes: ResistanceType[] = [
     'Fuoco',
     'Freddo',
@@ -32,17 +39,18 @@ export class BestiaryComponent {
     'Veleno',
     'Psionico',
     'Sacro',
-    'Malefico',
+    'Male',
     'Magia',
   ];
 
   private groupOpen: Record<string, boolean> = {};
 
   groups = computed<DungeonGroup[]>(() => {
+    const creatures = this.creatureService.creatures();
     const q = this.searchQuery().toLowerCase();
     const filter = this.activeFilter();
 
-    const filtered = CREATURES.filter(c => {
+    const filtered = creatures.filter(c => {
       const matchF = filter === 'all' || c.tipo === filter;
       const matchS = !q ||
         c.nome.toLowerCase().includes(q) ||
@@ -104,6 +112,10 @@ export class BestiaryComponent {
     return this.parseResistance(creature.resistenze || '', type);
   }
 
+  cellClasses(value: string, type: ResistanceType) {
+    return this.resistanceClass(value) + ' el-' + type.toLowerCase();
+  }
+
   resistanceClass(value: string) {
     const normalized = value.toLowerCase();
     if (normalized.includes('immune')) return 'immune';
@@ -151,7 +163,7 @@ export class BestiaryComponent {
       Veleno: ['Veleno'],
       Psionico: ['Psionico'],
       Sacro: ['Sacro'],
-      Malefico: ['Malefico', 'Male'],
+      Male: ['Malefico', 'Male'],
       Magia: ['Magia', 'Magico'],
     };
 
@@ -172,7 +184,7 @@ export class BestiaryComponent {
       Veleno: 'veleno',
       Psionico: 'psionico',
       Sacro: 'sacro',
-      Malefico: 'malefico',
+      Male: 'malefico',
       Magia: 'magia',
     };
 

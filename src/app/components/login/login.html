@@ -1,0 +1,35 @@
+<div class="login-page">
+  <div class="login-box">
+    <div class="login-eyebrow">How to The Miracle Shard</div>
+    <h1 class="login-title">⚔ Accesso</h1>
+    <p class="login-sub">Area riservata ai membri dell'Ordine.</p>
+
+    <div class="fld">
+      <label>Email</label>
+      <input
+        type="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+        placeholder="nome@email.com"
+        autocomplete="email"
+        (keydown.enter)="doLogin()"
+      />
+    </div>
+    <div class="fld">
+      <label>Password</label>
+      <input
+        type="password"
+        [ngModel]="password()"
+        (ngModelChange)="password.set($event)"
+        placeholder="••••••••"
+        autocomplete="current-password"
+        (keydown.enter)="doLogin()"
+      />
+    </div>
+
+    <button class="btn-login" (click)="doLogin()">Entra</button>
+    @if (auth.loginError()) {
+      <p class="modal-err">{{ auth.loginError() }}</p>
+    }
+  </div>
+</div>

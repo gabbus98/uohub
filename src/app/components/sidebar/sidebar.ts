@@ -13,7 +13,7 @@ export class SidebarComponent {
   @Input() open = false;
   @Output() close = new EventEmitter<void>();
 
-  sections: SidebarSection[] = this.wiki.sidebarSections();
+  sections = this.wiki.sidebarSections;
   collapsed = signal<Record<string, boolean>>({});
 
   toggleSection(label: string) {

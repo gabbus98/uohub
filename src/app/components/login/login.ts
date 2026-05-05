@@ -1,26 +1,19 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, signal, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-guild-modal',
+  selector: 'app-login',
   imports: [FormsModule],
-  templateUrl: './guild-modal.html'
+  templateUrl: './login.html',
 })
-export class GuildModalComponent {
+export class LoginComponent {
   auth = inject(AuthService);
-
   email = signal('');
   password = signal('');
 
   doLogin() {
     this.auth.login(this.email(), this.password());
     this.password.set('');
-  }
-
-  closeOverlay(e: MouseEvent) {
-    if ((e.target as HTMLElement).classList.contains('overlay')) {
-      this.auth.closeModal();
-    }
   }
 }

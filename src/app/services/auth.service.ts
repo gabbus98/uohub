@@ -1,17 +1,74 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
-const GUILD_USERS = [
-  { u: 'aldrath', p: 'cacciatore1' },
-  { u: 'venna',   p: 'cacciatore1' },
-  { u: 'gm',      p: 'admin2024'   }
-];
+export interface PbUser {
+  id: string;
+  email: string;
+  name?: string;
+  username?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  guildAuth = signal(false);
+  private http = inject(HttpClient);
+
+  currentUser = signal<PbUser | null>(null);
+  token = signal<string | null>(localStorage.getItem('pb_token'));
+
+  isAuthenticated = computed(() => !!this.token());
+  isAdmin = computed(() => this.currentUser()?.username === environment.adminUsername);
+
+  // Compatibilità con il codice esistente che usa guildAuth
+  guildAuth = this.isAuthenticated;
+
   modalOpen = signal(false);
   pendingArticle = signal<string | null>(null);
   loginError = signal('');
+
+  constructor() {
+    if (this.token()) {
+      this.refreshToken();
+    }
+  }
+
+  private refreshToken() {
+    this.http.post<{ token: string; record: PbUser }>(
+      `${environment.pocketbaseUrl}/api/collections/users/auth-refresh`,
+      {},
+      { headers: { Authorization: this.token()! } }
+    ).subscribe({
+      next: res => {
+        this.token.set(res.token);
+        this.currentUser.set(res.record);
+        localStorage.setItem('pb_token', res.token);
+      },
+      error: () => this.logout(),
+    });
+  }
+
+  login(email: string, password: string) {
+    this.loginError.set('');
+    this.http.post<{ token: string; record: PbUser }>(
+      `${environment.pocketbaseUrl}/api/collections/users/auth-with-password`,
+      { identity: email, password }
+    ).subscribe({
+      next: res => {
+        this.token.set(res.token);
+        this.currentUser.set(res.record);
+        localStorage.setItem('pb_token', res.token);
+        this.modalOpen.set(false);
+        this.pendingArticle.set(null);
+      },
+      error: () => this.loginError.set('Credenziali errate. Riprova.'),
+    });
+  }
+
+  logout() {
+    this.token.set(null);
+    this.currentUser.set(null);
+    localStorage.removeItem('pb_token');
+  }
 
   openModal(pending?: string) {
     if (pending) this.pendingArticle.set(pending);
@@ -21,17 +78,5 @@ export class AuthService {
 
   closeModal() {
     this.modalOpen.set(false);
-  }
-
-  login(u: string, p: string): boolean {
-    const ok = GUILD_USERS.some(c => c.u === u.toLowerCase() && c.p === p);
-    if (ok) {
-      this.guildAuth.set(true);
-      this.closeModal();
-      this.loginError.set('');
-    } else {
-      this.loginError.set('Credenziali errate. Riprova.');
-    }
-    return ok;
   }
 }

@@ -57,7 +57,7 @@ export type ResistanceType =
   | 'Veleno'
   | 'Psionico'
   | 'Sacro'
-  | 'Malefico'
+  | 'Male'
   | 'Magia';
 
 export type CreatureTag = 'tamabile';

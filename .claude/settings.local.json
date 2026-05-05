@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\gabri\\\\uohub\\\\src\\\\app\\\\components\\\\bestiary\" -Force)",
+      "Bash(not exist *)"
+    ]
+  }
+}
