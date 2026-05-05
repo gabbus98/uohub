@@ -30,7 +30,7 @@
   </div>
 
   <div class="header-actions">
-    <span class="header-user">{{ auth.currentUser()?.name || auth.currentUser()?.email }}</span>
+    <span class="header-user">{{ auth.currentUser()?.username }}</span>
     <button class="btn-icon" (click)="auth.logout()" title="Esci">⏻</button>
     <button class="btn-icon" (click)="theme.toggle()" title="Tema">{{ themeIcon }}</button>
   </div>
