@@ -1,5 +1,7 @@
 @if (currentId() === 'admin-bestiario') {
   <app-creature-admin />
+} @else if (currentId() === 'admin-utenti') {
+  <app-user-admin />
 } @else if (article(); as art) {
   @if (currentId() !== 'home' && currentId() !== 'tools') {
     @if (art.cat) {

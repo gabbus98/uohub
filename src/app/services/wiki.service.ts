@@ -64,7 +64,10 @@ export class WikiService {
     if (this.auth.isAdmin()) {
       sections.push({
         label: 'Admin',
-        items: [{ id: 'admin-bestiario', icon: '⚙', label: 'Gestione Creature' }]
+        items: [
+          { id: 'admin-bestiario', icon: '⚙', label: 'Gestione Creature' },
+          { id: 'admin-utenti', icon: '👥', label: 'Gestione Utenti' },
+        ]
       });
     }
     return sections;
@@ -114,7 +117,7 @@ export class WikiService {
   }
 
   navigate(id: string) {
-    if (id !== 'admin-bestiario' && !ARTICLES[id]) return;
+    if (id !== 'admin-bestiario' && id !== 'admin-utenti' && !ARTICLES[id]) return;
     this._currentId.set(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }

@@ -1,0 +1,40 @@
+<div class="user-admin">
+  <h2>Gestione Utenti</h2>
+
+  @if (loading()) {
+    <p>Caricamento...</p>
+  } @else if (error()) {
+    <p class="modal-err">{{ error() }}</p>
+  } @else {
+    <section>
+      <h3>Richieste in attesa ({{ pending().length }})</h3>
+      @if (!pending().length) {
+        <p class="ua-empty">Nessuna richiesta in attesa.</p>
+      }
+      @for (u of pending(); track u.id) {
+        <div class="ua-row">
+          <span class="ua-name">{{ u.username }}</span>
+          <div class="ua-actions">
+            <button class="btn-ua accept" (click)="accept(u)">Accetta</button>
+            <button class="btn-ua reject" (click)="reject(u)">Rifiuta</button>
+          </div>
+        </div>
+      }
+    </section>
+
+    <section>
+      <h3>Utenti accettati ({{ accepted().length }})</h3>
+      @if (!accepted().length) {
+        <p class="ua-empty">Nessun utente accettato.</p>
+      }
+      @for (u of accepted(); track u.id) {
+        <div class="ua-row">
+          <span class="ua-name">{{ u.username }}</span>
+          <div class="ua-actions">
+            <button class="btn-ua reject" (click)="reject(u)">Rimuovi</button>
+          </div>
+        </div>
+      }
+    </section>
+  }
+</div>

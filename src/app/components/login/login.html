@@ -1,35 +1,74 @@
 <div class="login-page">
   <div class="login-box">
     <div class="login-eyebrow">How to The Miracle Shard</div>
-    <h1 class="login-title">⚔ Accesso</h1>
+    <h1 class="login-title">⚔ {{ mode() === 'login' ? 'Accesso' : 'Richiedi Accesso' }}</h1>
     <p class="login-sub">Area riservata ai membri dell'Ordine.</p>
 
-    <div class="fld">
-      <label>Email</label>
-      <input
-        type="email"
-        [ngModel]="email()"
-        (ngModelChange)="email.set($event)"
-        placeholder="nome@email.com"
-        autocomplete="email"
-        (keydown.enter)="doLogin()"
-      />
-    </div>
-    <div class="fld">
-      <label>Password</label>
-      <input
-        type="password"
-        [ngModel]="password()"
-        (ngModelChange)="password.set($event)"
-        placeholder="••••••••"
-        autocomplete="current-password"
-        (keydown.enter)="doLogin()"
-      />
-    </div>
+    @if (mode() === 'login') {
+      <div class="fld">
+        <label>Username</label>
+        <input
+          type="text"
+          [ngModel]="username()"
+          (ngModelChange)="username.set($event)"
+          placeholder="username"
+          autocomplete="username"
+          (keydown.enter)="doLogin()"
+        />
+      </div>
+      <div class="fld">
+        <label>Password</label>
+        <input
+          type="password"
+          [ngModel]="password()"
+          (ngModelChange)="password.set($event)"
+          placeholder="••••••••"
+          autocomplete="current-password"
+          (keydown.enter)="doLogin()"
+        />
+      </div>
+      <button class="btn-login" (click)="doLogin()">Entra</button>
+      <button class="btn-login btn-login--secondary" (click)="switchMode('register')">Richiedi accesso</button>
+      @if (auth.loginError()) {
+        <p class="modal-err">{{ auth.loginError() }}</p>
+      }
+    }
 
-    <button class="btn-login" (click)="doLogin()">Entra</button>
-    @if (auth.loginError()) {
-      <p class="modal-err">{{ auth.loginError() }}</p>
+    @if (mode() === 'register') {
+      @if (auth.registerStatus() === 'success') {
+        <p class="login-success">Richiesta inviata! Attendi l'approvazione dell'admin.</p>
+        <button class="btn-login btn-login--secondary" (click)="switchMode('login')">Torna al login</button>
+      } @else {
+        <div class="fld">
+          <label>Username</label>
+          <input
+            type="text"
+            [ngModel]="username()"
+            (ngModelChange)="username.set($event)"
+            placeholder="scegli un username"
+            autocomplete="username"
+            (keydown.enter)="doRegister()"
+          />
+        </div>
+        <div class="fld">
+          <label>Password</label>
+          <input
+            type="password"
+            [ngModel]="password()"
+            (ngModelChange)="password.set($event)"
+            placeholder="min. 8 caratteri"
+            autocomplete="new-password"
+            (keydown.enter)="doRegister()"
+          />
+        </div>
+        <button class="btn-login" (click)="doRegister()" [disabled]="auth.registerStatus() === 'pending'">
+          {{ auth.registerStatus() === 'pending' ? 'Invio...' : 'Invia richiesta' }}
+        </button>
+        <button class="btn-login btn-login--secondary" (click)="switchMode('login')">Torna al login</button>
+        @if (auth.registerError()) {
+          <p class="modal-err">{{ auth.registerError() }}</p>
+        }
+      }
     }
   </div>
 </div>

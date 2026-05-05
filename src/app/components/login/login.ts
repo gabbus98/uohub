@@ -9,11 +9,26 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   auth = inject(AuthService);
-  email = signal('');
+  username = signal('');
   password = signal('');
+  mode = signal<'login' | 'register'>('login');
 
   doLogin() {
-    this.auth.login(this.email(), this.password());
+    this.auth.login(this.username(), this.password());
+    this.password.set('');
+  }
+
+  doRegister() {
+    this.auth.register(this.username(), this.password());
+    this.password.set('');
+  }
+
+  switchMode(m: 'login' | 'register') {
+    this.mode.set(m);
+    this.auth.loginError.set('');
+    this.auth.registerStatus.set('idle');
+    this.auth.registerError.set('');
+    this.username.set('');
     this.password.set('');
   }
 }

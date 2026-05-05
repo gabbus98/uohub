@@ -10,6 +10,7 @@ import { RangedWeaponsComponent } from '../ranged-weapons/ranged-weapons';
 import { EnchantCostComponent } from '../enchant-cost/enchant-cost';
 import { ArmorCostComponent } from '../armor-cost/armor-cost';
 import { CreatureAdminComponent } from '../creature-admin/creature-admin';
+import { UserAdminComponent } from '../user-admin/user-admin';
 
 @Component({
   selector: 'app-article-view',
@@ -22,6 +23,7 @@ import { CreatureAdminComponent } from '../creature-admin/creature-admin';
     EnchantCostComponent,
     ArmorCostComponent,
     CreatureAdminComponent,
+    UserAdminComponent,
   ],
   templateUrl: './article-view.html'
 })
