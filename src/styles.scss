@@ -552,6 +552,25 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 .rank-stat span { font-family: 'JetBrains Mono', monospace; font-size: .58rem; color: var(--text-3); letter-spacing: .06em; text-transform: uppercase; }
 .rank-stat strong { font-family: 'Cinzel', serif; font-size: .9rem; color: var(--accent); margin-top: .1rem; }
 
+/* Character Sheet */
+.character-sheet { display: flex; flex-direction: column; gap: 1rem; }
+.character-summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.25rem; align-items: start; }
+.character-kpis { display: flex; flex-direction: column; gap: .5rem; min-width: 150px; }
+.character-panel { padding: 1.1rem; }
+.character-panel-head { display: flex; align-items: center; justify-content: space-between; gap: .75rem; flex-wrap: wrap; margin-bottom: .75rem; }
+.character-bar { background: var(--border); border-radius: 99px; height: 8px; overflow: hidden; margin: .25rem 0 1rem; }
+.character-bar div { height: 100%; border-radius: 99px; transition: width .25s, background .25s; }
+.character-alert { margin: .75rem 0 0; padding: .55rem .85rem; font-size: .85rem; }
+.character-select { width: 100%; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 4px; padding: .35rem .5rem; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: .78rem; outline: none; }
+.character-number { width: 80px; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 4px; padding: .35rem .5rem; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: .82rem; outline: none; }
+.character-actions { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
+.character-saved { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--green); letter-spacing: .08em; text-transform: uppercase; }
+
+@media (max-width: 720px) {
+  .character-summary { grid-template-columns: 1fr; }
+  .character-kpis { flex-direction: row; flex-wrap: wrap; }
+}
+
 /* DB Setup */
 .db-section { margin-bottom: 2rem; }
 .collection-grid { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .75rem; }

@@ -15,6 +15,7 @@ import { DungeonComponent } from '../dungeon/dungeon';
 import { DungeonAdminComponent } from '../dungeon-admin/dungeon-admin';
 import { PartyAdvisorComponent } from '../party-advisor/party-advisor';
 import { DbSetupComponent } from '../db-setup/db-setup';
+import { CharacterSheetComponent } from '../character-sheet/character-sheet';
 
 @Component({
   selector: 'app-article-view',
@@ -32,6 +33,7 @@ import { DbSetupComponent } from '../db-setup/db-setup';
     DungeonAdminComponent,
     PartyAdvisorComponent,
     DbSetupComponent,
+    CharacterSheetComponent,
   ],
   templateUrl: './article-view.html'
 })

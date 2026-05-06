@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 const SKILL_CAP = 700;
 const SKILL_MAX = 100;
 
-const SKILL_LIST = [
+export const SKILL_LIST = [
   'Animal Lore', 'Animal Taming', 'Anatomy', 'Archery', 'Arms Lore',
   'Begging', 'Blacksmithing', 'Bowcraft/Fletching', 'Bushido', 'Camping',
   'Carpentry', 'Cartography', 'Chivalry', 'Cooking', 'Discordance',

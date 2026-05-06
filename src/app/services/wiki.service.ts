@@ -64,6 +64,7 @@ export class WikiService {
           { id: 'tool-enchant-cost', icon: '✨', label: 'Costo Incantamento' },
           { id: 'tool-armor-cost', icon: '🛡️', label: 'Armature Infuse' },
           { id: 'tool-party-advisor', icon: '🧭', label: 'Party Advisor' },
+          { id: 'tool-character-sheet', icon: 'PG', label: 'Scheda Personaggio' },
         ]
       },
     ];

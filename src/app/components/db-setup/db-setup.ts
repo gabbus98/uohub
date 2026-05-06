@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 interface CollectionStatus { name: string; exists: boolean | null; count?: number; }
 
 const ADMIN_RULE = `@request.auth.username = "${environment.adminUsername}"`;
+const CHARACTER_OWNER_RULE = '@request.auth.id = user_id';
+const CHARACTER_CREATE_RULE = '@request.auth.id != "" && @request.data.user_id = @request.auth.id';
 
 const DUNGEON_SCHEMA = {
   name: 'dungeons',
@@ -82,7 +84,25 @@ const CREATURE_SCHEMA = {
   ],
 };
 
-type CollectionSchema = typeof DUNGEON_SCHEMA | typeof DUNGEON_RUNS_SCHEMA | typeof CREATURE_SCHEMA;
+const CHARACTER_PROFILE_SCHEMA = {
+  name: 'character_profiles',
+  type: 'base',
+  listRule: CHARACTER_OWNER_RULE,
+  viewRule: CHARACTER_OWNER_RULE,
+  createRule: CHARACTER_CREATE_RULE,
+  updateRule: CHARACTER_OWNER_RULE,
+  deleteRule: CHARACTER_OWNER_RULE,
+  fields: [
+    { name: 'user_id', type: 'text', required: true },
+    { name: 'data', type: 'json', required: false },
+  ],
+};
+
+type CollectionSchema =
+  | typeof DUNGEON_SCHEMA
+  | typeof DUNGEON_RUNS_SCHEMA
+  | typeof CREATURE_SCHEMA
+  | typeof CHARACTER_PROFILE_SCHEMA;
 
 @Component({
   selector: 'app-db-setup',
@@ -103,6 +123,7 @@ export class DbSetupComponent {
     { name: 'dungeons', exists: null },
     { name: 'dungeon_runs', exists: null },
     { name: 'creatures', exists: null },
+    { name: 'character_profiles', exists: null },
   ]);
   checkLoading = signal(false);
   createLoading = signal<Record<string, boolean>>({});
@@ -138,7 +159,7 @@ export class DbSetupComponent {
     const token = this.adminToken();
     const headers = token ? { Authorization: token } : undefined;
 
-    const names = ['dungeons', 'dungeon_runs', 'creatures'];
+    const names = ['dungeons', 'dungeon_runs', 'creatures', 'character_profiles'];
     let done = 0;
     names.forEach(name => {
       this.http.get<{ totalItems: number }>(`${this.pb}/api/collections/${name}/records?perPage=1`, { headers }).subscribe({
@@ -170,13 +191,7 @@ export class DbSetupComponent {
     this.createLoading.update(l => ({ ...l, [name]: true }));
     this.createResult.update(r => ({ ...r, [name]: '' }));
 
-    const body = {
-      createRule: ADMIN_RULE,
-      updateRule: ADMIN_RULE,
-      deleteRule: ADMIN_RULE,
-      listRule: '',
-      viewRule: '',
-    };
+    const body = this.rulesFor(name);
     const headers = { Authorization: token };
 
     this.http.patch(`${this.pb}/api/collections/${name}`, body, { headers }).subscribe({
@@ -231,7 +246,28 @@ export class DbSetupComponent {
   private schemaFor(name: string): CollectionSchema {
     if (name === 'dungeons') return DUNGEON_SCHEMA;
     if (name === 'dungeon_runs') return DUNGEON_RUNS_SCHEMA;
+    if (name === 'character_profiles') return CHARACTER_PROFILE_SCHEMA;
     return CREATURE_SCHEMA;
+  }
+
+  private rulesFor(name: string) {
+    if (name === 'character_profiles') {
+      return {
+        listRule: CHARACTER_OWNER_RULE,
+        viewRule: CHARACTER_OWNER_RULE,
+        createRule: CHARACTER_CREATE_RULE,
+        updateRule: CHARACTER_OWNER_RULE,
+        deleteRule: CHARACTER_OWNER_RULE,
+      };
+    }
+
+    return {
+      createRule: ADMIN_RULE,
+      updateRule: ADMIN_RULE,
+      deleteRule: ADMIN_RULE,
+      listRule: '',
+      viewRule: '',
+    };
   }
 
   private formatCreateError(error: HttpErrorResponse): string {

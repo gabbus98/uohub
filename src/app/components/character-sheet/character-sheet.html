@@ -1,0 +1,162 @@
+<div class="character-sheet">
+  @if (!user()) {
+    <div class="callout warn">
+      <span class="callout-icon">!</span>
+      <div>Accedi con il tuo account per caricare e salvare la scheda personaggio.</div>
+    </div>
+  }
+  @if (loading()) {
+    <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Caricamento scheda...</p>
+  }
+  @if (error()) {
+    <p class="modal-err">{{ error() }}</p>
+  }
+
+  <div class="card character-summary">
+    <div>
+      <div class="card-title">Identita</div>
+      <div class="admin-form-grid">
+        <div class="fld">
+          <label>Nome PG</label>
+          <input type="text" [ngModel]="sheet().nome" (ngModelChange)="updateField('nome', $event)" />
+        </div>
+        <div class="fld">
+          <label>Razza</label>
+          <input type="text" [ngModel]="sheet().razza" (ngModelChange)="updateField('razza', $event)" />
+        </div>
+        <div class="fld">
+          <label>Classe</label>
+          <input type="text" [ngModel]="sheet().classe" (ngModelChange)="updateField('classe', $event)" />
+        </div>
+        <div class="fld">
+          <label>Divinita</label>
+          <input type="text" [ngModel]="sheet().divinita" (ngModelChange)="updateField('divinita', $event)" />
+        </div>
+        <div class="fld">
+          <label>Ruolo party</label>
+          <input type="text" [ngModel]="sheet().ruolo" (ngModelChange)="updateField('ruolo', $event)" />
+        </div>
+        <div class="fld">
+          <label>Gilda / gruppo</label>
+          <input type="text" [ngModel]="sheet().gilda" (ngModelChange)="updateField('gilda', $event)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="character-kpis">
+      <div class="loot-stat">
+        <span>Skill</span>
+        <strong [style.color]="barColor(skillTotal(), skillCap)">{{ skillTotal() }}/{{ skillCap }}</strong>
+      </div>
+      <div class="loot-stat">
+        <span>Rimanenti</span>
+        <strong [style.color]="skillOverCap() ? 'var(--red)' : 'var(--green)'">{{ skillRemaining() }}</strong>
+      </div>
+      <div class="loot-stat">
+        <span>Stat</span>
+        <strong [style.color]="barColor(statTotal(), statCap)">{{ statTotal() }}/{{ statCap }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="card character-panel">
+    <div class="card-title">Statistiche</div>
+    <div class="admin-form-grid character-stats">
+      <div class="fld">
+        <label>Forza</label>
+        <input type="number" [ngModel]="sheet().forza" (ngModelChange)="updateStat('forza', $event)" />
+      </div>
+      <div class="fld">
+        <label>Destrezza</label>
+        <input type="number" [ngModel]="sheet().destrezza" (ngModelChange)="updateStat('destrezza', $event)" />
+      </div>
+      <div class="fld">
+        <label>Intelligenza</label>
+        <input type="number" [ngModel]="sheet().intelligenza" (ngModelChange)="updateStat('intelligenza', $event)" />
+      </div>
+    </div>
+    <div class="character-bar">
+      <div [style.width]="statFill() + '%'" [style.background]="barColor(statTotal(), statCap)"></div>
+    </div>
+    @if (statOverCap()) {
+      <div class="callout danger character-alert">
+        <span class="callout-icon">!</span>
+        <div>Superi lo stat cap di <strong>{{ -statRemaining() }}</strong> punti.</div>
+      </div>
+    }
+  </div>
+
+  <div class="card character-panel">
+    <div class="character-panel-head">
+      <div class="card-title">Skill</div>
+      <button class="filter-btn" (click)="addSkill()">+ Aggiungi Skill</button>
+    </div>
+    <div class="character-bar">
+      <div [style.width]="skillFill() + '%'" [style.background]="barColor(skillTotal(), skillCap)"></div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Valore</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (skill of sheet().skills; track skill.id) {
+            <tr>
+              <td>
+                <select class="character-select" [ngModel]="skill.name" (ngModelChange)="updateSkillName(skill.id, $event)">
+                  @for (option of skillList; track option) {
+                    <option [value]="option">{{ option }}</option>
+                  }
+                </select>
+              </td>
+              <td>
+                <input class="character-number" type="number" min="0" max="100" [ngModel]="skill.value" (ngModelChange)="updateSkillValue(skill.id, $event)" />
+              </td>
+              <td>
+                <button class="filter-btn admin-delete-btn" (click)="removeSkill(skill.id)">X</button>
+              </td>
+            </tr>
+          }
+          @if (!sheet().skills.length) {
+            <tr>
+              <td colspan="3" style="color:var(--text-3);font-style:italic">Nessuna skill inserita.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (skillOverCap()) {
+      <div class="callout danger character-alert">
+        <span class="callout-icon">!</span>
+        <div>Superi lo skill cap di <strong>{{ -skillRemaining() }}</strong> punti.</div>
+      </div>
+    }
+  </div>
+
+  <div class="card character-panel">
+    <div class="card-title">Note</div>
+    <div class="fld">
+      <label>Obiettivi</label>
+      <textarea rows="3" [ngModel]="sheet().obiettivi" (ngModelChange)="updateField('obiettivi', $event)"></textarea>
+    </div>
+    <div class="fld">
+      <label>Note RP / PvE</label>
+      <textarea rows="5" [ngModel]="sheet().note" (ngModelChange)="updateField('note', $event)"></textarea>
+    </div>
+  </div>
+
+  <div class="character-actions">
+    <button class="filter-btn active" (click)="save()" [disabled]="saving() || !user()">
+      {{ saving() ? 'Salvataggio...' : 'Salva scheda' }}
+    </button>
+    <button class="filter-btn admin-delete-btn" (click)="reset()" [disabled]="!user()">Reset</button>
+    @if (saved()) {
+      <span class="character-saved">Salvato</span>
+    }
+  </div>
+</div>

@@ -36,6 +36,13 @@ export const ARTICLES: Record<string, Article> = {
     body: ''
   },
 
+  'tool-character-sheet': {
+    cat: 'Tool', title: 'Scheda Personaggio',
+    desc: 'Tieni a portata di mano identita, stat, skill e note operative del tuo personaggio.',
+    tags: [{ t: 'Personaggio', cls: 'blue' }, { t: 'Account' }],
+    body: ''
+  },
+
   'home': {
     title: 'The Last Hunt Wiki',
     body: `
