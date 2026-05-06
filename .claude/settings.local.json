@@ -5,7 +5,12 @@
       "Bash(not exist *)",
       "Bash(Get-ChildItem -Path \"c:\\\\Users\\\\GabrielM\\\\Documents\\\\Gabb\\\\uohub\" -Recurse -Depth 2 -Directory)",
       "Bash(Select-Object FullName)",
-      "Bash(ConvertTo-Csv -NoTypeInformation)"
+      "Bash(ConvertTo-Csv -NoTypeInformation)",
+      "Bash(npm install *)",
+      "Bash(npm ls *)",
+      "Bash(node -e \"const l=require\\('./package-lock.json'\\); console.log\\('lockfileVersion:', l.lockfileVersion, 'npm version from lock:', l.node_modules?.npm?.version || 'n/a'\\)\")",
+      "Bash(node -e ' *)",
+      "Bash(del package-lock.json)"
     ]
   }
 }
