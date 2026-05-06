@@ -16,6 +16,7 @@ import { DungeonAdminComponent } from '../dungeon-admin/dungeon-admin';
 import { PartyAdvisorComponent } from '../party-advisor/party-advisor';
 import { DbSetupComponent } from '../db-setup/db-setup';
 import { CharacterSheetComponent } from '../character-sheet/character-sheet';
+import { RunLogComponent } from '../run-log/run-log';
 
 @Component({
   selector: 'app-article-view',
@@ -34,6 +35,7 @@ import { CharacterSheetComponent } from '../character-sheet/character-sheet';
     PartyAdvisorComponent,
     DbSetupComponent,
     CharacterSheetComponent,
+    RunLogComponent,
   ],
   templateUrl: './article-view.html'
 })

@@ -11,7 +11,7 @@ const EMPTY_DUNGEON = (): Partial<Dungeon> => ({
 
 const EMPTY_RUN = (dungeonNome: string): Partial<DungeonRun> => ({
   dungeon_nome: dungeonNome, monete: 0, pelli: [], tempo: 0,
-  pg_count: 1, partecipanti: [], data: new Date().toISOString().split('T')[0],
+  pg_count: 1, partecipanti: [], data: new Date().toISOString().split('T')[0], note: '',
 });
 
 @Component({
@@ -126,9 +126,10 @@ export class DungeonAdminComponent {
 
   saveRun() {
     const token = this.auth.token();
+    const user = this.auth.currentUser();
     if (!token) return;
     this.savingRun.set(true);
-    this.ds.createRun(this.runForm(), token).subscribe({
+    this.ds.createRun(this.runForm(), token, user?.id).subscribe({
       next: () => {
         this.ds.loadRuns();
         this.runForm.set(EMPTY_RUN(this.runForDungeon() || ''));

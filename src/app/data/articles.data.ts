@@ -43,6 +43,13 @@ export const ARTICLES: Record<string, Article> = {
     body: ''
   },
 
+  'tool-run-log': {
+    cat: 'Tool', title: 'Registro Run',
+    desc: 'Registra le run di gilda con partecipanti, loot, tempo e note operative.',
+    tags: [{ t: 'Dungeon', cls: 'blue' }, { t: 'Gilda' }],
+    body: ''
+  },
+
   'home': {
     title: 'The Last Hunt Wiki',
     body: `

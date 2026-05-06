@@ -141,6 +141,9 @@
                     @if (!run.partecipanti.length) { — }
                   </span>
                 </div>
+                @if (run.note) {
+                  <div class="dungeon-note">{{ run.note }}</div>
+                }
               }
             </div>
           </div>

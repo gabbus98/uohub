@@ -14,5 +14,6 @@ export class ToolsLandingComponent {
     { id: 'tool-enchant-cost', icon: 'EN', title: 'Costo Incantamento', desc: 'Calcola materiali e componenti per rune maggiori e minori.' },
     { id: 'tool-armor-cost', icon: 'AR', title: 'Armature Infuse', desc: 'Calcola lingotti, sangue e bonus per armature metalliche infuse.' },
     { id: 'tool-character-sheet', icon: 'PG', title: 'Scheda Personaggio', desc: 'Salva identita, stat, skill e note direttamente sul tuo account.' },
+    { id: 'tool-run-log', icon: 'RL', title: 'Registro Run', desc: 'Registra run di gilda, loot, tempi e partecipanti.' },
   ];
 }

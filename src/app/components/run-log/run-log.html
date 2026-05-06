@@ -1,0 +1,129 @@
+<div class="run-log">
+  @if (!auth.currentUser()) {
+    <div class="callout warn">
+      <span class="callout-icon">!</span>
+      <div>Accedi con il tuo account per registrare nuove run.</div>
+    </div>
+  }
+  @if (error()) {
+    <p class="modal-err">{{ error() }}</p>
+  }
+
+  <div class="card run-log-form">
+    <div class="card-title">Nuova Run</div>
+    <div class="admin-form-grid">
+      <div class="fld">
+        <label>Dungeon</label>
+        <select [ngModel]="form().dungeon_nome" (ngModelChange)="updateField('dungeon_nome', $event)">
+          <option value="">Seleziona dungeon</option>
+          @for (dungeon of ds.dungeons(); track dungeon.id) {
+            <option [value]="dungeon.nome">{{ dungeon.nome }}</option>
+          }
+        </select>
+      </div>
+      <div class="fld">
+        <label>Data</label>
+        <input type="date" [ngModel]="form().data" (ngModelChange)="updateField('data', $event)" />
+      </div>
+      <div class="fld">
+        <label>Monete</label>
+        <input type="number" min="0" [ngModel]="form().monete" (ngModelChange)="updateField('monete', +$event)" />
+      </div>
+      <div class="fld">
+        <label>Tempo</label>
+        <input type="number" min="0" [ngModel]="form().tempo" (ngModelChange)="updateField('tempo', +$event)" />
+      </div>
+      <div class="fld">
+        <label>Numero PG</label>
+        <input type="number" min="1" [ngModel]="form().pg_count" (ngModelChange)="updateField('pg_count', +$event)" />
+      </div>
+    </div>
+
+    <div class="admin-form-section" style="display:flex;align-items:center;gap:.5rem">
+      Partecipanti
+      <button class="filter-btn" (click)="addPartecipante()">+ Aggiungi</button>
+    </div>
+    @for (part of (form().partecipanti || []); track $index) {
+      <div class="inline-row">
+        <input type="text" [ngModel]="part.nome" (ngModelChange)="updatePartecipante($index, 'nome', $event)" placeholder="Nome personaggio" style="flex:1" />
+        <input type="text" [ngModel]="part.classe" (ngModelChange)="updatePartecipante($index, 'classe', $event)" placeholder="Classe" style="flex:1" [attr.list]="'run-known-classes-' + $index" />
+        <datalist [id]="'run-known-classes-' + $index">
+          @for (cls of knownClasses(); track cls) {
+            <option [value]="cls">{{ cls }}</option>
+          }
+        </datalist>
+        <button class="filter-btn admin-delete-btn" (click)="removePartecipante($index)">X</button>
+      </div>
+    }
+
+    <div class="admin-form-section" style="display:flex;align-items:center;gap:.5rem">
+      Pelli / materiali ottenuti
+      <button class="filter-btn" (click)="addPella()">+ Aggiungi</button>
+    </div>
+    @for (pella of (form().pelli || []); track $index) {
+      <div class="inline-row">
+        <input type="text" [ngModel]="pella.nome" (ngModelChange)="updatePella($index, 'nome', $event)" placeholder="Nome" style="flex:1" />
+        <input type="number" min="0" [ngModel]="pella.quantita" (ngModelChange)="updatePella($index, 'quantita', +$event)" style="width:90px" />
+        <button class="filter-btn admin-delete-btn" (click)="removePella($index)">X</button>
+      </div>
+    }
+
+    <div class="fld">
+      <label>Note</label>
+      <textarea rows="3" [ngModel]="form().note" (ngModelChange)="updateField('note', $event)"></textarea>
+    </div>
+
+    <div class="admin-form-actions">
+      <button class="filter-btn active" (click)="save()" [disabled]="saving() || !auth.currentUser()">
+        {{ saving() ? 'Salvataggio...' : 'Salva run' }}
+      </button>
+      @if (saved()) {
+        <span class="character-saved">Run salvata</span>
+      }
+    </div>
+  </div>
+
+  <div class="run-log-list">
+    <div class="admin-form-section">Ultime run</div>
+    @if (!recentRuns().length) {
+      <p style="color:var(--text-muted);font-style:italic">Nessuna run registrata.</p>
+    }
+    @for (run of recentRuns(); track run.id) {
+      <div class="card run-log-card">
+        <div class="run-log-card-head">
+          <div>
+            <div class="run-log-title">{{ run.dungeon_nome }}</div>
+            <div class="run-log-meta">{{ run.data }} · {{ run.tempo }} min · {{ run.pg_count }} PG · {{ run.monete }} monete</div>
+          </div>
+          @if (canDelete(run)) {
+            <button class="filter-btn admin-delete-btn" (click)="askDelete(run.id)">Elimina</button>
+          }
+        </div>
+        <div class="rank-meta">
+          @for (part of run.partecipanti; track part.nome) {
+            <span class="party-chip">{{ part.nome }} ({{ part.classe }})</span>
+          }
+          @for (pella of run.pelli; track pella.nome) {
+            <span class="pella-chip">{{ pella.nome }} x{{ pella.quantita }}</span>
+          }
+        </div>
+        @if (run.note) {
+          <div class="dungeon-note">{{ run.note }}</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+@if (confirmDelete()) {
+  <div class="mob-overlay" (click)="confirmDelete.set(null)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>Elimina run</h3>
+      <p class="sub">Vuoi eliminare questa run?</p>
+      <div class="admin-form-actions">
+        <button class="filter-btn" (click)="confirmDelete.set(null)">Annulla</button>
+        <button class="filter-btn admin-delete-btn active" (click)="deleteRun()">Elimina</button>
+      </div>
+    </div>
+  </div>
+}

@@ -48,6 +48,7 @@ export class DungeonService {
           ...r,
           pelli: this.parseJson<{ nome: string; quantita: number }[]>(r.pelli, []),
           partecipanti: this.parseJson<{ nome: string; classe: string }[]>(r.partecipanti, []),
+          note: r.note || '',
         })));
         this.runsLoading.set(false);
       },
@@ -67,8 +68,12 @@ export class DungeonService {
     return this.http.delete(`${this.base}/dungeons/records/${id}`, { headers: this.headers(token) });
   }
 
-  createRun(data: Partial<DungeonRun>, token: string) {
-    const body = { ...data, data: data.data || new Date().toISOString().split('T')[0] };
+  createRun(data: Partial<DungeonRun>, token: string, userId?: string) {
+    const body = {
+      ...data,
+      user_id: data.user_id || userId,
+      data: data.data || new Date().toISOString().split('T')[0],
+    };
     return this.http.post<DungeonRunRecord>(`${this.base}/dungeon_runs/records`, body, { headers: this.headers(token) });
   }
 

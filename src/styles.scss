@@ -566,9 +566,18 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 .character-actions { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
 .character-saved { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--green); letter-spacing: .08em; text-transform: uppercase; }
 
+.run-log { display: flex; flex-direction: column; gap: 1.25rem; }
+.run-log-form { padding: 1.1rem; }
+.run-log-list { display: flex; flex-direction: column; gap: .75rem; }
+.run-log-card { padding: .9rem 1rem; }
+.run-log-card-head { display: flex; justify-content: space-between; gap: 1rem; align-items: flex-start; margin-bottom: .65rem; }
+.run-log-title { font-family: 'Cinzel', serif; font-size: .98rem; color: var(--text); font-weight: 600; }
+.run-log-meta { font-family: 'JetBrains Mono', monospace; font-size: .64rem; color: var(--text-3); letter-spacing: .06em; }
+
 @media (max-width: 720px) {
   .character-summary { grid-template-columns: 1fr; }
   .character-kpis { flex-direction: row; flex-wrap: wrap; }
+  .run-log-card-head { flex-direction: column; }
 }
 
 /* DB Setup */

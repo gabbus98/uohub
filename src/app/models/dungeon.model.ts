@@ -28,6 +28,7 @@ export interface DungeonRecord extends Dungeon {
 }
 
 export interface DungeonRun {
+  user_id?: string;
   dungeon_nome: string;
   monete: number;
   pelli: PelleDungeon[];
@@ -35,6 +36,7 @@ export interface DungeonRun {
   pg_count: number;
   partecipanti: PartecipanteRun[];
   data: string; // ISO date string
+  note?: string;
 }
 
 export interface DungeonRunRecord extends DungeonRun {

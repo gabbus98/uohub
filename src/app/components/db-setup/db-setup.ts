@@ -8,6 +8,8 @@ interface CollectionStatus { name: string; exists: boolean | null; count?: numbe
 const ADMIN_RULE = `@request.auth.username = "${environment.adminUsername}"`;
 const CHARACTER_OWNER_RULE = '@request.auth.id = user_id';
 const CHARACTER_CREATE_RULE = '@request.auth.id != "" && @request.data.user_id = @request.auth.id';
+const RUN_OWNER_RULE = `@request.auth.username = "${environment.adminUsername}" || @request.auth.id = user_id`;
+const RUN_CREATE_RULE = `@request.auth.username = "${environment.adminUsername}" || (@request.auth.id != "" && @request.data.user_id = @request.auth.id)`;
 
 const DUNGEON_SCHEMA = {
   name: 'dungeons',
@@ -32,10 +34,11 @@ const DUNGEON_RUNS_SCHEMA = {
   name: 'dungeon_runs',
   type: 'base',
   listRule: '', viewRule: '',
-  createRule: ADMIN_RULE,
-  updateRule: ADMIN_RULE,
-  deleteRule: ADMIN_RULE,
+  createRule: RUN_CREATE_RULE,
+  updateRule: RUN_OWNER_RULE,
+  deleteRule: RUN_OWNER_RULE,
   fields: [
+    { name: 'user_id', type: 'text', required: false },
     { name: 'dungeon_nome', type: 'text', required: true },
     { name: 'monete', type: 'number', required: false },
     { name: 'pelli', type: 'json', required: false },
@@ -43,6 +46,7 @@ const DUNGEON_RUNS_SCHEMA = {
     { name: 'pg_count', type: 'number', required: false },
     { name: 'partecipanti', type: 'json', required: false },
     { name: 'data', type: 'text', required: false },
+    { name: 'note', type: 'text', required: false },
   ],
 };
 
@@ -258,6 +262,16 @@ export class DbSetupComponent {
         createRule: CHARACTER_CREATE_RULE,
         updateRule: CHARACTER_OWNER_RULE,
         deleteRule: CHARACTER_OWNER_RULE,
+      };
+    }
+
+    if (name === 'dungeon_runs') {
+      return {
+        createRule: RUN_CREATE_RULE,
+        updateRule: RUN_OWNER_RULE,
+        deleteRule: RUN_OWNER_RULE,
+        listRule: '',
+        viewRule: '',
       };
     }
 
