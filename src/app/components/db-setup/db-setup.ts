@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 interface CollectionStatus { name: string; exists: boolean | null; count?: number; }
@@ -12,15 +12,15 @@ const DUNGEON_SCHEMA = {
   createRule: "@request.auth.id != ''",
   updateRule: "@request.auth.id != ''",
   deleteRule: "@request.auth.id != ''",
-  schema: [
-    { name: 'nome', type: 'text', required: true, options: {} },
-    { name: 'descrizione', type: 'text', required: false, options: {} },
-    { name: 'difficolta', type: 'number', required: false, options: {} },
-    { name: 'bauli', type: 'json', required: false, options: {} },
-    { name: 'posizione_mappa', type: 'text', required: false, options: {} },
-    { name: 'screenshot', type: 'text', required: false, options: {} },
-    { name: 'protezione_elementale', type: 'text', required: false, options: {} },
-    { name: 'note', type: 'text', required: false, options: {} },
+  fields: [
+    { name: 'nome', type: 'text', required: true },
+    { name: 'descrizione', type: 'text', required: false },
+    { name: 'difficolta', type: 'number', required: false },
+    { name: 'bauli', type: 'json', required: false },
+    { name: 'posizione_mappa', type: 'text', required: false },
+    { name: 'screenshot', type: 'text', required: false },
+    { name: 'protezione_elementale', type: 'text', required: false },
+    { name: 'note', type: 'text', required: false },
   ],
 };
 
@@ -31,16 +31,18 @@ const DUNGEON_RUNS_SCHEMA = {
   createRule: "@request.auth.id != ''",
   updateRule: "@request.auth.id != ''",
   deleteRule: "@request.auth.id != ''",
-  schema: [
-    { name: 'dungeon_nome', type: 'text', required: true, options: {} },
-    { name: 'monete', type: 'number', required: false, options: {} },
-    { name: 'pelli', type: 'json', required: false, options: {} },
-    { name: 'tempo', type: 'number', required: false, options: {} },
-    { name: 'pg_count', type: 'number', required: false, options: {} },
-    { name: 'partecipanti', type: 'json', required: false, options: {} },
-    { name: 'data', type: 'text', required: false, options: {} },
+  fields: [
+    { name: 'dungeon_nome', type: 'text', required: true },
+    { name: 'monete', type: 'number', required: false },
+    { name: 'pelli', type: 'json', required: false },
+    { name: 'tempo', type: 'number', required: false },
+    { name: 'pg_count', type: 'number', required: false },
+    { name: 'partecipanti', type: 'json', required: false },
+    { name: 'data', type: 'text', required: false },
   ],
 };
+
+type CollectionSchema = typeof DUNGEON_SCHEMA;
 
 @Component({
   selector: 'app-db-setup',
@@ -118,18 +120,51 @@ export class DbSetupComponent {
     this.createResult.update(r => ({ ...r, [name]: '' }));
 
     const schema = name === 'dungeons' ? DUNGEON_SCHEMA : DUNGEON_RUNS_SCHEMA;
-    this.http.post(`${this.pb}/api/collections`, schema, { headers: { Authorization: token } }).subscribe({
-      next: () => {
-        this.createResult.update(r => ({ ...r, [name]: '✓ Collection creata' }));
-        this.createLoading.update(l => ({ ...l, [name]: false }));
-        this.checkCollections();
-      },
-      error: (e) => {
-        const msg = e?.error?.message || 'Errore creazione';
-        this.createResult.update(r => ({ ...r, [name]: `✗ ${msg}` }));
-        this.createLoading.update(l => ({ ...l, [name]: false }));
+    this.createCollectionWithFallback(name, schema, token);
+  }
+
+  private createCollectionWithFallback(name: string, schema: CollectionSchema, token: string) {
+    const headers = { Authorization: token };
+    this.http.post(`${this.pb}/api/collections`, schema, { headers }).subscribe({
+      next: () => this.handleCreateSuccess(name),
+      error: (modernError: HttpErrorResponse) => {
+        this.http.post(`${this.pb}/api/collections`, this.toLegacySchema(schema), { headers }).subscribe({
+          next: () => this.handleCreateSuccess(name),
+          error: (legacyError: HttpErrorResponse) => {
+            this.createResult.update(r => ({
+              ...r,
+              [name]: `X ${this.formatCreateError(legacyError || modernError)}`,
+            }));
+            this.createLoading.update(l => ({ ...l, [name]: false }));
+          },
+        });
       },
     });
+  }
+
+  private handleCreateSuccess(name: string) {
+    this.createResult.update(r => ({ ...r, [name]: 'OK Collection creata' }));
+    this.createLoading.update(l => ({ ...l, [name]: false }));
+    this.checkCollections();
+  }
+
+  private toLegacySchema(schema: CollectionSchema) {
+    const { fields, ...rest } = schema;
+    return {
+      ...rest,
+      schema: fields.map(field => ({ ...field, options: {} })),
+    };
+  }
+
+  private formatCreateError(error: HttpErrorResponse): string {
+    const pbError = error?.error;
+    const details = pbError?.data && Object.keys(pbError.data).length
+      ? ` ${JSON.stringify(pbError.data)}`
+      : '';
+
+    return pbError?.message
+      ? `${pbError.message}${details}`
+      : error?.message || 'Errore creazione';
   }
 
   sendJsonRequest() {

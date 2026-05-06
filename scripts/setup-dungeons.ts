@@ -1,5 +1,5 @@
 /**
- * Crea le collection "dungeons" e "dungeon_runs" su PocketBase
+ * Crea le collection "dungeons" e "dungeon_runs" su PocketBase.
  *
  * Uso:
  *   npx tsx scripts/setup-dungeons.ts <url> <superadmin-email> <superadmin-password>
@@ -35,6 +35,37 @@ async function authenticate(baseUrl: string, em: string, pw: string): Promise<st
   throw new Error(`Auth fallita su ${baseUrl}`);
 }
 
+function toLegacySchema(schema: Record<string, unknown>) {
+  const fields = schema['fields'];
+  if (!Array.isArray(fields)) return schema;
+
+  const { fields: _, ...rest } = schema;
+  return {
+    ...rest,
+    schema: fields.map(field => ({ ...(field as Record<string, unknown>), options: {} })),
+  };
+}
+
+async function createCollection(
+  baseUrl: string,
+  headers: Record<string, string>,
+  schema: Record<string, unknown>,
+) {
+  const modernRes = await fetch(`${baseUrl}/api/collections`, {
+    method: 'POST', headers,
+    body: JSON.stringify(schema),
+  });
+
+  if (modernRes.ok) return modernRes;
+
+  const legacyRes = await fetch(`${baseUrl}/api/collections`, {
+    method: 'POST', headers,
+    body: JSON.stringify(toLegacySchema(schema)),
+  });
+
+  return legacyRes.ok ? legacyRes : modernRes;
+}
+
 async function ensureCollection(
   baseUrl: string,
   token: string,
@@ -45,28 +76,25 @@ async function ensureCollection(
 
   const check = await fetch(`${baseUrl}/api/collections/${name}`, { headers });
   if (check.ok) {
-    console.log(`⚠  Collection "${name}" già esistente — salto`);
+    console.log(`Collection "${name}" gia esistente - salto`);
     return;
   }
 
   console.log(`Creazione collection "${name}"...`);
-  const res = await fetch(`${baseUrl}/api/collections`, {
-    method: 'POST', headers,
-    body: JSON.stringify(schema),
-  });
+  const res = await createCollection(baseUrl, headers, schema);
 
   if (!res.ok) {
     const text = await res.text();
-    console.error(`  ✗ Errore creazione "${name}":`, text);
+    console.error(`Errore creazione "${name}":`, text);
     process.exit(1);
   }
-  console.log(`  ✓ Collection "${name}" creata`);
+  console.log(`Collection "${name}" creata`);
 }
 
 async function main() {
   console.log(`Autenticazione su ${remoteUrl}...`);
   const token = await authenticate(remoteUrl, email, password);
-  console.log('✓ Autenticato\n');
+  console.log('Autenticato\n');
 
   const authRule = "@request.auth.id != ''";
 
@@ -75,15 +103,15 @@ async function main() {
     type: 'base',
     listRule: '', viewRule: '',
     createRule: authRule, updateRule: authRule, deleteRule: authRule,
-    schema: [
-      { name: 'nome', type: 'text', required: true, options: {} },
-      { name: 'descrizione', type: 'text', required: false, options: {} },
-      { name: 'difficolta', type: 'number', required: false, options: {} },
-      { name: 'bauli', type: 'json', required: false, options: {} },
-      { name: 'posizione_mappa', type: 'text', required: false, options: {} },
-      { name: 'screenshot', type: 'text', required: false, options: {} },
-      { name: 'protezione_elementale', type: 'text', required: false, options: {} },
-      { name: 'note', type: 'text', required: false, options: {} },
+    fields: [
+      { name: 'nome', type: 'text', required: true },
+      { name: 'descrizione', type: 'text', required: false },
+      { name: 'difficolta', type: 'number', required: false },
+      { name: 'bauli', type: 'json', required: false },
+      { name: 'posizione_mappa', type: 'text', required: false },
+      { name: 'screenshot', type: 'text', required: false },
+      { name: 'protezione_elementale', type: 'text', required: false },
+      { name: 'note', type: 'text', required: false },
     ],
   });
 
@@ -92,18 +120,18 @@ async function main() {
     type: 'base',
     listRule: '', viewRule: '',
     createRule: authRule, updateRule: authRule, deleteRule: authRule,
-    schema: [
-      { name: 'dungeon_nome', type: 'text', required: true, options: {} },
-      { name: 'monete', type: 'number', required: false, options: {} },
-      { name: 'pelli', type: 'json', required: false, options: {} },
-      { name: 'tempo', type: 'number', required: false, options: {} },
-      { name: 'pg_count', type: 'number', required: false, options: {} },
-      { name: 'partecipanti', type: 'json', required: false, options: {} },
-      { name: 'data', type: 'text', required: false, options: {} },
+    fields: [
+      { name: 'dungeon_nome', type: 'text', required: true },
+      { name: 'monete', type: 'number', required: false },
+      { name: 'pelli', type: 'json', required: false },
+      { name: 'tempo', type: 'number', required: false },
+      { name: 'pg_count', type: 'number', required: false },
+      { name: 'partecipanti', type: 'json', required: false },
+      { name: 'data', type: 'text', required: false },
     ],
   });
 
-  console.log('\n✓ Setup completato. Puoi ora usare le funzionalità dungeon dal sito.');
+  console.log('\nSetup completato. Puoi ora usare le funzionalita dungeon dal sito.');
 }
 
 main().catch(err => { console.error(err); process.exit(1); });

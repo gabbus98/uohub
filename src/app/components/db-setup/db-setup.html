@@ -1,5 +1,5 @@
 <div class="admin-header">
-  <h2 class="admin-title">🗄 Gestione Database</h2>
+  <h2 class="admin-title">Gestione Database</h2>
   @if (adminToken()) {
     <button class="filter-btn admin-delete-btn" (click)="logout()">Disconnetti</button>
   }
@@ -38,7 +38,7 @@
     <div class="admin-form-section" style="display:flex;align-items:center;gap:.75rem">
       Collection PocketBase
       <button class="filter-btn" (click)="checkCollections()" [disabled]="checkLoading()">
-        {{ checkLoading() ? 'Verifica...' : '🔄 Aggiorna stato' }}
+        {{ checkLoading() ? 'Verifica...' : 'Aggiorna stato' }}
       </button>
     </div>
 
@@ -48,14 +48,14 @@
           <div class="col-name">{{ col.name }}</div>
           <div class="col-status">
             @if (col.exists === null) {
-              <span style="color:var(--text-muted)">⏳ Verifica...</span>
+              <span style="color:var(--text-muted)">Verifica...</span>
             } @else if (col.exists) {
-              <span style="color:var(--green)">✓ Esiste</span>
+              <span style="color:var(--green)">OK Esiste</span>
               @if (col.count !== undefined) {
-                <span style="color:var(--text-3);font-size:.75rem"> — {{ col.count }} record</span>
+                <span style="color:var(--text-3);font-size:.75rem"> - {{ col.count }} record</span>
               }
             } @else {
-              <span style="color:var(--red)">✗ Non trovata</span>
+              <span style="color:var(--red)">X Non trovata</span>
             }
           </div>
           @if (col.exists === false) {
@@ -64,7 +64,7 @@
             </button>
           }
           @if (createResult()[col.name]) {
-            <div style="font-size:.8rem;margin-top:.35rem" [style.color]="createResult()[col.name].startsWith('✓') ? 'var(--green)' : 'var(--red)'">
+            <div style="font-size:.8rem;margin-top:.35rem" [style.color]="createResult()[col.name].startsWith('OK') ? 'var(--green)' : 'var(--red)'">
               {{ createResult()[col.name] }}
             </div>
           }
@@ -77,7 +77,7 @@
   <div class="db-section">
     <div class="admin-form-section">Richiesta API diretta</div>
     <p style="color:var(--text-3);font-size:.82rem;margin-bottom:1rem">
-      Invia richieste REST dirette al PocketBase. L'endpoint può essere relativo (es. <code>/api/collections/dungeons/records</code>) o assoluto.
+      Invia richieste REST dirette al PocketBase. L'endpoint puo essere relativo (es. <code>/api/collections/dungeons/records</code>) o assoluto.
     </p>
 
     <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
