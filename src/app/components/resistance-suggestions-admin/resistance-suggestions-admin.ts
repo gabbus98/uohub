@@ -1,7 +1,7 @@
 import { Component, computed, inject } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { CreatureService } from '../../services/creature.service';
-import { ResistanceSuggestionRecord, ResistanceSuggestionService } from '../../services/resistance-suggestion.service';
+import { normalizeResistanceText, ResistanceSuggestionRecord, ResistanceSuggestionService } from '../../services/resistance-suggestion.service';
 import { ResistanceType } from '../../models/article.model';
 
 const RESISTANCE_KEYS: Record<ResistanceType, string> = {
@@ -48,7 +48,7 @@ export class ResistanceSuggestionsAdminComponent {
     const token = this.auth.token();
     if (!token) return;
     const payload = this.resistanceTypes.reduce<Record<string, string>>((acc, type) => {
-      const value = suggestion.values[type]?.trim();
+      const value = normalizeResistanceText(suggestion.values[type]);
       if (value) acc[RESISTANCE_KEYS[type]] = value;
       return acc;
     }, {});

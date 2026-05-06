@@ -25,6 +25,8 @@ export class WikiService {
   currentArticleId = this._currentId.asReadonly();
 
   bestiaryFilter = signal('');
+  dungeonFocus = signal('');
+  dungeonReturnToBestiary = signal('');
 
   currentArticle = computed<Article | undefined>(() => ARTICLES[this._currentId()]);
 
@@ -181,6 +183,10 @@ export class WikiService {
     const adminPages = ['admin-bestiario', 'admin-resistenze', 'admin-utenti', 'admin-dungeon', 'admin-menu', 'admin-db'];
     if (!adminPages.includes(id) && !ARTICLES[id]) return;
     if (id !== 'bestiario') this.bestiaryFilter.set('');
+    if (id !== 'dungeon') {
+      this.dungeonFocus.set('');
+      this.dungeonReturnToBestiary.set('');
+    }
     this._currentId.set(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -188,6 +194,24 @@ export class WikiService {
   navigateToBestiaryFor(dungeonNome: string) {
     this.bestiaryFilter.set(dungeonNome);
     this.navigate('bestiario');
+  }
+
+  navigateToDungeonFor(dungeonNome: string, returnToBestiary = false) {
+    this.dungeonFocus.set(dungeonNome);
+    this.dungeonReturnToBestiary.set(returnToBestiary ? dungeonNome : '');
+    this._currentId.set('dungeon');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  returnFromDungeon() {
+    const dungeonNome = this.dungeonReturnToBestiary();
+    this.dungeonFocus.set('');
+    this.dungeonReturnToBestiary.set('');
+    if (dungeonNome) {
+      this.navigateToBestiaryFor(dungeonNome);
+    } else {
+      this.navigate('bestiario');
+    }
   }
 
   search(query: string): SearchResult[] {

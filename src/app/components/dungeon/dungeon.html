@@ -8,6 +8,12 @@
   <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessun dungeon disponibile. Un admin deve prima creare le collection e aggiungere i dungeon.</p>
 }
 
+@if (wiki.dungeonReturnToBestiary()) {
+  <div class="dungeon-return-bar">
+    <button class="filter-btn" (click)="wiki.returnFromDungeon()">Torna indietro</button>
+  </div>
+}
+
 @for (g of groups(); track g.dungeon.id) {
   <div class="dungeon-group">
     <div class="dungeon-header" (click)="toggleGroup(g)">

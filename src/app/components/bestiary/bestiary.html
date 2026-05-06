@@ -61,9 +61,21 @@
     </div>
 
     @if (g.open) {
+      @if (!embedded() && hasDungeonSheet(g.dungeon)) {
+        <div class="bestiary-group-tools">
+          <button class="filter-btn dungeon-jump-btn" (click)="openDungeonSheet(g.dungeon)">Scheda dungeon</button>
+        </div>
+      }
       <div class="bestiary-group-body">
         @for (c of g.creatures; track c.nome) {
-          <div class="card bestiary-card" [class.boss-card]="c.tipo === 'boss'" [class.tamabile-card]="c.tipo !== 'boss' && isTamabile(c)">
+          <div
+            class="card bestiary-card"
+            [class.comune-card]="c.tipo === 'comune'"
+            [class.non-comune-card]="c.tipo === 'non-comune'"
+            [class.raro-card]="c.tipo === 'raro'"
+            [class.boss-card]="c.tipo === 'boss'"
+            [class.tamabile-card]="c.tipo !== 'boss' && isTamabile(c)"
+          >
             <div class="card-title">
               <span class="icon">{{ c.icona }}</span>
               {{ c.nome }}
@@ -97,7 +109,15 @@
 
 @if (expandedCreature(); as ec) {
   <div class="mob-overlay" (click)="expandedCreature.set(null)">
-    <div class="card bestiary-card mob-expanded" [class.boss-card]="ec.tipo === 'boss'" [class.tamabile-card]="ec.tipo !== 'boss' && isTamabile(ec)" (click)="$event.stopPropagation()">
+    <div
+      class="card bestiary-card mob-expanded"
+      [class.comune-card]="ec.tipo === 'comune'"
+      [class.non-comune-card]="ec.tipo === 'non-comune'"
+      [class.raro-card]="ec.tipo === 'raro'"
+      [class.boss-card]="ec.tipo === 'boss'"
+      [class.tamabile-card]="ec.tipo !== 'boss' && isTamabile(ec)"
+      (click)="$event.stopPropagation()"
+    >
       <button class="mob-close" (click)="expandedCreature.set(null)">×</button>
       <div class="card-title">
         <span class="icon">{{ ec.icona }}</span>

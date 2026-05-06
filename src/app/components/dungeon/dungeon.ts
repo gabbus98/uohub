@@ -1,6 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { DungeonService } from '../../services/dungeon.service';
 import { CreatureService, CreatureRecord } from '../../services/creature.service';
+import { WikiService } from '../../services/wiki.service';
 import { BestiaryComponent } from '../bestiary/bestiary';
 import { DungeonRecord, DungeonRunRecord, RunStats } from '../../models/dungeon.model';
 import { ResistanceType } from '../../models/article.model';
@@ -21,6 +22,7 @@ interface DungeonView {
 export class DungeonComponent {
   private ds = inject(DungeonService);
   private cs = inject(CreatureService);
+  wiki = inject(WikiService);
 
   loading = this.ds.loading;
   error = this.ds.error;
@@ -38,7 +40,9 @@ export class DungeonComponent {
     const creatures = this.cs.creatures();
 
     return dungeons.map(dungeon => {
-      if (this.groupOpen[dungeon.id] === undefined) this.groupOpen[dungeon.id] = false;
+      const focused = this.wiki.dungeonFocus().toLowerCase() === dungeon.nome.toLowerCase();
+      if (this.groupOpen[dungeon.id] === undefined) this.groupOpen[dungeon.id] = focused;
+      if (focused) this.groupOpen[dungeon.id] = true;
       const dungeonRuns = runs.filter(r => r.dungeon_nome === dungeon.nome);
       return {
         dungeon,

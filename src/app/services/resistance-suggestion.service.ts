@@ -3,6 +3,17 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ResistanceType } from '../models/article.model';
 
+export function normalizeResistanceText(value: string | undefined | null): string {
+  const raw = String(value || '').trim().replace('−', '-');
+  if (!raw) return '';
+  if (raw === '-') return '-';
+  if (raw.toLowerCase().includes('immune')) return 'Immune';
+
+  const withoutPercent = raw.replace(/%/g, '').replace(/\+/g, '').trim();
+  const match = withoutPercent.match(/-?\d+(?:[,.]\d+)?/);
+  return match ? match[0].replace(',', '.') : withoutPercent;
+}
+
 export interface ResistanceSuggestion {
   creature_id: string;
   creature_nome: string;

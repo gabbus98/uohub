@@ -1,8 +1,9 @@
 import { Component, input, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatureService } from '../../services/creature.service';
+import { DungeonService } from '../../services/dungeon.service';
 import { WikiService } from '../../services/wiki.service';
-import { ResistanceSuggestionService } from '../../services/resistance-suggestion.service';
+import { normalizeResistanceText, ResistanceSuggestionService } from '../../services/resistance-suggestion.service';
 import { DUNGEON_ARMOR_RECOMMENDATIONS } from '../../data/creatures.data';
 import { Creature, ResistanceType } from '../../models/article.model';
 
@@ -20,6 +21,14 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
   tamabile: 4,
 };
 
+const DAMAGE_WEIGHT_BY_TYPE: Record<Creature['tipo'], number> = {
+  comune: 4,
+  tamabile: 4,
+  'non-comune': 2,
+  raro: 1,
+  boss: 1,
+};
+
 @Component({
   selector: 'app-bestiary',
   imports: [FormsModule],
@@ -27,6 +36,7 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
 })
 export class BestiaryComponent {
   private creatureService = inject(CreatureService);
+  private dungeonService = inject(DungeonService);
   private wiki = inject(WikiService);
   private suggestionService = inject(ResistanceSuggestionService);
 
@@ -132,6 +142,15 @@ export class BestiaryComponent {
     });
   }
 
+  hasDungeonSheet(dungeonNome: string) {
+    const target = dungeonNome.trim().toLowerCase();
+    return this.dungeonService.dungeons().some(dungeon => dungeon.nome.trim().toLowerCase() === target);
+  }
+
+  openDungeonSheet(dungeonNome: string) {
+    this.wiki.navigateToDungeonFor(dungeonNome, true);
+  }
+
   badgeLabel(tipo: string) {
     return { comune: 'COMUNE', 'non-comune': 'NON COMUNE', raro: 'RARO', boss: 'BOSS', tamabile: 'TAMABILE' }[tipo] || tipo;
   }
@@ -147,13 +166,13 @@ export class BestiaryComponent {
 
   resistanceValue(creature: Creature, type: ResistanceType) {
     const directValue = this.directResistanceValue(creature, type);
-    if (directValue) return directValue;
+    if (directValue) return normalizeResistanceText(directValue) || '-';
 
     if (creature.resistenze && typeof creature.resistenze === 'object') {
-      return creature.resistenze[type] || '-';
+      return normalizeResistanceText(creature.resistenze[type]) || '-';
     }
 
-    return this.parseResistance(creature.resistenze || '', type);
+    return normalizeResistanceText(this.parseResistance(creature.resistenze || '', type)) || '-';
   }
 
   hasResistanceData(creature: Creature) {
@@ -201,7 +220,9 @@ export class BestiaryComponent {
     }
 
     const values = Object.fromEntries(
-      Object.entries(this.suggestionValues()).filter(([, value]) => String(value || '').trim())
+      Object.entries(this.suggestionValues())
+        .map(([type, value]) => [type, normalizeResistanceText(value)] as const)
+        .filter(([, value]) => value && value !== '-')
     ) as Partial<Record<ResistanceType, string>> & { __dungeon?: string };
 
     if (!Object.keys(values).length) {
@@ -240,8 +261,7 @@ export class BestiaryComponent {
     const normalized = value.toLowerCase();
     if (normalized.includes('immune')) return 'immune';
     if (normalized.includes('-') || normalized.includes('−')) return 'weak';
-    if (normalized.includes('+')) return 'strong';
-    const numeric = Number(normalized.replace('%', '').trim());
+    const numeric = Number(normalizeResistanceText(normalized));
     if (!Number.isNaN(numeric) && numeric > 0) return 'strong';
     return '';
   }
@@ -257,15 +277,25 @@ export class BestiaryComponent {
   bestGroupDamageElement(group: DungeonGroup) {
     const averages = this.resistanceTypes
       .map(type => {
-        const values = group.creatures
-          .map(creature => this.numericResistance(this.resistanceValue(creature, type)))
-          .filter((value): value is number => value !== null);
+        const weightedValues = group.creatures
+          .map(creature => {
+            const value = this.numericResistance(this.resistanceValue(creature, type));
+            if (value === null) return null;
+            return {
+              value,
+              weight: this.damageWeight(creature),
+            };
+          })
+          .filter((item): item is { value: number; weight: number } => item !== null);
 
-        if (!values.length) return null;
+        if (!weightedValues.length) return null;
+
+        const weightSum = weightedValues.reduce((sum, item) => sum + item.weight, 0);
+        const weightedAverage = weightedValues.reduce((sum, item) => sum + item.value * item.weight, 0) / weightSum;
 
         return {
           type,
-          value: values.reduce((sum, value) => sum + value, 0) / values.length,
+          value: weightedAverage,
         };
       })
       .filter((item): item is { type: ResistanceType; value: number } => item !== null);
@@ -317,10 +347,15 @@ export class BestiaryComponent {
 
   private numericResistance(value: string) {
     const normalized = value.replace('−', '-').replace('%', '').trim();
-    if (!normalized || normalized === '-' || normalized.toLowerCase().includes('immune')) return null;
+    if (!normalized || normalized === '-') return null;
+    if (normalized.toLowerCase().includes('immune')) return 100;
 
     const numeric = Number(normalized);
     return Number.isNaN(numeric) ? null : numeric;
+  }
+
+  private damageWeight(creature: Creature) {
+    return DAMAGE_WEIGHT_BY_TYPE[creature.tipo] || 1;
   }
 
   private formatResistance(value: number) {
