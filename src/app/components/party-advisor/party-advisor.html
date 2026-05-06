@@ -14,12 +14,12 @@
             [ngModel]="member.classe"
             (ngModelChange)="setClasse($index, $event)"
             placeholder="Classe (es. Mago, Guerriero...)"
-            [list]="'cls-' + $index"
+            [attr.list]="'cls-' + $index"
             class="member-input"
           />
           <datalist [id]="'cls-' + $index">
             @for (cls of knownClasses(); track cls) {
-              <option [value]="cls" />
+              <option [value]="cls">{{ cls }}</option>
             }
           </datalist>
           @if (party().length > 1) {

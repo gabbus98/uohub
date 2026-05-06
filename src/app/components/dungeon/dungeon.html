@@ -132,13 +132,13 @@
                     @for (p of run.pelli; track p.nome) {
                       <span class="pella-chip">{{ p.nome }} ×{{ p.quantita }}</span>
                     }
-                    @if (!run.pelli?.length) { — }
+                    @if (!run.pelli.length) { — }
                   </span>
                   <span>
                     @for (part of run.partecipanti; track part.nome) {
                       <span class="party-chip">{{ part.nome }} ({{ part.classe }})</span>
                     }
-                    @if (!run.partecipanti?.length) { — }
+                    @if (!run.partecipanti.length) { — }
                   </span>
                 </div>
               }

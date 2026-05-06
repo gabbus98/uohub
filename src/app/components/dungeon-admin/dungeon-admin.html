@@ -148,10 +148,10 @@
       @for (part of (runForm().partecipanti || []); track $index) {
         <div class="inline-row">
           <input type="text" [ngModel]="part.nome" (ngModelChange)="updatePartecipante($index, 'nome', $event)" placeholder="Nome personaggio" style="flex:1" />
-          <input type="text" [ngModel]="part.classe" (ngModelChange)="updatePartecipante($index, 'classe', $event)" placeholder="Classe" style="flex:1" list="known-classes-{{ $index }}" />
+          <input type="text" [ngModel]="part.classe" (ngModelChange)="updatePartecipante($index, 'classe', $event)" placeholder="Classe" style="flex:1" [attr.list]="'known-classes-' + $index" />
           <datalist [id]="'known-classes-' + $index">
             @for (cls of knownClasses(); track cls) {
-              <option [value]="cls" />
+              <option [value]="cls">{{ cls }}</option>
             }
           </datalist>
           <button class="filter-btn admin-delete-btn" (click)="removePartecipante($index)">✕</button>
@@ -179,13 +179,13 @@
               @for (p of run.pelli; track p.nome) {
                 {{ p.nome }} ×{{ p.quantita }}
               }
-              @if (!run.pelli?.length) { — }
+              @if (!run.pelli.length) { — }
             </span>
             <span class="run-party">
               @for (part of run.partecipanti; track part.nome) {
                 <span class="party-chip">{{ part.nome }} ({{ part.classe }})</span>
               }
-              @if (!run.partecipanti?.length) { — }
+              @if (!run.partecipanti.length) { — }
             </span>
             <button class="filter-btn admin-delete-btn" (click)="askDeleteRun(run.id)">✕</button>
           </div>
