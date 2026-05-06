@@ -8,6 +8,8 @@ interface CollectionStatus { name: string; exists: boolean | null; count?: numbe
 const ADMIN_RULE = `@request.auth.username = "${environment.adminUsername}"`;
 const CHARACTER_OWNER_RULE = '@request.auth.id = user_id';
 const CHARACTER_CREATE_RULE = '@request.auth.id != "" && @request.data.user_id = @request.auth.id';
+const OWNER_RULE = '@request.auth.id = user_id';
+const OWNER_CREATE_RULE = '@request.auth.id != "" && @request.data.user_id = @request.auth.id';
 const RUN_OWNER_RULE = `@request.auth.username = "${environment.adminUsername}" || @request.auth.id = user_id`;
 const RUN_CREATE_RULE = `@request.auth.username = "${environment.adminUsername}" || (@request.auth.id != "" && @request.data.user_id = @request.auth.id)`;
 
@@ -102,11 +104,28 @@ const CHARACTER_PROFILE_SCHEMA = {
   ],
 };
 
+const SKILL_BUILD_SCHEMA = {
+  name: 'skill_builds',
+  type: 'base',
+  listRule: OWNER_RULE,
+  viewRule: OWNER_RULE,
+  createRule: OWNER_CREATE_RULE,
+  updateRule: OWNER_RULE,
+  deleteRule: OWNER_RULE,
+  fields: [
+    { name: 'user_id', type: 'text', required: true },
+    { name: 'nome', type: 'text', required: true },
+    { name: 'skills', type: 'json', required: false },
+    { name: 'note', type: 'text', required: false },
+  ],
+};
+
 type CollectionSchema =
   | typeof DUNGEON_SCHEMA
   | typeof DUNGEON_RUNS_SCHEMA
   | typeof CREATURE_SCHEMA
-  | typeof CHARACTER_PROFILE_SCHEMA;
+  | typeof CHARACTER_PROFILE_SCHEMA
+  | typeof SKILL_BUILD_SCHEMA;
 
 @Component({
   selector: 'app-db-setup',
@@ -128,6 +147,7 @@ export class DbSetupComponent {
     { name: 'dungeon_runs', exists: null },
     { name: 'creatures', exists: null },
     { name: 'character_profiles', exists: null },
+    { name: 'skill_builds', exists: null },
   ]);
   checkLoading = signal(false);
   createLoading = signal<Record<string, boolean>>({});
@@ -163,7 +183,7 @@ export class DbSetupComponent {
     const token = this.adminToken();
     const headers = token ? { Authorization: token } : undefined;
 
-    const names = ['dungeons', 'dungeon_runs', 'creatures', 'character_profiles'];
+    const names = ['dungeons', 'dungeon_runs', 'creatures', 'character_profiles', 'skill_builds'];
     let done = 0;
     names.forEach(name => {
       this.http.get<{ totalItems: number }>(`${this.pb}/api/collections/${name}/records?perPage=1`, { headers }).subscribe({
@@ -251,17 +271,18 @@ export class DbSetupComponent {
     if (name === 'dungeons') return DUNGEON_SCHEMA;
     if (name === 'dungeon_runs') return DUNGEON_RUNS_SCHEMA;
     if (name === 'character_profiles') return CHARACTER_PROFILE_SCHEMA;
+    if (name === 'skill_builds') return SKILL_BUILD_SCHEMA;
     return CREATURE_SCHEMA;
   }
 
   private rulesFor(name: string) {
-    if (name === 'character_profiles') {
+    if (name === 'character_profiles' || name === 'skill_builds') {
       return {
-        listRule: CHARACTER_OWNER_RULE,
-        viewRule: CHARACTER_OWNER_RULE,
-        createRule: CHARACTER_CREATE_RULE,
-        updateRule: CHARACTER_OWNER_RULE,
-        deleteRule: CHARACTER_OWNER_RULE,
+        listRule: OWNER_RULE,
+        viewRule: OWNER_RULE,
+        createRule: OWNER_CREATE_RULE,
+        updateRule: OWNER_RULE,
+        deleteRule: OWNER_RULE,
       };
     }
 

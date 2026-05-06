@@ -45,6 +45,48 @@
   </div>
 </div>
 
+<div class="card skill-build-panel" style="margin-top:1.25rem">
+  <div class="card-title">Build Salvate</div>
+
+  @if (!currentUser()) {
+    <div class="callout warn" style="margin:0 0 1rem">
+      <span class="callout-icon">!</span>
+      <div>Accedi con il tuo account per salvare e caricare build.</div>
+    </div>
+  }
+
+  <div class="inline-row">
+    <input type="text" [ngModel]="buildName()" (ngModelChange)="buildName.set($event)" placeholder="Nome build" style="flex:1" />
+    <button class="filter-btn active" (click)="saveBuild()" [disabled]="buildSaving() || !currentUser()">
+      {{ buildSaving() ? 'Salvataggio...' : (selectedBuildId() ? 'Aggiorna build' : 'Salva build') }}
+    </button>
+  </div>
+
+  @if (buildError()) {
+    <p class="modal-err">{{ buildError() }}</p>
+  }
+  @if (buildSaved()) {
+    <span class="character-saved">Build salvata</span>
+  }
+
+  @if (builds().length) {
+    <div class="skill-build-list">
+      @for (build of builds(); track build.id) {
+        <div class="skill-build-row" [class.active]="selectedBuildId() === build.id">
+          <div>
+            <div class="skill-build-name">{{ build.nome }}</div>
+            <div class="skill-build-meta">{{ build.skills.length }} skill · {{ buildTotal(build) }}/{{ cap }}</div>
+          </div>
+          <div class="admin-row-actions">
+            <button class="filter-btn" (click)="applyBuild(build)">Carica</button>
+            <button class="filter-btn admin-delete-btn" (click)="deleteBuild(build)">Elimina</button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
+
 <!-- Tabella skill -->
 <div class="table-wrap" style="margin-bottom:1rem">
   <table>

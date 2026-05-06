@@ -565,6 +565,12 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 .character-number { width: 80px; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 4px; padding: .35rem .5rem; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: .82rem; outline: none; }
 .character-actions { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; }
 .character-saved { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--green); letter-spacing: .08em; text-transform: uppercase; }
+.skill-build-panel { padding: 1.1rem; }
+.skill-build-list { display: flex; flex-direction: column; gap: .45rem; margin-top: .9rem; }
+.skill-build-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 7px; padding: .6rem .75rem; flex-wrap: wrap; }
+.skill-build-row.active { border-color: var(--accent); background: var(--bg-hover); }
+.skill-build-name { font-family: 'Cinzel', serif; font-size: .9rem; color: var(--text); font-weight: 600; }
+.skill-build-meta { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--text-3); letter-spacing: .06em; }
 
 .run-log { display: flex; flex-direction: column; gap: 1.25rem; }
 .run-log-form { padding: 1.1rem; }
