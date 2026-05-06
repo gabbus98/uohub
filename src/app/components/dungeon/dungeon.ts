@@ -1,7 +1,7 @@
 import { Component, inject, computed, signal } from '@angular/core';
 import { DungeonService } from '../../services/dungeon.service';
 import { CreatureService, CreatureRecord } from '../../services/creature.service';
-import { WikiService } from '../../services/wiki.service';
+import { BestiaryComponent } from '../bestiary/bestiary';
 import { DungeonRecord, DungeonRunRecord, RunStats } from '../../models/dungeon.model';
 import { ResistanceType } from '../../models/article.model';
 
@@ -15,16 +15,17 @@ interface DungeonView {
 
 @Component({
   selector: 'app-dungeon',
+  imports: [BestiaryComponent],
   templateUrl: './dungeon.html',
 })
 export class DungeonComponent {
   private ds = inject(DungeonService);
   private cs = inject(CreatureService);
-  wiki = inject(WikiService);
 
   loading = this.ds.loading;
   error = this.ds.error;
   stars = [1, 2, 3, 4, 5];
+  bestiaryOverlay = signal<string | null>(null);
 
   private groupOpen: Record<string, boolean> = {};
   private resistanceTypes: ResistanceType[] = [
@@ -54,8 +55,8 @@ export class DungeonComponent {
     g.open = this.groupOpen[g.dungeon.id];
   }
 
-  goToBestiary(dungeonNome: string) {
-    this.wiki.navigateToBestiaryFor(dungeonNome);
+  openBestiary(dungeonNome: string) {
+    this.bestiaryOverlay.set(dungeonNome);
   }
 
   rewardLabel(lucchetti: number): string {
@@ -86,7 +87,7 @@ export class DungeonComponent {
   }
 
   private computeDamageElement(creatures: CreatureRecord[], dungeonNome: string) {
-    const dunCreatures = creatures.filter(c => c.dungeon === dungeonNome);
+    const dunCreatures = creatures.filter(c => this.cs.isInDungeon(c, dungeonNome));
     if (!dunCreatures.length) return null;
 
     const averages = this.resistanceTypes.map(type => {

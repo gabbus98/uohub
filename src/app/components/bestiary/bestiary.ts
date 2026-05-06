@@ -1,4 +1,4 @@
-import { Component, signal, computed, inject } from '@angular/core';
+import { Component, input, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatureService } from '../../services/creature.service';
 import { WikiService } from '../../services/wiki.service';
@@ -27,6 +27,9 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
 export class BestiaryComponent {
   private creatureService = inject(CreatureService);
   private wiki = inject(WikiService);
+
+  dungeonFilter = input('');
+  embedded = input(false);
 
   loading = this.creatureService.loading;
   error = this.creatureService.error;
@@ -57,22 +60,29 @@ export class BestiaryComponent {
 
   groups = computed<DungeonGroup[]>(() => {
     const creatures = this.creatureService.creatures();
-    const q = this.searchQuery().toLowerCase();
+    const fixedDungeon = this.dungeonFilter().trim();
+    const q = (fixedDungeon || this.searchQuery()).toLowerCase();
     const filter = this.activeFilter();
 
     const filtered = creatures.filter(c => {
       const matchF = filter === 'all' || c.tipo === filter;
+      const creatureDungeons = this.creatureService.creatureDungeons(c);
+      const matchDungeon = !fixedDungeon || this.creatureService.isInDungeon(c, fixedDungeon);
       const matchS = !q ||
         c.nome.toLowerCase().includes(q) ||
         (c.drop || '').toLowerCase().includes(q) ||
-        c.dungeon.toLowerCase().includes(q);
-      return matchF && matchS;
+        creatureDungeons.some(d => d.toLowerCase().includes(q));
+      return matchF && matchDungeon && matchS;
     });
 
     const map: Record<string, Creature[]> = {};
     filtered.forEach(c => {
-      if (!map[c.dungeon]) map[c.dungeon] = [];
-      map[c.dungeon].push(c);
+      this.creatureService.creatureDungeons(c)
+        .filter(dungeon => !fixedDungeon || dungeon.toLowerCase() === fixedDungeon.toLowerCase())
+        .forEach(dungeon => {
+          if (!map[dungeon]) map[dungeon] = [];
+          map[dungeon].push(c);
+        });
     });
 
     return Object.keys(map)
@@ -138,6 +148,10 @@ export class BestiaryComponent {
 
   armorRecommendation(group: DungeonGroup) {
     return DUNGEON_ARMOR_RECOMMENDATIONS[group.dungeon] || '';
+  }
+
+  dungeonLabel(creature: Creature) {
+    return this.creatureService.dungeonLabel(creature);
   }
 
   bestGroupDamageElement(group: DungeonGroup) {

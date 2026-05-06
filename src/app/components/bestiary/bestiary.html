@@ -5,6 +5,7 @@
   <p style="color:var(--red);font-style:italic;padding:1rem 0">{{ error() }}</p>
 }
 
+@if (!embedded()) {
 <div class="search-bar">
   <input
     type="text"
@@ -18,6 +19,15 @@
   <button class="filter-btn" [class.active]="activeFilter()==='raro'"   (click)="setFilter('raro')">Raro</button>
   <button class="filter-btn" [class.active]="activeFilter()==='boss'"   (click)="setFilter('boss')">Boss</button>
 </div>
+} @else {
+  <div class="search-bar bestiary-embedded-filters">
+    <button class="filter-btn" [class.active]="activeFilter()==='all'"    (click)="setFilter('all')">Tutte</button>
+    <button class="filter-btn" [class.active]="activeFilter()==='comune'" (click)="setFilter('comune')">Comune</button>
+    <button class="filter-btn" [class.active]="activeFilter()==='non-comune'" (click)="setFilter('non-comune')">Non comune</button>
+    <button class="filter-btn" [class.active]="activeFilter()==='raro'"   (click)="setFilter('raro')">Raro</button>
+    <button class="filter-btn" [class.active]="activeFilter()==='boss'"   (click)="setFilter('boss')">Boss</button>
+  </div>
+}
 
 @if (groups().length === 0) {
   <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessuna creatura trovata.</p>
@@ -55,6 +65,9 @@
                 <span class="bestiary-badge tamabile">TAMABILE</span>
               }
             </div>
+            @if (!embedded() && dungeonLabel(c)) {
+              <div class="bestiary-dungeon-list">{{ dungeonLabel(c) }}</div>
+            }
             <div class="res-panel">
               <div class="res-panel-title">Resistenze</div>
               <div class="res-grid">

@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { catchError } from 'rxjs';
 import { Creature } from '../models/article.model';
 import { environment } from '../../environments/environment';
 
@@ -24,7 +25,7 @@ export class CreatureService {
     this.loading.set(true);
     this.http.get<PbList<CreatureRecord>>(`${this.base}?perPage=500&sort=dungeon,nome`).subscribe({
       next: res => {
-        this.creatures.set(res.items);
+        this.creatures.set(res.items.map(creature => this.normalizeCreature(creature)));
         this.loading.set(false);
       },
       error: () => {
@@ -35,11 +36,17 @@ export class CreatureService {
   }
 
   create(data: Partial<Creature>, token: string) {
-    return this.http.post<CreatureRecord>(this.base, data, { headers: this.headers(token) });
+    const payload = this.normalizePayload(data);
+    return this.http.post<CreatureRecord>(this.base, payload, { headers: this.headers(token) }).pipe(
+      catchError(() => this.http.post<CreatureRecord>(this.base, this.legacyPayload(payload), { headers: this.headers(token) }))
+    );
   }
 
   update(id: string, data: Partial<Creature>, token: string) {
-    return this.http.patch<CreatureRecord>(`${this.base}/${id}`, data, { headers: this.headers(token) });
+    const payload = this.normalizePayload(data);
+    return this.http.patch<CreatureRecord>(`${this.base}/${id}`, payload, { headers: this.headers(token) }).pipe(
+      catchError(() => this.http.patch<CreatureRecord>(`${this.base}/${id}`, this.legacyPayload(payload), { headers: this.headers(token) }))
+    );
   }
 
   delete(id: string, token: string) {
@@ -48,5 +55,88 @@ export class CreatureService {
 
   private headers(token: string): HttpHeaders {
     return new HttpHeaders({ Authorization: token });
+  }
+
+  creatureDungeons(creature: Partial<Creature>): string[] {
+    const raw = Array.isArray(creature.dungeons) && creature.dungeons.length
+      ? creature.dungeons
+      : this.splitDungeonText(creature.dungeon || '');
+
+    return [...new Set(raw.map(d => d.trim()).filter(Boolean))];
+  }
+
+  isInDungeon(creature: Partial<Creature>, dungeonNome: string): boolean {
+    const target = dungeonNome.trim().toLowerCase();
+    return this.creatureDungeons(creature).some(d => d.toLowerCase() === target);
+  }
+
+  dungeonLabel(creature: Partial<Creature>): string {
+    return this.creatureDungeons(creature).join(', ');
+  }
+
+  private normalizeCreature(creature: CreatureRecord): CreatureRecord {
+    const dungeons = this.creatureDungeons(creature);
+    return {
+      ...creature,
+      dungeons,
+      dungeon: creature.dungeon || dungeons.join(', '),
+    };
+  }
+
+  private normalizePayload(data: Partial<Creature>): Partial<Creature> {
+    const dungeons = this.creatureDungeons(data);
+    return {
+      ...this.cleanPayload(data),
+      dungeons,
+      dungeon: dungeons.join(', '),
+    };
+  }
+
+  private legacyPayload(data: Partial<Creature>): Partial<Creature> {
+    const { dungeons, ...legacy } = data;
+    return legacy;
+  }
+
+  private splitDungeonText(value: string): string[] {
+    return value.split(/[,;\n]/).map(d => d.trim()).filter(Boolean);
+  }
+
+  private cleanPayload(data: Partial<Creature>): Partial<Creature> {
+    const allowed: (keyof Creature)[] = [
+      'nome',
+      'tipo',
+      'tags',
+      'tamabile',
+      'icona',
+      'dungeon',
+      'dungeons',
+      'hp',
+      'danno',
+      'salute',
+      'stamina',
+      'mana',
+      'str',
+      'dex',
+      'int',
+      'ar',
+      'fuoco',
+      'freddo',
+      'energia',
+      'veleno',
+      'psionico',
+      'sacro',
+      'malefico',
+      'magia',
+      'drop',
+      'strategia',
+      'resistenze',
+    ];
+
+    return allowed.reduce<Partial<Creature>>((payload, key) => {
+      if (data[key] !== undefined) {
+        return { ...payload, [key]: data[key] };
+      }
+      return payload;
+    }, {});
   }
 }

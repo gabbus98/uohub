@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Creature } from '../../models/article.model';
 
 const EMPTY_FORM = (): Partial<Creature> => ({
-  nome: '', tipo: 'comune', icona: '', dungeon: '',
+  nome: '', tipo: 'comune', icona: '', dungeon: '', dungeons: [],
   hp: '', danno: '', ar: '',
   str: '', dex: '', int: '',
   salute: '', stamina: '', mana: '',
@@ -29,6 +29,8 @@ export class CreatureAdminComponent {
   form = signal<Partial<Creature>>(EMPTY_FORM());
   saving = signal(false);
   confirmDelete = signal<string | null>(null);
+  saveError = signal('');
+  deleteError = signal('');
 
   tipi: Creature['tipo'][] = ['comune', 'non-comune', 'raro', 'boss', 'tamabile'];
 
@@ -40,7 +42,7 @@ export class CreatureAdminComponent {
 
   openEdit(c: CreatureRecord) {
     this.editing.set(c);
-    this.form.set({ ...c });
+    this.form.set({ ...c, dungeons: this.cs.creatureDungeons(c) });
     this.showForm.set(true);
   }
 
@@ -53,6 +55,7 @@ export class CreatureAdminComponent {
     const token = this.auth.token();
     if (!token) return;
     this.saving.set(true);
+    this.saveError.set('');
 
     const data = this.form();
     const existing = this.editing();
@@ -66,11 +69,15 @@ export class CreatureAdminComponent {
         this.cancel();
         this.saving.set(false);
       },
-      error: () => this.saving.set(false),
+      error: (error) => {
+        this.saveError.set(this.formatError(error, 'Impossibile salvare la creatura.'));
+        this.saving.set(false);
+      },
     });
   }
 
   askDelete(id: string) {
+    this.deleteError.set('');
     this.confirmDelete.set(id);
   }
 
@@ -78,13 +85,40 @@ export class CreatureAdminComponent {
     const id = this.confirmDelete();
     const token = this.auth.token();
     if (!id || !token) return;
-    this.cs.delete(id, token).subscribe(() => {
-      this.cs.load();
-      this.confirmDelete.set(null);
+    this.deleteError.set('');
+    this.cs.delete(id, token).subscribe({
+      next: () => {
+        this.cs.load();
+        this.confirmDelete.set(null);
+      },
+      error: (error) => {
+        this.deleteError.set(this.formatError(error, 'Impossibile eliminare la creatura.'));
+      },
     });
   }
 
   updateField(key: keyof Creature, value: unknown) {
     this.form.update(f => ({ ...f, [key]: value }));
+  }
+
+  updateDungeons(value: string) {
+    const dungeons = value.split(/[,;\n]/).map(d => d.trim()).filter(Boolean);
+    this.form.update(f => ({ ...f, dungeons, dungeon: dungeons.join(', ') }));
+  }
+
+  dungeonText(creature: Partial<Creature>) {
+    return this.cs.creatureDungeons(creature).join('\n');
+  }
+
+  dungeonLabel(creature: Partial<Creature>) {
+    return this.cs.dungeonLabel(creature);
+  }
+
+  private formatError(error: any, fallback: string) {
+    const data = error?.error?.data;
+    if (data && Object.keys(data).length) {
+      return `${fallback} ${JSON.stringify(data)}`;
+    }
+    return error?.error?.message || error?.message || fallback;
   }
 }

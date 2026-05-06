@@ -102,7 +102,7 @@ export class PartyAdvisorComponent {
   reset() { this.analyzed.set(false); }
 
   private getDamageElement(creatures: CreatureRecord[], dungeonNome: string): string | null {
-    const dunCreatures = creatures.filter(c => c.dungeon === dungeonNome);
+    const dunCreatures = creatures.filter(c => this.cs.isInDungeon(c, dungeonNome));
     if (!dunCreatures.length) return null;
     const keys: Record<ResistanceType, keyof CreatureRecord> = {
       Fuoco: 'fuoco', Freddo: 'freddo', Energia: 'energia', Veleno: 'veleno',

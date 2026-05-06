@@ -63,6 +63,11 @@
               {{ createLoading()[col.name] ? 'Creazione...' : 'Crea collection' }}
             </button>
           }
+          @if (col.exists === true) {
+            <button class="filter-btn" style="margin-top:.5rem" (click)="repairRules(col.name)" [disabled]="createLoading()[col.name]">
+              {{ createLoading()[col.name] ? 'Aggiornamento...' : 'Aggiorna permessi' }}
+            </button>
+          }
           @if (createResult()[col.name]) {
             <div style="font-size:.8rem;margin-top:.35rem" [style.color]="createResult()[col.name].startsWith('OK') ? 'var(--green)' : 'var(--red)'">
               {{ createResult()[col.name] }}

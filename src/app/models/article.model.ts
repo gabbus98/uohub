@@ -28,6 +28,7 @@ export interface Creature {
   tamabile?: boolean;
   icona: string;
   dungeon: string;
+  dungeons?: string[];
   hp: string;
   danno: string;
   salute?: string;

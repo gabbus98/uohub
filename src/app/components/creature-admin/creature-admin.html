@@ -15,7 +15,7 @@
         <span class="admin-row-icon">{{ c.icona }}</span>
         <span class="admin-row-name">{{ c.nome }}</span>
         <span class="bestiary-badge {{ c.tipo }}">{{ c.tipo }}</span>
-        <span class="admin-row-dungeon">{{ c.dungeon }}</span>
+        <span class="admin-row-dungeon">{{ dungeonLabel(c) }}</span>
         <div class="admin-row-actions">
           <button class="filter-btn" (click)="openEdit(c)">Modifica</button>
           <button class="filter-btn admin-delete-btn" (click)="askDelete(c.id)">Elimina</button>
@@ -47,7 +47,7 @@
       </div>
       <div class="fld">
         <label>Dungeon</label>
-        <input type="text" [ngModel]="form().dungeon" (ngModelChange)="updateField('dungeon', $event)" />
+        <textarea rows="3" [ngModel]="dungeonText(form())" (ngModelChange)="updateDungeons($event)" placeholder="Uno per riga oppure separati da virgola"></textarea>
       </div>
       <div class="fld">
         <label>HP</label>
@@ -105,6 +105,9 @@
         {{ saving() ? 'Salvataggio...' : (editing() ? 'Salva modifiche' : 'Crea creatura') }}
       </button>
     </div>
+    @if (saveError()) {
+      <p class="modal-err">{{ saveError() }}</p>
+    }
   </div>
 }
 
@@ -114,6 +117,9 @@
     <div class="modal" (click)="$event.stopPropagation()">
       <h3>Conferma eliminazione</h3>
       <p class="sub">Questa azione è irreversibile.</p>
+      @if (deleteError()) {
+        <p class="modal-err">{{ deleteError() }}</p>
+      }
       <div class="admin-form-actions">
         <button class="filter-btn" (click)="confirmDelete.set(null)">Annulla</button>
         <button class="filter-btn admin-delete-btn active" (click)="doDelete()">Elimina</button>

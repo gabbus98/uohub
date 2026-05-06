@@ -379,7 +379,7 @@ export const ARTICLES: Record<string, Article> = {
   'dungeon': {
     cat: 'Luoghi', title: 'Dungeon',
     desc: 'I dungeon dello shard: bauli, creature, loot e statistiche delle run.',
-    tags: [{ t: 'Dungeon', cls: 'red' }, { t: 'PvP Libero', cls: 'red' }],
+    tags: [],
     body: '',
     prev: { id: 'bestiario', title: 'Bestiario' }
   },

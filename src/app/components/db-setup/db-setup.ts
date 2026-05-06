@@ -5,13 +5,15 @@ import { environment } from '../../../environments/environment';
 
 interface CollectionStatus { name: string; exists: boolean | null; count?: number; }
 
+const ADMIN_RULE = `@request.auth.username = "${environment.adminUsername}"`;
+
 const DUNGEON_SCHEMA = {
   name: 'dungeons',
   type: 'base',
   listRule: '', viewRule: '',
-  createRule: "@request.auth.id != ''",
-  updateRule: "@request.auth.id != ''",
-  deleteRule: "@request.auth.id != ''",
+  createRule: ADMIN_RULE,
+  updateRule: ADMIN_RULE,
+  deleteRule: ADMIN_RULE,
   fields: [
     { name: 'nome', type: 'text', required: true },
     { name: 'descrizione', type: 'text', required: false },
@@ -28,9 +30,9 @@ const DUNGEON_RUNS_SCHEMA = {
   name: 'dungeon_runs',
   type: 'base',
   listRule: '', viewRule: '',
-  createRule: "@request.auth.id != ''",
-  updateRule: "@request.auth.id != ''",
-  deleteRule: "@request.auth.id != ''",
+  createRule: ADMIN_RULE,
+  updateRule: ADMIN_RULE,
+  deleteRule: ADMIN_RULE,
   fields: [
     { name: 'dungeon_nome', type: 'text', required: true },
     { name: 'monete', type: 'number', required: false },
@@ -42,7 +44,45 @@ const DUNGEON_RUNS_SCHEMA = {
   ],
 };
 
-type CollectionSchema = typeof DUNGEON_SCHEMA;
+const CREATURE_SCHEMA = {
+  name: 'creatures',
+  type: 'base',
+  listRule: '', viewRule: '',
+  createRule: ADMIN_RULE,
+  updateRule: ADMIN_RULE,
+  deleteRule: ADMIN_RULE,
+  fields: [
+    { name: 'nome', type: 'text', required: true },
+    { name: 'tipo', type: 'text', required: true },
+    { name: 'icona', type: 'text', required: false },
+    { name: 'dungeon', type: 'text', required: false },
+    { name: 'dungeons', type: 'json', required: false },
+    { name: 'hp', type: 'text', required: false },
+    { name: 'danno', type: 'text', required: false },
+    { name: 'salute', type: 'text', required: false },
+    { name: 'stamina', type: 'text', required: false },
+    { name: 'mana', type: 'text', required: false },
+    { name: 'str', type: 'text', required: false },
+    { name: 'dex', type: 'text', required: false },
+    { name: 'int', type: 'text', required: false },
+    { name: 'ar', type: 'text', required: false },
+    { name: 'fuoco', type: 'text', required: false },
+    { name: 'freddo', type: 'text', required: false },
+    { name: 'energia', type: 'text', required: false },
+    { name: 'veleno', type: 'text', required: false },
+    { name: 'psionico', type: 'text', required: false },
+    { name: 'sacro', type: 'text', required: false },
+    { name: 'malefico', type: 'text', required: false },
+    { name: 'magia', type: 'text', required: false },
+    { name: 'drop', type: 'text', required: false },
+    { name: 'strategia', type: 'text', required: false },
+    { name: 'tamabile', type: 'bool', required: false },
+    { name: 'tags', type: 'json', required: false },
+    { name: 'resistenze', type: 'json', required: false },
+  ],
+};
+
+type CollectionSchema = typeof DUNGEON_SCHEMA | typeof DUNGEON_RUNS_SCHEMA | typeof CREATURE_SCHEMA;
 
 @Component({
   selector: 'app-db-setup',
@@ -62,6 +102,7 @@ export class DbSetupComponent {
   collections = signal<CollectionStatus[]>([
     { name: 'dungeons', exists: null },
     { name: 'dungeon_runs', exists: null },
+    { name: 'creatures', exists: null },
   ]);
   checkLoading = signal(false);
   createLoading = signal<Record<string, boolean>>({});
@@ -97,7 +138,7 @@ export class DbSetupComponent {
     const token = this.adminToken();
     const headers = token ? { Authorization: token } : undefined;
 
-    const names = ['dungeons', 'dungeon_runs'];
+    const names = ['dungeons', 'dungeon_runs', 'creatures'];
     let done = 0;
     names.forEach(name => {
       this.http.get<{ totalItems: number }>(`${this.pb}/api/collections/${name}/records?perPage=1`, { headers }).subscribe({
@@ -119,8 +160,36 @@ export class DbSetupComponent {
     this.createLoading.update(l => ({ ...l, [name]: true }));
     this.createResult.update(r => ({ ...r, [name]: '' }));
 
-    const schema = name === 'dungeons' ? DUNGEON_SCHEMA : DUNGEON_RUNS_SCHEMA;
+    const schema = this.schemaFor(name);
     this.createCollectionWithFallback(name, schema, token);
+  }
+
+  repairRules(name: string) {
+    const token = this.adminToken();
+    if (!token) return;
+    this.createLoading.update(l => ({ ...l, [name]: true }));
+    this.createResult.update(r => ({ ...r, [name]: '' }));
+
+    const body = {
+      createRule: ADMIN_RULE,
+      updateRule: ADMIN_RULE,
+      deleteRule: ADMIN_RULE,
+      listRule: '',
+      viewRule: '',
+    };
+    const headers = { Authorization: token };
+
+    this.http.patch(`${this.pb}/api/collections/${name}`, body, { headers }).subscribe({
+      next: () => {
+        this.createResult.update(r => ({ ...r, [name]: 'OK Permessi aggiornati' }));
+        this.createLoading.update(l => ({ ...l, [name]: false }));
+        this.checkCollections();
+      },
+      error: (error: HttpErrorResponse) => {
+        this.createResult.update(r => ({ ...r, [name]: `X ${this.formatCreateError(error)}` }));
+        this.createLoading.update(l => ({ ...l, [name]: false }));
+      },
+    });
   }
 
   private createCollectionWithFallback(name: string, schema: CollectionSchema, token: string) {
@@ -157,6 +226,12 @@ export class DbSetupComponent {
         options: field.type === 'json' ? { maxSize: 2000000 } : {},
       })),
     };
+  }
+
+  private schemaFor(name: string): CollectionSchema {
+    if (name === 'dungeons') return DUNGEON_SCHEMA;
+    if (name === 'dungeon_runs') return DUNGEON_RUNS_SCHEMA;
+    return CREATURE_SCHEMA;
   }
 
   private formatCreateError(error: HttpErrorResponse): string {

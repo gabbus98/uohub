@@ -77,8 +77,8 @@
           </div>
         }
 
-        <!-- Bestiary link -->
-        <button class="filter-btn" style="margin-bottom:1rem" (click)="goToBestiary(g.dungeon.nome)">
+        <!-- Bestiary overlay -->
+        <button class="filter-btn" style="margin-bottom:1rem" (click)="openBestiary(g.dungeon.nome); $event.stopPropagation()">
           📖 Vedi creature nel Bestiario
         </button>
 
@@ -152,5 +152,15 @@
 
       </div>
     }
+  </div>
+}
+
+@if (bestiaryOverlay(); as dungeonNome) {
+  <div class="mob-overlay dungeon-bestiary-overlay" (click)="bestiaryOverlay.set(null)">
+    <div class="card dungeon-bestiary-modal" (click)="$event.stopPropagation()">
+      <button class="mob-close" (click)="bestiaryOverlay.set(null)">×</button>
+      <div class="dungeon-bestiary-title">Bestiario — {{ dungeonNome }}</div>
+      <app-bestiary [dungeonFilter]="dungeonNome" [embedded]="true" />
+    </div>
   </div>
 }

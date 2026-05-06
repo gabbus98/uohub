@@ -303,6 +303,7 @@ tr:hover td { background: var(--bg-hover); }
 .bestiary-card .card-title { font-size: .84rem; line-height: 1.25; gap: .4rem; margin-bottom: .55rem; }
 .bestiary-card .card-title .icon { font-size: 1.15rem; }
 .bestiary-card .bestiary-badge { font-size: .55rem; letter-spacing: .07em; padding: .12rem .35rem; }
+.bestiary-dungeon-list { font-family: 'JetBrains Mono', monospace; font-size: .58rem; line-height: 1.35; color: var(--text-3); margin: -.15rem 0 .45rem; }
 .bestiary-details { margin-top: auto; }
 .bestiary-details li { display: block; padding: .22rem 0; font-size: .8rem; line-height: 1.28; }
 .bestiary-details li::before { display: none; }
@@ -312,6 +313,10 @@ tr:hover td { background: var(--bg-hover); }
 .mob-toggle:hover { border-color: var(--accent); color: var(--accent); }
 .mob-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 400; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
 .mob-expanded { width: min(360px, 92vw); max-height: 90vh; overflow-y: auto; position: relative; }
+.dungeon-bestiary-overlay { padding: 1rem; align-items: flex-start; overflow-y: auto; }
+.dungeon-bestiary-modal { width: min(980px, 96vw); max-height: 92vh; overflow-y: auto; position: relative; margin: auto 0; }
+.dungeon-bestiary-title { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--text); margin: 0 2rem 1rem 0; padding-bottom: .65rem; border-bottom: 1px solid var(--border); }
+.bestiary-embedded-filters { margin-bottom: 1rem; }
 .mob-expanded.boss-card { background: #2a1010; }
 .mob-expanded.tamabile-card { background: #0f2118; }
 .mob-close { position: absolute; top: .6rem; right: .6rem; background: none; border: none; color: var(--text-3); font-size: 1.1rem; cursor: pointer; transition: color .2s; line-height: 1; }

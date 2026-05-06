@@ -1,8 +1,10 @@
 import { Injectable, signal, computed, inject, effect } from '@angular/core';
 import { ARTICLES } from '../data/articles.data';
 import { CreatureService } from './creature.service';
+import { DungeonService } from './dungeon.service';
 import { AuthService } from './auth.service';
 import { Article, Creature, SearchResult } from '../models/article.model';
+import { Dungeon } from '../models/dungeon.model';
 
 export interface SidebarItem {
   id: string;
@@ -27,6 +29,7 @@ export class WikiService {
 
   private searchIndex: (SearchResult & { text: string })[] = [];
   private bestiaryBaseText = '';
+  private dungeonBaseText = '';
 
   private auth = inject(AuthService);
 
@@ -98,25 +101,65 @@ export class WikiService {
     if (bestiaryEntry) {
       this.bestiaryBaseText = bestiaryEntry.text;
     }
+    const dungeonEntry = this.searchIndex.find(item => item.id === 'dungeon');
+    if (dungeonEntry) {
+      this.dungeonBaseText = dungeonEntry.text;
+    }
 
     const creatureService = inject(CreatureService);
+    const dungeonService = inject(DungeonService);
     effect(() => {
       const creatures = creatureService.creatures();
-      if (!creatures.length) return;
       const bestiaryEntry = this.searchIndex.find(item => item.id === 'bestiario');
-      if (!bestiaryEntry) return;
-      bestiaryEntry.text = this.bestiaryBaseText + ' ' + this.buildCreatureText(creatures);
+      if (bestiaryEntry) {
+        bestiaryEntry.text = this.bestiaryBaseText + ' ' + this.buildCreatureText(creatures);
+      }
+
+      const dungeons = dungeonService.dungeons();
+      const dungeonEntry = this.searchIndex.find(item => item.id === 'dungeon');
+      if (dungeonEntry) {
+        dungeonEntry.text = this.dungeonBaseText + ' ' + this.buildDungeonText(dungeons, creatures, creatureService);
+      }
     });
   }
 
   private buildCreatureText(creatures: Creature[]) {
     return creatures
       .map(c => [
-        c.nome, c.tipo, c.dungeon, c.danno, c.hp,
+        c.nome, c.tipo, c.dungeons?.join(' ') || c.dungeon, c.danno, c.hp,
         c.fuoco, c.freddo, c.energia, c.veleno,
         c.psionico, c.sacro, c.malefico, c.magia,
         c.drop, c.strategia,
       ].filter(Boolean).join(' '))
+      .join(' ')
+      .toLowerCase();
+  }
+
+  private buildDungeonText(
+    dungeons: Dungeon[],
+    creatures: Creature[],
+    creatureService: CreatureService
+  ) {
+    return dungeons
+      .map(dungeon => {
+        const dungeonCreatures = creatures
+          .filter(creature => creatureService.isInDungeon(creature, dungeon.nome))
+          .map(creature => [
+            creature.nome,
+            creature.tipo,
+            creature.drop,
+            creature.strategia,
+          ].filter(Boolean).join(' '));
+
+        return [
+          dungeon.nome,
+          dungeon.descrizione,
+          dungeon.posizione_mappa,
+          dungeon.protezione_elementale,
+          dungeon.note,
+          ...dungeonCreatures,
+        ].filter(Boolean).join(' ');
+      })
       .join(' ')
       .toLowerCase();
   }
