@@ -9,8 +9,25 @@
 
 <!-- Lista creature -->
 @if (!showForm()) {
+  <div class="search-bar">
+    <input
+      type="text"
+      [ngModel]="searchQuery()"
+      (ngModelChange)="searchQuery.set($event)"
+      placeholder="Cerca creatura, dungeon, drop..."
+    />
+    <button class="filter-btn" [class.active]="typeFilter()==='all'" (click)="typeFilter.set('all')">Tutte</button>
+    @for (t of tipi; track t) {
+      <button class="filter-btn" [class.active]="typeFilter()===t" (click)="typeFilter.set(t)">{{ t }}</button>
+    }
+  </div>
+
+  @if (!filteredCreatures().length) {
+    <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessuna creatura trovata.</p>
+  }
+
   <div class="admin-list">
-    @for (c of cs.creatures(); track c.id) {
+    @for (c of filteredCreatures(); track c.id) {
       <div class="admin-row">
         <span class="admin-row-icon">{{ c.icona }}</span>
         <span class="admin-row-name">{{ c.nome }}</span>

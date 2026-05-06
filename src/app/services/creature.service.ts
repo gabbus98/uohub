@@ -84,9 +84,14 @@ export class CreatureService {
   }
 
   private normalizePayload(data: Partial<Creature>): Partial<Creature> {
+    const clean = this.cleanPayload(data);
+    if (data.dungeon === undefined && data.dungeons === undefined) {
+      return clean;
+    }
+
     const dungeons = this.creatureDungeons(data);
     return {
-      ...this.cleanPayload(data),
+      ...clean,
       dungeons,
       dungeon: dungeons.join(', '),
     };

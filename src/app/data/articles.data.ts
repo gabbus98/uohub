@@ -59,11 +59,6 @@ export const ARTICLES: Record<string, Article> = {
       <p>Portale ufficiale di regole, meccaniche, lore e risorse di gilda.</p>
     </div>
     <div class="home-grid">
-      <div class="home-card" onclick="openArticle('skills')">
-        <div class="hc-icon">⚙</div>
-        <div class="hc-title">Meccaniche</div>
-        <div class="hc-desc">Skill, progressione e crafting</div>
-      </div>
       <div class="home-card" onclick="openArticle('bestiario')">
         <div class="hc-icon">🐉</div>
         <div class="hc-title">Bestiario</div>
@@ -73,12 +68,7 @@ export const ARTICLES: Record<string, Article> = {
         <div class="hc-icon">💀</div>
         <div class="hc-title">Dungeon</div>
         <div class="hc-desc">Accesso, pericoli e bottino</div>
-      </div>
-      <div class="home-card" onclick="openArticle('changelog')">
-        <div class="hc-icon">📋</div>
-        <div class="hc-title">Changelog</div>
-        <div class="hc-desc">Aggiornamenti e novità dello shard</div>
-      </div>
+      </div>      
     </div>`
   },
 
@@ -112,51 +102,6 @@ export const ARTICLES: Record<string, Article> = {
         </div>
       </div>
     </div>`
-  },
-
-  'skills': {
-    cat: 'Meccaniche', title: 'Sistema Skill',
-    desc: 'Panoramica del sistema di skill, cap e progressione del personaggio.',
-    tags: [{ t: 'Meccanica', cls: 'blue' }, { t: 'Fondamentale' }],
-    toc: [{ id: 'cap', label: 'Skill Cap' }, { id: 'skill-list', label: 'Skill principali' }, { id: 'build', label: 'Template build' }],
-    body: `
-    <div class="wiki-section" id="cap">
-      <h2 class="wiki-h2">Skill Cap &amp; Statistiche</h2>
-      <div class="stat-row">
-        <div class="stat-pill"><span class="v">700</span><span class="l">Skill Cap</span></div>
-        <div class="stat-pill"><span class="v">100</span><span class="l">Max per Skill</span></div>
-        <div class="stat-pill"><span class="v">225</span><span class="l">Stat Cap</span></div>
-        <div class="stat-pill"><span class="v">×1.5</span><span class="l">XP Weekend</span></div>
-      </div>
-      <p class="wiki-p">Ogni personaggio ha un totale di 700 punti skill distribuibili tra tutte le skill disponibili. Ogni singola skill può essere portata al massimo di 100.0.</p>
-      <div class="callout info"><span class="callout-icon">ℹ</span><div>Le statistiche (Forza, Destrezza, Intelligenza) hanno un cap combinato di 225. Distribuirle in base al proprio stile di gioco è fondamentale per l'efficacia del personaggio.</div></div>
-    </div>
-    <div class="wiki-section" id="skill-list">
-      <h2 class="wiki-h2">Skill Principali</h2>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Skill</th><th>Categoria</th><th>Effetto Chiave</th><th>Build ideale</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Hunting</strong></td><td><span class="tag red">Combattimento</span></td><td>+danno vs bestie, tracciamento avanzato</td><td>Cacciatore puro</td></tr>
-            <tr><td><strong>Tracking</strong></td><td><span class="tag blue">Esplorazione</span></td><td>Rivela creature nel raggio, percorsi nascosti</td><td>Scout</td></tr>
-            <tr><td><strong>Anatomy</strong></td><td><span class="tag green">Supporto</span></td><td>+cure, identifica punti deboli</td><td>Medico/Guerriero</td></tr>
-            <tr><td><strong>Tinkering</strong></td><td><span class="tag gold">Artigianato</span></td><td>Trappole, strumenti speciali</td><td>Artigiano</td></tr>
-            <tr><td><strong>Poisoning</strong></td><td><span class="tag red">Combattimento</span></td><td>Veleni potenti su armi e frecce</td><td>Assassino</td></tr>
-            <tr><td><strong>Lumberjacking</strong></td><td><span class="tag gold">Raccolta</span></td><td>+danno ascie, legni speciali</td><td>Ibrido</td></tr>
-            <tr><td><strong>Animal Taming</strong></td><td><span class="tag blue">Speciale</span></td><td>Doma creature, compagni da caccia</td><td>Ranger</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div class="wiki-section" id="build">
-      <h2 class="wiki-h2">Template Build Consigliati</h2>
-      <h3 class="wiki-h3">Cacciatore Puro</h3>
-      <p class="wiki-p">Hunting 100 · Tracking 80 · Anatomy 70 · Hiding 80 · Stealth 80 · Healing 70 · Tactics 100 — Totale: 580 / 700</p>
-      <h3 class="wiki-h3">Artigiano da Campo</h3>
-      <p class="wiki-p">Tinkering 100 · Lumberjacking 100 · Mining 80 · Blacksmithing 100 · Carpentry 80 · Arms Lore 60 · Healing 50 — Totale: 570 / 700</p>
-      <div class="callout tip"><span class="callout-icon">💡</span><div>Le build consigliate lasciano margine di 120–130 punti skill liberi per adattare il personaggio alle preferenze personali.</div></div>
-    </div>`,
-    next: { id: 'crafting', title: 'Crafting' }
   },
 
   'materiali': {

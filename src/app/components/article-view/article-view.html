@@ -1,9 +1,13 @@
 @if (currentId() === 'admin-bestiario') {
   <app-creature-admin />
+} @else if (currentId() === 'admin-resistenze') {
+  <app-resistance-suggestions-admin />
 } @else if (currentId() === 'admin-utenti') {
   <app-user-admin />
 } @else if (currentId() === 'admin-dungeon') {
   <app-dungeon-admin />
+} @else if (currentId() === 'admin-menu') {
+  <app-menu-admin />
 } @else if (currentId() === 'admin-db') {
   <app-db-setup />
 } @else if (article(); as art) {

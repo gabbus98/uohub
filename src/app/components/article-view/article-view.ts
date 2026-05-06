@@ -17,6 +17,8 @@ import { PartyAdvisorComponent } from '../party-advisor/party-advisor';
 import { DbSetupComponent } from '../db-setup/db-setup';
 import { CharacterSheetComponent } from '../character-sheet/character-sheet';
 import { RunLogComponent } from '../run-log/run-log';
+import { MenuAdminComponent } from '../menu-admin/menu-admin';
+import { ResistanceSuggestionsAdminComponent } from '../resistance-suggestions-admin/resistance-suggestions-admin';
 
 @Component({
   selector: 'app-article-view',
@@ -36,6 +38,8 @@ import { RunLogComponent } from '../run-log/run-log';
     DbSetupComponent,
     CharacterSheetComponent,
     RunLogComponent,
+    MenuAdminComponent,
+    ResistanceSuggestionsAdminComponent,
   ],
   templateUrl: './article-view.html'
 })

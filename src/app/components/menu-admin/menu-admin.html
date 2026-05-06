@@ -1,0 +1,39 @@
+<div class="admin-header">
+  <h2 class="admin-title">Gestione Menu</h2>
+  <button class="filter-btn" (click)="menus.load()" [disabled]="menus.loading()">
+    {{ menus.loading() ? 'Aggiorno...' : 'Aggiorna' }}
+  </button>
+</div>
+
+@if (error()) {
+  <p class="modal-err">{{ error() }}</p>
+}
+@if (saved()) {
+  <span class="character-saved">{{ saved() }}</span>
+}
+
+<div class="menu-admin-list">
+  @for (section of sections(); track section.label) {
+    <div class="card menu-admin-section">
+      <div class="card-title">{{ section.label }}</div>
+      @for (item of section.items; track item.id) {
+        <div class="menu-admin-row">
+          <div>
+            <span class="icon">{{ item.icon }}</span>
+            <span class="menu-admin-name">{{ item.label }}</span>
+            <span class="menu-admin-id">{{ item.id }}</span>
+          </div>
+          <label class="menu-toggle">
+            <input
+              type="checkbox"
+              [ngModel]="enabled(item.id)"
+              (ngModelChange)="toggle(item.id, $event)"
+              [disabled]="saving()[item.id]"
+            />
+            <span>{{ enabled(item.id) ? 'Abilitato' : 'Disabilitato' }}</span>
+          </label>
+        </div>
+      }
+    </div>
+  }
+</div>

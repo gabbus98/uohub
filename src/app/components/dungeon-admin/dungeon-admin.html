@@ -54,16 +54,23 @@
       Bauli
       <button class="filter-btn" (click)="addBaule()">+ Aggiungi baule</button>
     </div>
-    @for (baule of (form().bauli || []); track $index) {
+    @for (baule of (form().bauli || []); track $index; let bauleIndex = $index) {
       <div class="baule-edit-row">
-        <span class="baule-edit-label">Baule {{ $index + 1 }}</span>
-        <div class="star-selector">
+        <span class="baule-edit-label">Baule {{ bauleIndex + 1 }}</span>
+        <div class="star-selector baule-lock-selector">
           @for (s of stars; track s) {
-            <span class="lock-btn" [class.active]="s <= baule.lucchetti" (click)="setBauleLucchetti($index, s)" title="🔒 × {{ s }}">🔒</span>
+            <button
+              type="button"
+              class="lock-btn"
+              [class.active]="s <= baule.lucchetti"
+              (click)="setBauleLucchetti(bauleIndex, s); $event.stopPropagation()"
+              [title]="s + ' lucchetti'"
+              [attr.aria-label]="s + ' lucchetti'"
+            >{{ s <= baule.lucchetti ? '🔒' : '🔓' }}</button>
           }
         </div>
-        <span class="reward-label">{{ rewardLabel(baule.lucchetti) }}</span>
-        <button class="filter-btn admin-delete-btn" (click)="removeBaule($index)">✕</button>
+        <span class="reward-label">{{ baule.lucchetti }} lucchett{{ baule.lucchetti === 1 ? 'o' : 'i' }} · {{ rewardLabel(baule.lucchetti) }}</span>
+        <button class="filter-btn admin-delete-btn" (click)="removeBaule(bauleIndex)">✕</button>
       </div>
     }
 

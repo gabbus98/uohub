@@ -120,12 +120,45 @@ const SKILL_BUILD_SCHEMA = {
   ],
 };
 
+const MENU_SETTINGS_SCHEMA = {
+  name: 'menu_settings',
+  type: 'base',
+  listRule: '',
+  viewRule: '',
+  createRule: ADMIN_RULE,
+  updateRule: ADMIN_RULE,
+  deleteRule: ADMIN_RULE,
+  fields: [
+    { name: 'item_id', type: 'text', required: true },
+    { name: 'enabled', type: 'bool', required: false },
+  ],
+};
+
+const RESISTANCE_SUGGESTIONS_SCHEMA = {
+  name: 'resistance_suggestions',
+  type: 'base',
+  listRule: ADMIN_RULE,
+  viewRule: ADMIN_RULE,
+  createRule: '',
+  updateRule: ADMIN_RULE,
+  deleteRule: ADMIN_RULE,
+  fields: [
+    { name: 'creature_id', type: 'text', required: true },
+    { name: 'creature_nome', type: 'text', required: true },
+    { name: 'values', type: 'json', required: false },
+    { name: 'note', type: 'text', required: false },
+    { name: 'status', type: 'text', required: false },
+  ],
+};
+
 type CollectionSchema =
   | typeof DUNGEON_SCHEMA
   | typeof DUNGEON_RUNS_SCHEMA
   | typeof CREATURE_SCHEMA
   | typeof CHARACTER_PROFILE_SCHEMA
-  | typeof SKILL_BUILD_SCHEMA;
+  | typeof SKILL_BUILD_SCHEMA
+  | typeof MENU_SETTINGS_SCHEMA
+  | typeof RESISTANCE_SUGGESTIONS_SCHEMA;
 
 @Component({
   selector: 'app-db-setup',
@@ -148,6 +181,8 @@ export class DbSetupComponent {
     { name: 'creatures', exists: null },
     { name: 'character_profiles', exists: null },
     { name: 'skill_builds', exists: null },
+    { name: 'menu_settings', exists: null },
+    { name: 'resistance_suggestions', exists: null },
   ]);
   checkLoading = signal(false);
   createLoading = signal<Record<string, boolean>>({});
@@ -183,7 +218,7 @@ export class DbSetupComponent {
     const token = this.adminToken();
     const headers = token ? { Authorization: token } : undefined;
 
-    const names = ['dungeons', 'dungeon_runs', 'creatures', 'character_profiles', 'skill_builds'];
+    const names = ['dungeons', 'dungeon_runs', 'creatures', 'character_profiles', 'skill_builds', 'menu_settings', 'resistance_suggestions'];
     let done = 0;
     names.forEach(name => {
       this.http.get<{ totalItems: number }>(`${this.pb}/api/collections/${name}/records?perPage=1`, { headers }).subscribe({
@@ -272,6 +307,8 @@ export class DbSetupComponent {
     if (name === 'dungeon_runs') return DUNGEON_RUNS_SCHEMA;
     if (name === 'character_profiles') return CHARACTER_PROFILE_SCHEMA;
     if (name === 'skill_builds') return SKILL_BUILD_SCHEMA;
+    if (name === 'menu_settings') return MENU_SETTINGS_SCHEMA;
+    if (name === 'resistance_suggestions') return RESISTANCE_SUGGESTIONS_SCHEMA;
     return CREATURE_SCHEMA;
   }
 
@@ -293,6 +330,16 @@ export class DbSetupComponent {
         deleteRule: RUN_OWNER_RULE,
         listRule: '',
         viewRule: '',
+      };
+    }
+
+    if (name === 'resistance_suggestions') {
+      return {
+        listRule: ADMIN_RULE,
+        viewRule: ADMIN_RULE,
+        createRule: '',
+        updateRule: ADMIN_RULE,
+        deleteRule: ADMIN_RULE,
       };
     }
 

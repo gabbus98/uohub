@@ -1,0 +1,56 @@
+<div class="admin-header">
+  <h2 class="admin-title">Suggerimenti Resistenze</h2>
+  <button class="filter-btn" (click)="reload()" [disabled]="suggestions.loading()">
+    {{ suggestions.loading() ? 'Aggiorno...' : 'Aggiorna' }}
+  </button>
+</div>
+
+@if (suggestions.error()) {
+  <p class="modal-err">{{ suggestions.error() }}</p>
+}
+
+@if (!openSuggestions().length) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessun suggerimento aperto.</p>
+}
+
+<div class="suggestion-list">
+  @for (suggestion of openSuggestions(); track suggestion.id) {
+    <div class="card suggestion-card">
+      <div class="suggestion-head">
+        <div>
+          <div class="suggestion-title">{{ suggestion.creature_nome }}</div>
+          <div class="suggestion-meta">{{ suggestion.created }}</div>
+        </div>
+        <div class="admin-row-actions">
+          <button class="filter-btn active" (click)="accept(suggestion)">Accetta</button>
+          <button class="filter-btn" (click)="close(suggestion)">Chiudi</button>
+          <button class="filter-btn admin-delete-btn" (click)="delete(suggestion)">Elimina</button>
+        </div>
+      </div>
+      <div class="res-grid suggestion-res-grid">
+        @for (type of resistanceTypes; track type) {
+          <div class="res-cell">
+            <span>{{ type }}</span>
+            <strong>{{ suggestion.values[type] || '-' }}</strong>
+          </div>
+        }
+      </div>
+      @if (suggestion.note) {
+        <div class="dungeon-note">{{ suggestion.note }}</div>
+      }
+    </div>
+  }
+</div>
+
+@if (closedSuggestions().length) {
+  <div class="admin-form-section">Chiusi / Accettati</div>
+  <div class="suggestion-list compact">
+    @for (suggestion of closedSuggestions(); track suggestion.id) {
+      <div class="admin-row">
+        <span class="admin-row-name">{{ suggestion.creature_nome }}</span>
+        <span class="admin-row-dungeon">{{ suggestion.status }}</span>
+        <button class="filter-btn admin-delete-btn" (click)="delete(suggestion)">Elimina</button>
+      </div>
+    }
+  </div>
+}

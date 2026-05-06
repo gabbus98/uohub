@@ -3,6 +3,7 @@ import { ARTICLES } from '../data/articles.data';
 import { CreatureService } from './creature.service';
 import { DungeonService } from './dungeon.service';
 import { AuthService } from './auth.service';
+import { MenuSettingsService } from './menu-settings.service';
 import { Article, Creature, SearchResult } from '../models/article.model';
 import { Dungeon } from '../models/dungeon.model';
 
@@ -32,56 +33,69 @@ export class WikiService {
   private dungeonBaseText = '';
 
   private auth = inject(AuthService);
+  private menuSettings = inject(MenuSettingsService);
 
-  sidebarSections = computed<SidebarSection[]>(() => {
+  allSidebarSections = computed<SidebarSection[]>(() => {
     const sections: SidebarSection[] = [
       {
         label: 'Generale',
-        items: [{ id: 'changelog', icon: '📋', label: 'Changelog Shard' }]
+        items: [{ id: 'changelog', icon: 'CH', label: 'Changelog Shard' }],
       },
       {
         label: 'Meccaniche',
         items: [
-          { id: 'skills', icon: '⚙', label: 'Sistema Skill' },
-          { id: 'crafting', icon: '🔨', label: 'Crafting' },
-          { id: 'materiali', icon: '🪵', label: 'Materiali' },
-          { id: 'archi-balestre', icon: '🏹', label: 'Archi & Balestre' }
-        ]
+          { id: 'crafting', icon: 'CF', label: 'Crafting' },
+          { id: 'materiali', icon: 'MT', label: 'Materiali' },
+          { id: 'archi-balestre', icon: 'AB', label: 'Archi & Balestre' },
+        ],
       },
       {
         label: 'Bestiario',
-        items: [{ id: 'bestiario', icon: '📖', label: 'Bestiario' }]
+        items: [{ id: 'bestiario', icon: 'BE', label: 'Bestiario' }],
       },
       {
         label: 'Luoghi',
-        items: [{ id: 'dungeon', icon: '💀', label: 'Dungeon' }]
+        items: [{ id: 'dungeon', icon: 'DG', label: 'Dungeon' }],
       },
       {
         label: 'Tool',
         items: [
-          { id: 'tool-skill-calc', icon: '🧮', label: 'Skill Calculator' },
-          { id: 'tool-bb-split', icon: '✂️', label: 'Formattatore Bacheca' },
-          { id: 'tool-enchant-cost', icon: '✨', label: 'Costo Incantamento' },
-          { id: 'tool-armor-cost', icon: '🛡️', label: 'Armature Infuse' },
-          { id: 'tool-party-advisor', icon: '🧭', label: 'Party Advisor' },
+          { id: 'tool-skill-calc', icon: 'SC', label: 'Skill Calculator' },
+          { id: 'tool-bb-split', icon: 'BB', label: 'Formattatore Bacheca' },
+          { id: 'tool-enchant-cost', icon: 'EN', label: 'Costo Incantamento' },
+          { id: 'tool-armor-cost', icon: 'AR', label: 'Armature Infuse' },
+          { id: 'tool-party-advisor', icon: 'PA', label: 'Party Advisor' },
           { id: 'tool-character-sheet', icon: 'PG', label: 'Scheda Personaggio' },
           { id: 'tool-run-log', icon: 'RL', label: 'Registro Run' },
-        ]
+        ],
       },
     ];
+
     if (this.auth.isAdmin()) {
       sections.push({
         label: 'Admin',
         items: [
-          { id: 'admin-bestiario', icon: '⚙', label: 'Gestione Creature' },
-          { id: 'admin-dungeon', icon: '💀', label: 'Gestione Dungeon' },
-          { id: 'admin-utenti', icon: '👥', label: 'Gestione Utenti' },
-          { id: 'admin-db', icon: '🗄', label: 'Gestione Database' },
-        ]
+          { id: 'admin-bestiario', icon: 'CR', label: 'Gestione Creature' },
+          { id: 'admin-resistenze', icon: 'RS', label: 'Suggerimenti Resistenze' },
+          { id: 'admin-dungeon', icon: 'DG', label: 'Gestione Dungeon' },
+          { id: 'admin-utenti', icon: 'UT', label: 'Gestione Utenti' },
+          { id: 'admin-menu', icon: 'MN', label: 'Gestione Menu' },
+          { id: 'admin-db', icon: 'DB', label: 'Gestione Database' },
+        ],
       });
     }
+
     return sections;
   });
+
+  sidebarSections = computed<SidebarSection[]>(() =>
+    this.allSidebarSections()
+      .map(section => ({
+        ...section,
+        items: section.items.filter(item => item.id.startsWith('admin-') || this.menuSettings.isEnabled(item.id)),
+      }))
+      .filter(section => section.items.length > 0)
+  );
 
   constructor() {
     this.searchIndex = Object.entries(ARTICLES)
@@ -96,17 +110,14 @@ export class WikiService {
           (art.desc || '') + ' ' +
           (art.cat || '') + ' ' +
           art.body.replace(/<[^>]+>/g, ' ')
-        ).toLowerCase()
+        ).toLowerCase(),
       }));
 
     const bestiaryEntry = this.searchIndex.find(item => item.id === 'bestiario');
-    if (bestiaryEntry) {
-      this.bestiaryBaseText = bestiaryEntry.text;
-    }
+    if (bestiaryEntry) this.bestiaryBaseText = bestiaryEntry.text;
+
     const dungeonEntry = this.searchIndex.find(item => item.id === 'dungeon');
-    if (dungeonEntry) {
-      this.dungeonBaseText = dungeonEntry.text;
-    }
+    if (dungeonEntry) this.dungeonBaseText = dungeonEntry.text;
 
     const creatureService = inject(CreatureService);
     const dungeonService = inject(DungeonService);
@@ -167,7 +178,7 @@ export class WikiService {
   }
 
   navigate(id: string) {
-    const adminPages = ['admin-bestiario', 'admin-utenti', 'admin-dungeon', 'admin-db'];
+    const adminPages = ['admin-bestiario', 'admin-resistenze', 'admin-utenti', 'admin-dungeon', 'admin-menu', 'admin-db'];
     if (!adminPages.includes(id) && !ARTICLES[id]) return;
     if (id !== 'bestiario') this.bestiaryFilter.set('');
     this._currentId.set(id);
@@ -186,5 +197,4 @@ export class WikiService {
       .filter(item => keywords.every(k => item.text.includes(k)))
       .slice(0, 7);
   }
-
 }

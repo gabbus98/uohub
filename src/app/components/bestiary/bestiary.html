@@ -31,6 +31,12 @@
 
 @if (groups().length === 0) {
   <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessuna creatura trovata.</p>
+} @else {
+  <div class="bestiary-actions">
+    <button class="filter-btn" (click)="toggleAllGroups()">
+      {{ allGroupsOpen() ? 'Collassa gruppi' : 'Espandi gruppi' }}
+    </button>
+  </div>
 }
 
 @for (g of groups(); track g.dungeon) {
@@ -64,10 +70,7 @@
               @if (isTamabile(c)) {
                 <span class="bestiary-badge tamabile">TAMABILE</span>
               }
-            </div>
-            @if (!embedded() && dungeonLabel(c)) {
-              <div class="bestiary-dungeon-list">{{ dungeonLabel(c) }}</div>
-            }
+            </div>            
             <div class="res-panel">
               <div class="res-panel-title">Resistenze</div>
               <div class="res-grid">
@@ -80,6 +83,9 @@
                 }
               </div>
             </div>
+            @if (!hasResistanceData(c)) {
+              <button class="mob-toggle suggest-toggle" (click)="openSuggestion(c); $event.stopPropagation()">Suggerisci</button>
+            }
             <button class="mob-toggle" (click)="expandedCreature.set(c)">Statistiche</button>
           </div>
         }
@@ -131,6 +137,44 @@
             </div>
           }
         </div>
+      </div>
+    </div>
+  </div>
+}
+
+@if (suggestionCreature(); as sc) {
+  <div class="mob-overlay" (click)="closeSuggestion()">
+    <div class="card suggestion-modal" (click)="$event.stopPropagation()">
+      <button class="mob-close" (click)="closeSuggestion()">×</button>
+      <div class="card-title">Suggerisci resistenze — {{ sc.nome }}</div>
+      <div class="res-grid suggestion-form-grid">
+        @for (type of resistanceTypes; track type) {
+          <div class="fld">
+            <label>{{ type }}</label>
+            <input
+              type="text"
+              [ngModel]="suggestionValues()[type] || ''"
+              (ngModelChange)="updateSuggestionValue(type, $event)"
+              placeholder="es. -20%, 50%, Immune"
+            />
+          </div>
+        }
+      </div>
+      <div class="fld">
+        <label>Nota</label>
+        <textarea rows="3" [ngModel]="suggestionNote()" (ngModelChange)="suggestionNote.set($event)"></textarea>
+      </div>
+      @if (suggestionError()) {
+        <p class="modal-err">{{ suggestionError() }}</p>
+      }
+      @if (suggestionMessage()) {
+        <span class="character-saved">{{ suggestionMessage() }}</span>
+      }
+      <div class="admin-form-actions">
+        <button class="filter-btn" (click)="closeSuggestion()">Chiudi</button>
+        <button class="filter-btn active" (click)="submitSuggestion()" [disabled]="suggestionSaving()">
+          {{ suggestionSaving() ? 'Invio...' : 'Invia suggerimento' }}
+        </button>
       </div>
     </div>
   </div>

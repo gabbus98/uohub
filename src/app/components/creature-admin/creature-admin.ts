@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatureService, CreatureRecord } from '../../services/creature.service';
 import { AuthService } from '../../services/auth.service';
@@ -31,8 +31,28 @@ export class CreatureAdminComponent {
   confirmDelete = signal<string | null>(null);
   saveError = signal('');
   deleteError = signal('');
+  searchQuery = signal('');
+  typeFilter = signal<Creature['tipo'] | 'all'>('all');
 
   tipi: Creature['tipo'][] = ['comune', 'non-comune', 'raro', 'boss', 'tamabile'];
+
+  filteredCreatures = computed(() => {
+    const query = this.searchQuery().trim().toLowerCase();
+    const type = this.typeFilter();
+
+    return this.cs.creatures().filter(creature => {
+      const matchesType = type === 'all' || creature.tipo === type;
+      const text = [
+        creature.nome,
+        creature.tipo,
+        this.dungeonLabel(creature),
+        creature.drop,
+        creature.strategia,
+      ].filter(Boolean).join(' ').toLowerCase();
+
+      return matchesType && (!query || text.includes(query));
+    });
+  });
 
   openNew() {
     this.editing.set(null);

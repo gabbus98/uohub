@@ -2,6 +2,7 @@ import { Component, input, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatureService } from '../../services/creature.service';
 import { WikiService } from '../../services/wiki.service';
+import { ResistanceSuggestionService } from '../../services/resistance-suggestion.service';
 import { DUNGEON_ARMOR_RECOMMENDATIONS } from '../../data/creatures.data';
 import { Creature, ResistanceType } from '../../models/article.model';
 
@@ -27,6 +28,7 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
 export class BestiaryComponent {
   private creatureService = inject(CreatureService);
   private wiki = inject(WikiService);
+  private suggestionService = inject(ResistanceSuggestionService);
 
   dungeonFilter = input('');
   embedded = input(false);
@@ -45,6 +47,12 @@ export class BestiaryComponent {
   }
   activeFilter = signal<'all' | 'comune' | 'non-comune' | 'raro' | 'boss'>('all');
   expandedCreature = signal<Creature | null>(null);
+  suggestionCreature = signal<Creature | null>(null);
+  suggestionValues = signal<Partial<Record<ResistanceType, string>>>({});
+  suggestionNote = signal('');
+  suggestionSaving = signal(false);
+  suggestionMessage = signal('');
+  suggestionError = signal('');
   resistanceTypes: ResistanceType[] = [
     'Fuoco',
     'Freddo',
@@ -108,6 +116,19 @@ export class BestiaryComponent {
     g.open = this.groupOpen[g.dungeon];
   }
 
+  allGroupsOpen() {
+    const groups = this.groups();
+    return groups.length > 0 && groups.every(group => group.open);
+  }
+
+  toggleAllGroups() {
+    const shouldOpen = !this.allGroupsOpen();
+    this.groups().forEach(group => {
+      this.groupOpen[group.dungeon] = shouldOpen;
+      group.open = shouldOpen;
+    });
+  }
+
   badgeLabel(tipo: string) {
     return { comune: 'COMUNE', 'non-comune': 'NON COMUNE', raro: 'RARO', boss: 'BOSS', tamabile: 'TAMABILE' }[tipo] || tipo;
   }
@@ -130,6 +151,62 @@ export class BestiaryComponent {
     }
 
     return this.parseResistance(creature.resistenze || '', type);
+  }
+
+  hasResistanceData(creature: Creature) {
+    return this.resistanceTypes.some(type => this.resistanceValue(creature, type) !== '-');
+  }
+
+  openSuggestion(creature: Creature) {
+    this.suggestionCreature.set(creature);
+    this.suggestionValues.set({});
+    this.suggestionNote.set('');
+    this.suggestionMessage.set('');
+    this.suggestionError.set('');
+  }
+
+  closeSuggestion() {
+    this.suggestionCreature.set(null);
+  }
+
+  updateSuggestionValue(type: ResistanceType, value: string) {
+    this.suggestionValues.update(values => ({ ...values, [type]: value }));
+  }
+
+  submitSuggestion() {
+    const creature = this.suggestionCreature() as (Creature & { id?: string }) | null;
+    if (!creature?.id) {
+      this.suggestionError.set('Impossibile inviare il suggerimento per questa creatura.');
+      return;
+    }
+
+    const values = Object.fromEntries(
+      Object.entries(this.suggestionValues()).filter(([, value]) => String(value || '').trim())
+    ) as Partial<Record<ResistanceType, string>>;
+
+    if (!Object.keys(values).length) {
+      this.suggestionError.set('Inserisci almeno una resistenza.');
+      return;
+    }
+
+    this.suggestionSaving.set(true);
+    this.suggestionError.set('');
+    this.suggestionService.create({
+      creature_id: creature.id,
+      creature_nome: creature.nome,
+      values,
+      note: this.suggestionNote(),
+      status: 'open',
+    }).subscribe({
+      next: () => {
+        this.suggestionSaving.set(false);
+        this.suggestionMessage.set('Suggerimento inviato agli admin.');
+      },
+      error: error => {
+        this.suggestionSaving.set(false);
+        this.suggestionError.set(error?.error?.message || error?.message || 'Impossibile inviare il suggerimento.');
+      },
+    });
   }
 
   cellClasses(value: string, type: ResistanceType) {

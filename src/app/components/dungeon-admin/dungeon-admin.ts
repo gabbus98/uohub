@@ -109,7 +109,9 @@ export class DungeonAdminComponent {
   setBauleLucchetti(i: number, v: number) {
     this.form.update(f => {
       const bauli = [...(f.bauli || [])];
-      bauli[i] = { lucchetti: v };
+      if (!bauli[i]) return f;
+      const lucchetti = Math.max(1, Math.min(5, Number(v) || 1));
+      bauli[i] = { ...(bauli[i] || { lucchetti: 1 }), lucchetti };
       return { ...f, bauli };
     });
   }

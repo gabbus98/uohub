@@ -275,6 +275,7 @@ tr:hover td { background: var(--bg-hover); }
 .bestiary-badge.boss { background: rgba(123,29,29,.12); color: var(--red); }
 .bestiary-badge.tamabile { background: rgba(45,106,79,.14); color: var(--green); }
 .bestiary-group { margin-bottom: 1.5rem; }
+.bestiary-actions { display: flex; justify-content: flex-end; margin: -.75rem 0 1rem; }
 .bestiary-group-header { display: flex; align-items: center; gap: .75rem; padding: .65rem 1rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 7px; cursor: pointer; user-select: none; transition: border-color .2s, background .2s; margin-bottom: .75rem; }
 .bestiary-group-header:hover { border-color: var(--accent); background: var(--bg-hover); }
 .bestiary-group-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem; align-items: stretch; }
@@ -511,8 +512,11 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 /* Admin dungeon */
 .star-selector { display: flex; gap: .2rem; }
 .star-btn, .lock-btn { font-size: 1rem; cursor: pointer; opacity: .3; transition: opacity .15s, transform .15s; user-select: none; }
+.lock-btn { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid transparent; border-radius: 4px; background: transparent; color: inherit; padding: 0; }
+.lock-btn:hover { border-color: var(--accent); background: var(--bg-hover); opacity: .85; }
 .star-btn.active { opacity: 1; color: var(--gold); transform: scale(1.1); }
-.lock-btn.active { opacity: 1; transform: scale(1.1); }
+.lock-btn.active { opacity: 1; transform: scale(1.05); }
+.baule-lock-selector { gap: .1rem; }
 .baule-edit-row { display: flex; align-items: center; gap: .75rem; padding: .5rem .75rem; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 6px; margin-bottom: .4rem; flex-wrap: wrap; }
 .baule-edit-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-3); min-width: 55px; }
 .reward-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--gold); min-width: 80px; }
@@ -595,3 +599,59 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 .col-name { font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 500; color: var(--text); margin-bottom: .35rem; }
 .col-status { font-size: .82rem; }
 .json-response pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--text-2); overflow-x: auto; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
+
+/* Menu Admin */
+.menu-admin-list { display: flex; flex-direction: column; gap: 1rem; }
+.menu-admin-section { padding: 1.1rem; }
+.menu-admin-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-top: 1px solid var(--border); padding: .65rem 0; flex-wrap: wrap; }
+.menu-admin-row:first-of-type { border-top: none; }
+.menu-admin-name { font-family: 'Cinzel', serif; font-size: .9rem; color: var(--text); margin-left: .45rem; }
+.menu-admin-id { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--text-3); margin-left: .45rem; }
+.menu-toggle { display: inline-flex; align-items: center; gap: .45rem; font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-3); letter-spacing: .06em; text-transform: uppercase; cursor: pointer; }
+.menu-toggle input { accent-color: var(--accent); }
+
+/* Resistance suggestions */
+.suggest-toggle {
+  margin-top: .5rem;
+  border-color: rgba(154,112,16,.35);
+  color: var(--gold);
+}
+.suggestion-modal {
+  width: min(620px, 94vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.suggestion-form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  margin: .85rem 0 1rem;
+}
+.suggestion-form-grid .fld { margin-bottom: 0; }
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+}
+.suggestion-card { padding: 1rem; }
+.suggestion-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: .75rem;
+}
+.suggestion-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  color: var(--text);
+  font-weight: 600;
+}
+.suggestion-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: .62rem;
+  color: var(--text-3);
+  margin-top: .15rem;
+}
+.suggestion-res-grid { margin-bottom: .75rem; }
+.suggestion-list.compact { margin-top: .5rem; }
