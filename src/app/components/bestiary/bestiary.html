@@ -86,9 +86,7 @@
                 }
               </div>
             </div>
-            @if (!hasResistanceData(c)) {
-              <button class="mob-toggle suggest-toggle" (click)="openSuggestion(c); $event.stopPropagation()">Suggerisci</button>
-            }
+            <button class="mob-toggle suggest-toggle" (click)="openSuggestion(c); $event.stopPropagation()">Suggerisci resistenze</button>
             <button class="mob-toggle" (click)="expandedCreature.set(c)">Statistiche</button>
           </div>
         }
