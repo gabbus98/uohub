@@ -47,7 +47,10 @@ export class BestiaryComponent {
   }
   activeFilter = signal<'all' | 'comune' | 'non-comune' | 'raro' | 'boss'>('all');
   expandedCreature = signal<Creature | null>(null);
+  suggestionOpen = signal(false);
   suggestionCreature = signal<Creature | null>(null);
+  suggestionName = signal('');
+  suggestionDungeon = signal('');
   suggestionValues = signal<Partial<Record<ResistanceType, string>>>({});
   suggestionNote = signal('');
   suggestionSaving = signal(false);
@@ -158,7 +161,21 @@ export class BestiaryComponent {
   }
 
   openSuggestion(creature: Creature) {
+    this.suggestionOpen.set(true);
     this.suggestionCreature.set(creature);
+    this.suggestionName.set(creature.nome);
+    this.suggestionDungeon.set('');
+    this.suggestionValues.set({});
+    this.suggestionNote.set('');
+    this.suggestionMessage.set('');
+    this.suggestionError.set('');
+  }
+
+  openGenericSuggestion() {
+    this.suggestionOpen.set(true);
+    this.suggestionCreature.set(null);
+    this.suggestionName.set('');
+    this.suggestionDungeon.set(this.searchQuery());
     this.suggestionValues.set({});
     this.suggestionNote.set('');
     this.suggestionMessage.set('');
@@ -166,6 +183,7 @@ export class BestiaryComponent {
   }
 
   closeSuggestion() {
+    this.suggestionOpen.set(false);
     this.suggestionCreature.set(null);
   }
 
@@ -175,25 +193,30 @@ export class BestiaryComponent {
 
   submitSuggestion() {
     const creature = this.suggestionCreature() as (Creature & { id?: string }) | null;
-    if (!creature?.id) {
-      this.suggestionError.set('Impossibile inviare il suggerimento per questa creatura.');
+    const creatureName = (creature?.nome || this.suggestionName()).trim();
+
+    if (!creatureName) {
+      this.suggestionError.set('Inserisci il nome della creatura.');
       return;
     }
 
     const values = Object.fromEntries(
       Object.entries(this.suggestionValues()).filter(([, value]) => String(value || '').trim())
-    ) as Partial<Record<ResistanceType, string>>;
+    ) as Partial<Record<ResistanceType, string>> & { __dungeon?: string };
 
     if (!Object.keys(values).length) {
       this.suggestionError.set('Inserisci almeno una resistenza.');
       return;
     }
 
+    const dungeon = this.suggestionDungeon().trim();
+    if (!creature && dungeon) values.__dungeon = dungeon;
+
     this.suggestionSaving.set(true);
     this.suggestionError.set('');
     this.suggestionService.create({
-      creature_id: creature.id,
-      creature_nome: creature.nome,
+      creature_id: creature?.id || '__new__',
+      creature_nome: creatureName,
       values,
       note: this.suggestionNote(),
       status: 'open',

@@ -19,10 +19,18 @@
       <div class="suggestion-head">
         <div>
           <div class="suggestion-title">{{ suggestion.creature_nome }}</div>
-          <div class="suggestion-meta">{{ suggestion.created }}</div>
+          <div class="suggestion-meta">
+            {{ isNewCreature(suggestion) ? 'Nuova creatura' : 'Creatura esistente' }}
+            @if (suggestionDungeon(suggestion)) {
+              · {{ suggestionDungeon(suggestion) }}
+            }
+            · {{ suggestion.created }}
+          </div>
         </div>
         <div class="admin-row-actions">
-          <button class="filter-btn active" (click)="accept(suggestion)">Accetta</button>
+          <button class="filter-btn active" (click)="accept(suggestion)">
+            {{ isNewCreature(suggestion) ? 'Crea creatura' : 'Accetta' }}
+          </button>
           <button class="filter-btn" (click)="close(suggestion)">Chiudi</button>
           <button class="filter-btn admin-delete-btn" (click)="delete(suggestion)">Elimina</button>
         </div>

@@ -626,6 +626,8 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   margin: .85rem 0 1rem;
 }
+.suggestion-main-fields { align-items: flex-end; margin-top: .85rem; }
+.suggestion-main-fields .fld { flex: 1; min-width: 180px; margin-bottom: 0; }
 .suggestion-form-grid .fld { margin-bottom: 0; }
 .suggestion-list {
   display: flex;

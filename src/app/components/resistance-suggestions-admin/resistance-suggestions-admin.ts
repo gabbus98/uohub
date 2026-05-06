@@ -36,6 +36,14 @@ export class ResistanceSuggestionsAdminComponent {
     this.suggestions.load(this.auth.token());
   }
 
+  isNewCreature(suggestion: ResistanceSuggestionRecord) {
+    return suggestion.creature_id === '__new__';
+  }
+
+  suggestionDungeon(suggestion: ResistanceSuggestionRecord) {
+    return (suggestion.values as Record<string, string>)['__dungeon'] || '';
+  }
+
   accept(suggestion: ResistanceSuggestionRecord) {
     const token = this.auth.token();
     if (!token) return;
@@ -45,7 +53,20 @@ export class ResistanceSuggestionsAdminComponent {
       return acc;
     }, {});
 
-    this.creatures.update(suggestion.creature_id, payload as any, token).subscribe({
+    const request = this.isNewCreature(suggestion)
+      ? this.creatures.create({
+          nome: suggestion.creature_nome,
+          tipo: 'comune',
+          icona: 'M',
+          dungeon: this.suggestionDungeon(suggestion),
+          dungeons: this.suggestionDungeon(suggestion) ? [this.suggestionDungeon(suggestion)] : [],
+          hp: '-',
+          danno: '-',
+          ...payload,
+        } as any, token)
+      : this.creatures.update(suggestion.creature_id, payload as any, token);
+
+    request.subscribe({
       next: () => {
         this.suggestions.updateStatus(suggestion.id, 'accepted', token).subscribe(() => {
           this.creatures.load();

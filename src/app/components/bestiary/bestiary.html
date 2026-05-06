@@ -33,6 +33,9 @@
   <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessuna creatura trovata.</p>
 } @else {
   <div class="bestiary-actions">
+    @if (!embedded()) {
+      <button class="filter-btn active" (click)="openGenericSuggestion()">Suggerisci creatura</button>
+    }
     <button class="filter-btn" (click)="toggleAllGroups()">
       {{ allGroupsOpen() ? 'Collassa gruppi' : 'Espandi gruppi' }}
     </button>
@@ -142,11 +145,29 @@
   </div>
 }
 
-@if (suggestionCreature(); as sc) {
+@if (suggestionOpen()) {
   <div class="mob-overlay" (click)="closeSuggestion()">
     <div class="card suggestion-modal" (click)="$event.stopPropagation()">
       <button class="mob-close" (click)="closeSuggestion()">×</button>
-      <div class="card-title">Suggerisci resistenze — {{ sc.nome }}</div>
+      <div class="card-title">
+        @if (suggestionCreature(); as sc) {
+          Suggerisci resistenze — {{ sc.nome }}
+        } @else {
+          Suggerisci creatura
+        }
+      </div>
+      @if (!suggestionCreature()) {
+        <div class="inline-row suggestion-main-fields">
+          <div class="fld">
+            <label>Nome creatura</label>
+            <input type="text" [ngModel]="suggestionName()" (ngModelChange)="suggestionName.set($event)" />
+          </div>
+          <div class="fld">
+            <label>Dungeon</label>
+            <input type="text" [ngModel]="suggestionDungeon()" (ngModelChange)="suggestionDungeon.set($event)" />
+          </div>
+        </div>
+      }
       <div class="res-grid suggestion-form-grid">
         @for (type of resistanceTypes; track type) {
           <div class="fld">
