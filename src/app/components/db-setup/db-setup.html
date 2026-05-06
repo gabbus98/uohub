@@ -1,0 +1,115 @@
+<div class="admin-header">
+  <h2 class="admin-title">🗄 Gestione Database</h2>
+  @if (adminToken()) {
+    <button class="filter-btn admin-delete-btn" (click)="logout()">Disconnetti</button>
+  }
+</div>
+
+<!-- Autenticazione superadmin -->
+@if (!adminToken()) {
+  <div class="admin-form-wrap" style="max-width:480px;margin-bottom:1.5rem">
+    <h3 class="admin-form-title">Accesso Superadmin</h3>
+    <p style="color:var(--text-3);font-size:.85rem;margin-bottom:1rem">
+      Inserisci le credenziali superadmin di PocketBase per gestire le collection.
+      Queste credenziali sono separate dall'account utente del sito.
+    </p>
+    <div class="fld">
+      <label>Email superadmin</label>
+      <input type="email" [ngModel]="adminEmail()" (ngModelChange)="adminEmail.set($event)" />
+    </div>
+    <div class="fld">
+      <label>Password</label>
+      <input type="password" [ngModel]="adminPassword()" (ngModelChange)="adminPassword.set($event)" (keyup.enter)="authenticate()" />
+    </div>
+    @if (authError()) {
+      <p style="color:var(--red);font-size:.85rem;margin-bottom:.75rem">{{ authError() }}</p>
+    }
+    <div class="admin-form-actions">
+      <button class="filter-btn active" (click)="authenticate()" [disabled]="authLoading()">
+        {{ authLoading() ? 'Autenticazione...' : 'Accedi' }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Stato collection -->
+@if (adminToken()) {
+  <div class="db-section">
+    <div class="admin-form-section" style="display:flex;align-items:center;gap:.75rem">
+      Collection PocketBase
+      <button class="filter-btn" (click)="checkCollections()" [disabled]="checkLoading()">
+        {{ checkLoading() ? 'Verifica...' : '🔄 Aggiorna stato' }}
+      </button>
+    </div>
+
+    <div class="collection-grid">
+      @for (col of collections(); track col.name) {
+        <div class="collection-card" [class.ok]="col.exists === true" [class.missing]="col.exists === false">
+          <div class="col-name">{{ col.name }}</div>
+          <div class="col-status">
+            @if (col.exists === null) {
+              <span style="color:var(--text-muted)">⏳ Verifica...</span>
+            } @else if (col.exists) {
+              <span style="color:var(--green)">✓ Esiste</span>
+              @if (col.count !== undefined) {
+                <span style="color:var(--text-3);font-size:.75rem"> — {{ col.count }} record</span>
+              }
+            } @else {
+              <span style="color:var(--red)">✗ Non trovata</span>
+            }
+          </div>
+          @if (col.exists === false) {
+            <button class="filter-btn active" style="margin-top:.5rem" (click)="createCollection(col.name)" [disabled]="createLoading()[col.name]">
+              {{ createLoading()[col.name] ? 'Creazione...' : 'Crea collection' }}
+            </button>
+          }
+          @if (createResult()[col.name]) {
+            <div style="font-size:.8rem;margin-top:.35rem" [style.color]="createResult()[col.name].startsWith('✓') ? 'var(--green)' : 'var(--red)'">
+              {{ createResult()[col.name] }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- JSON editor -->
+  <div class="db-section">
+    <div class="admin-form-section">Richiesta API diretta</div>
+    <p style="color:var(--text-3);font-size:.82rem;margin-bottom:1rem">
+      Invia richieste REST dirette al PocketBase. L'endpoint può essere relativo (es. <code>/api/collections/dungeons/records</code>) o assoluto.
+    </p>
+
+    <div style="display:flex;gap:.75rem;align-items:center;margin-bottom:.75rem;flex-wrap:wrap">
+      <select style="width:100px" [ngModel]="jsonMethod()" (ngModelChange)="jsonMethod.set($event)">
+        <option>GET</option>
+        <option>POST</option>
+        <option>PATCH</option>
+        <option>DELETE</option>
+      </select>
+      <input type="text" [ngModel]="jsonEndpoint()" (ngModelChange)="jsonEndpoint.set($event)"
+        placeholder="/api/collections/dungeons/records" style="flex:1;min-width:200px" />
+    </div>
+
+    @if (jsonMethod() === 'POST' || jsonMethod() === 'PATCH') {
+      <div class="fld">
+        <label>Body JSON</label>
+        <textarea rows="6" style="font-family:'JetBrains Mono',monospace;font-size:.78rem"
+          [ngModel]="jsonBody()" (ngModelChange)="jsonBody.set($event)"></textarea>
+      </div>
+    }
+
+    <div class="admin-form-actions" style="margin-bottom:.75rem">
+      <button class="filter-btn active" (click)="sendJsonRequest()" [disabled]="jsonLoading()">
+        {{ jsonLoading() ? 'Invio...' : 'Invia richiesta' }}
+      </button>
+    </div>
+
+    @if (jsonResponse()) {
+      <div class="json-response">
+        <div class="admin-form-section">Risposta</div>
+        <pre>{{ jsonResponse() }}</pre>
+      </div>
+    }
+  </div>
+}

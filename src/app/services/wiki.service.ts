@@ -21,6 +21,8 @@ export class WikiService {
   private _currentId = signal<string>('home');
   currentArticleId = this._currentId.asReadonly();
 
+  bestiaryFilter = signal('');
+
   currentArticle = computed<Article | undefined>(() => ARTICLES[this._currentId()]);
 
   private searchIndex: (SearchResult & { text: string })[] = [];
@@ -57,7 +59,8 @@ export class WikiService {
           { id: 'tool-skill-calc', icon: '🧮', label: 'Skill Calculator' },
           { id: 'tool-bb-split', icon: '✂️', label: 'Formattatore Bacheca' },
           { id: 'tool-enchant-cost', icon: '✨', label: 'Costo Incantamento' },
-          { id: 'tool-armor-cost', icon: '🛡️', label: 'Armature Infuse' }
+          { id: 'tool-armor-cost', icon: '🛡️', label: 'Armature Infuse' },
+          { id: 'tool-party-advisor', icon: '🧭', label: 'Party Advisor' },
         ]
       },
     ];
@@ -66,7 +69,9 @@ export class WikiService {
         label: 'Admin',
         items: [
           { id: 'admin-bestiario', icon: '⚙', label: 'Gestione Creature' },
+          { id: 'admin-dungeon', icon: '💀', label: 'Gestione Dungeon' },
           { id: 'admin-utenti', icon: '👥', label: 'Gestione Utenti' },
+          { id: 'admin-db', icon: '🗄', label: 'Gestione Database' },
         ]
       });
     }
@@ -117,9 +122,16 @@ export class WikiService {
   }
 
   navigate(id: string) {
-    if (id !== 'admin-bestiario' && id !== 'admin-utenti' && !ARTICLES[id]) return;
+    const adminPages = ['admin-bestiario', 'admin-utenti', 'admin-dungeon', 'admin-db'];
+    if (!adminPages.includes(id) && !ARTICLES[id]) return;
+    if (id !== 'bestiario') this.bestiaryFilter.set('');
     this._currentId.set(id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  navigateToBestiaryFor(dungeonNome: string) {
+    this.bestiaryFilter.set(dungeonNome);
+    this.navigate('bestiario');
   }
 
   search(query: string): SearchResult[] {

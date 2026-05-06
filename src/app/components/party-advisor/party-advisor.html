@@ -1,0 +1,99 @@
+<div class="advisor-wrap">
+
+  <!-- Builder party -->
+  <div class="advisor-builder">
+    <div class="advisor-section-title">🧑‍🤝‍🧑 Composizione party</div>
+    <p class="advisor-hint">Inserisci le classi del tuo gruppo per ottenere una classifica dei dungeon consigliati.</p>
+
+    <div class="party-list">
+      @for (member of party(); track $index) {
+        <div class="party-member-row">
+          <span class="member-label">PG {{ $index + 1 }}</span>
+          <input
+            type="text"
+            [ngModel]="member.classe"
+            (ngModelChange)="setClasse($index, $event)"
+            placeholder="Classe (es. Mago, Guerriero...)"
+            [list]="'cls-' + $index"
+            class="member-input"
+          />
+          <datalist [id]="'cls-' + $index">
+            @for (cls of knownClasses(); track cls) {
+              <option [value]="cls" />
+            }
+          </datalist>
+          @if (party().length > 1) {
+            <button class="filter-btn admin-delete-btn" (click)="removeMember($index)">✕</button>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="advisor-actions">
+      <button class="filter-btn" (click)="addMember()">+ Aggiungi PG</button>
+      <button class="filter-btn active" (click)="analyze()">🔍 Analizza</button>
+      @if (analyzed()) {
+        <button class="filter-btn" (click)="reset()">Reset</button>
+      }
+    </div>
+  </div>
+
+  <!-- Classifica dungeon -->
+  @if (analyzed()) {
+    <div class="advisor-ranking">
+      <div class="advisor-section-title">🏆 Classifica dungeon consigliati</div>
+
+      @if (ranking().length === 0) {
+        <p style="color:var(--text-muted);font-style:italic">Nessun dungeon disponibile.</p>
+      }
+
+      @for (item of ranking(); track item.dungeon.id; let i = $index) {
+        <div class="rank-card" [class.no-data]="item.noData">
+          <div class="rank-badge" [style.color]="rankColor(i)">{{ rankLabel(i) }}</div>
+
+          <div class="rank-info">
+            <div class="rank-name">{{ item.dungeon.nome }}</div>
+            <div class="rank-meta">
+              @if (item.noData) {
+                <span class="rank-tag warn">Nessun dato run disponibile</span>
+              } @else {
+                <span class="rank-tag">{{ item.totalRuns }} run totali</span>
+                @if (item.matchingRuns > 0) {
+                  <span class="rank-tag green">{{ item.matchingRuns }} run con classi simili</span>
+                }
+                @if (item.damageElement) {
+                  <span class="rank-tag">⚔ Danno: {{ item.damageElement }}</span>
+                }
+                @if (item.dungeon.protezione_elementale) {
+                  <span class="rank-tag">🛡 Armor: {{ item.dungeon.protezione_elementale }}</span>
+                }
+              }
+            </div>
+          </div>
+
+          @if (!item.noData) {
+            <div class="rank-stats">
+              <div class="rank-stat">
+                <span>💰 Monete/run</span>
+                <strong>{{ item.avg_monete }}</strong>
+              </div>
+              <div class="rank-stat">
+                <span>⏱ Tempo medio</span>
+                <strong>{{ item.avg_tempo }} min</strong>
+              </div>
+              <div class="rank-stat">
+                <span>⚡ Gp/min</span>
+                <strong>{{ item.lootPerMin }}</strong>
+              </div>
+              <div class="rank-stat">
+                <span>👥 PG medi</span>
+                <strong>{{ item.avg_pg }}</strong>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+</div>

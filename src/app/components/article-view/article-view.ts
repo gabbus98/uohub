@@ -11,6 +11,10 @@ import { EnchantCostComponent } from '../enchant-cost/enchant-cost';
 import { ArmorCostComponent } from '../armor-cost/armor-cost';
 import { CreatureAdminComponent } from '../creature-admin/creature-admin';
 import { UserAdminComponent } from '../user-admin/user-admin';
+import { DungeonComponent } from '../dungeon/dungeon';
+import { DungeonAdminComponent } from '../dungeon-admin/dungeon-admin';
+import { PartyAdvisorComponent } from '../party-advisor/party-advisor';
+import { DbSetupComponent } from '../db-setup/db-setup';
 
 @Component({
   selector: 'app-article-view',
@@ -24,6 +28,10 @@ import { UserAdminComponent } from '../user-admin/user-admin';
     ArmorCostComponent,
     CreatureAdminComponent,
     UserAdminComponent,
+    DungeonComponent,
+    DungeonAdminComponent,
+    PartyAdvisorComponent,
+    DbSetupComponent,
   ],
   templateUrl: './article-view.html'
 })
@@ -45,6 +53,8 @@ export class ArticleViewComponent implements OnInit {
   isToolPage = computed(() =>
     this.currentId() === 'tools' || this.currentId().startsWith('tool-')
   );
+
+  isAdminPage = computed(() => this.currentId().startsWith('admin-'));
 
   displayedToc = computed(() => {
     if (this.currentId() === 'archi-balestre') {

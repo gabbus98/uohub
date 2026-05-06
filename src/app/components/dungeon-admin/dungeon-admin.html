@@ -1,0 +1,226 @@
+<div class="admin-header">
+  <h2 class="admin-title">⚙ Gestione Dungeon</h2>
+  @if (!showForm() && !runForDungeon()) {
+    <button class="filter-btn active" (click)="openNew()">+ Nuovo dungeon</button>
+  }
+</div>
+
+@if (ds.loading()) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Caricamento...</p>
+}
+
+<!-- Form crea/modifica dungeon -->
+@if (showForm()) {
+  <div class="admin-form-wrap">
+    <h3 class="admin-form-title">{{ editing() ? 'Modifica — ' + editing()!.nome : 'Nuovo dungeon' }}</h3>
+
+    <div class="admin-form-grid">
+      <div class="fld">
+        <label>Nome *</label>
+        <input type="text" [ngModel]="form().nome" (ngModelChange)="updateField('nome', $event)" />
+      </div>
+      <div class="fld">
+        <label>Difficoltà (stelle)</label>
+        <div class="star-selector">
+          @for (s of stars; track s) {
+            <span class="star-btn" [class.active]="s <= (form().difficolta || 0)" (click)="updateField('difficolta', s)">★</span>
+          }
+        </div>
+      </div>
+      <div class="fld">
+        <label>Protezione elementale</label>
+        <input type="text" [ngModel]="form().protezione_elementale" (ngModelChange)="updateField('protezione_elementale', $event)" placeholder="es. Sacro" />
+      </div>
+      <div class="fld">
+        <label>Posizione mappa</label>
+        <input type="text" [ngModel]="form().posizione_mappa" (ngModelChange)="updateField('posizione_mappa', $event)" />
+      </div>
+    </div>
+
+    <div class="fld">
+      <label>Descrizione</label>
+      <textarea rows="3" [ngModel]="form().descrizione" (ngModelChange)="updateField('descrizione', $event)"></textarea>
+    </div>
+    <div class="fld">
+      <label>URL Screenshot mappa</label>
+      <input type="text" [ngModel]="form().screenshot" (ngModelChange)="updateField('screenshot', $event)" placeholder="https://..." />
+    </div>
+    <div class="fld">
+      <label>Note</label>
+      <textarea rows="2" [ngModel]="form().note" (ngModelChange)="updateField('note', $event)"></textarea>
+    </div>
+
+    <div class="admin-form-section" style="display:flex;align-items:center;gap:.5rem">
+      Bauli
+      <button class="filter-btn" (click)="addBaule()">+ Aggiungi baule</button>
+    </div>
+    @for (baule of (form().bauli || []); track $index) {
+      <div class="baule-edit-row">
+        <span class="baule-edit-label">Baule {{ $index + 1 }}</span>
+        <div class="star-selector">
+          @for (s of stars; track s) {
+            <span class="lock-btn" [class.active]="s <= baule.lucchetti" (click)="setBauleLucchetti($index, s)" title="🔒 × {{ s }}">🔒</span>
+          }
+        </div>
+        <span class="reward-label">{{ rewardLabel(baule.lucchetti) }}</span>
+        <button class="filter-btn admin-delete-btn" (click)="removeBaule($index)">✕</button>
+      </div>
+    }
+
+    <div class="admin-form-actions">
+      <button class="filter-btn" (click)="cancel()">Annulla</button>
+      <button class="filter-btn active" (click)="save()" [disabled]="saving()">
+        {{ saving() ? 'Salvataggio...' : (editing() ? 'Salva modifiche' : 'Crea dungeon') }}
+      </button>
+    </div>
+  </div>
+}
+
+<!-- Lista dungeon -->
+@if (!showForm() && !runForDungeon()) {
+  <div class="admin-list">
+    @for (d of ds.dungeons(); track d.id) {
+      <div class="admin-row">
+        <span class="admin-row-name">{{ d.nome }}</span>
+        <span class="dungeon-stars-inline">
+          @for (s of stars; track s) {
+            <span class="dstar" [class.filled]="s <= d.difficolta">★</span>
+          }
+        </span>
+        <span class="admin-row-dungeon">{{ d.bauli.length }} bauli</span>
+        <div class="admin-row-actions">
+          <button class="filter-btn" (click)="openRunPanel(d.nome)">📋 Run</button>
+          <button class="filter-btn" (click)="openEdit(d)">Modifica</button>
+          <button class="filter-btn admin-delete-btn" (click)="askDelete(d.id)">Elimina</button>
+        </div>
+      </div>
+    }
+  </div>
+}
+
+<!-- Pannello run per un dungeon specifico -->
+@if (runForDungeon(); as dungeonNome) {
+  <div class="run-panel">
+    <div class="run-panel-header">
+      <span class="admin-form-title">📋 Run — {{ dungeonNome }}</span>
+      <button class="filter-btn" (click)="closeRunPanel()">← Torna alla lista</button>
+    </div>
+
+    <!-- Form nuova run -->
+    <div class="admin-form-wrap" style="margin-bottom:1.5rem">
+      <h3 class="admin-form-title" style="font-size:.85rem">Aggiungi run</h3>
+
+      <div class="admin-form-grid">
+        <div class="fld">
+          <label>Data</label>
+          <input type="date" [ngModel]="runForm().data" (ngModelChange)="updateRunField('data', $event)" />
+        </div>
+        <div class="fld">
+          <label>Monete</label>
+          <input type="number" [ngModel]="runForm().monete" (ngModelChange)="updateRunField('monete', +$event)" min="0" />
+        </div>
+        <div class="fld">
+          <label>Tempo (minuti)</label>
+          <input type="number" [ngModel]="runForm().tempo" (ngModelChange)="updateRunField('tempo', +$event)" min="0" />
+        </div>
+        <div class="fld">
+          <label>Numero PG</label>
+          <input type="number" [ngModel]="runForm().pg_count" (ngModelChange)="updateRunField('pg_count', +$event)" min="1" />
+        </div>
+      </div>
+
+      <div class="admin-form-section" style="display:flex;align-items:center;gap:.5rem">
+        Pelli ottenute
+        <button class="filter-btn" (click)="addPella()">+ Aggiungi</button>
+      </div>
+      @for (p of (runForm().pelli || []); track $index) {
+        <div class="inline-row">
+          <input type="text" [ngModel]="p.nome" (ngModelChange)="updatePella($index, 'nome', $event)" placeholder="Nome pelle" style="flex:1" />
+          <input type="number" [ngModel]="p.quantita" (ngModelChange)="updatePella($index, 'quantita', +$event)" min="0" style="width:80px" />
+          <button class="filter-btn admin-delete-btn" (click)="removePella($index)">✕</button>
+        </div>
+      }
+
+      <div class="admin-form-section" style="display:flex;align-items:center;gap:.5rem">
+        Partecipanti
+        <button class="filter-btn" (click)="addPartecipante()">+ Aggiungi</button>
+      </div>
+      @for (part of (runForm().partecipanti || []); track $index) {
+        <div class="inline-row">
+          <input type="text" [ngModel]="part.nome" (ngModelChange)="updatePartecipante($index, 'nome', $event)" placeholder="Nome personaggio" style="flex:1" />
+          <input type="text" [ngModel]="part.classe" (ngModelChange)="updatePartecipante($index, 'classe', $event)" placeholder="Classe" style="flex:1" list="known-classes-{{ $index }}" />
+          <datalist [id]="'known-classes-' + $index">
+            @for (cls of knownClasses(); track cls) {
+              <option [value]="cls" />
+            }
+          </datalist>
+          <button class="filter-btn admin-delete-btn" (click)="removePartecipante($index)">✕</button>
+        </div>
+      }
+
+      <div class="admin-form-actions">
+        <button class="filter-btn active" (click)="saveRun()" [disabled]="savingRun()">
+          {{ savingRun() ? 'Salvataggio...' : 'Salva run' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Run esistenti -->
+    @if (runsForSelected().length) {
+      <div class="admin-form-section">Run registrate ({{ runsForSelected().length }})</div>
+      <div class="runs-admin-list">
+        @for (run of runsForSelected(); track run.id) {
+          <div class="run-admin-row">
+            <span class="run-data">{{ run.data }}</span>
+            <span>{{ run.monete }} gp</span>
+            <span>{{ run.tempo }} min</span>
+            <span>{{ run.pg_count }} pg</span>
+            <span class="run-pelli">
+              @for (p of run.pelli; track p.nome) {
+                {{ p.nome }} ×{{ p.quantita }}
+              }
+              @if (!run.pelli?.length) { — }
+            </span>
+            <span class="run-party">
+              @for (part of run.partecipanti; track part.nome) {
+                <span class="party-chip">{{ part.nome }} ({{ part.classe }})</span>
+              }
+              @if (!run.partecipanti?.length) { — }
+            </span>
+            <button class="filter-btn admin-delete-btn" (click)="askDeleteRun(run.id)">✕</button>
+          </div>
+        }
+      </div>
+    } @else {
+      <p style="color:var(--text-muted);font-style:italic;font-size:.85rem">Nessuna run registrata per questo dungeon.</p>
+    }
+  </div>
+}
+
+<!-- Dialog conferma elimina dungeon -->
+@if (confirmDelete()) {
+  <div class="mob-overlay" (click)="confirmDelete.set(null)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>Elimina dungeon</h3>
+      <p class="sub">Questa azione è irreversibile.</p>
+      <div class="admin-form-actions">
+        <button class="filter-btn" (click)="confirmDelete.set(null)">Annulla</button>
+        <button class="filter-btn admin-delete-btn active" (click)="doDelete()">Elimina</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Dialog conferma elimina run -->
+@if (confirmDeleteRun()) {
+  <div class="mob-overlay" (click)="confirmDeleteRun.set(null)">
+    <div class="modal" (click)="$event.stopPropagation()">
+      <h3>Elimina run</h3>
+      <p class="sub">Vuoi eliminare questa run?</p>
+      <div class="admin-form-actions">
+        <button class="filter-btn" (click)="confirmDeleteRun.set(null)">Annulla</button>
+        <button class="filter-btn admin-delete-btn active" (click)="doDeleteRun()">Elimina</button>
+      </div>
+    </div>
+  </div>
+}

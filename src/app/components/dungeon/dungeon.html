@@ -1,0 +1,156 @@
+@if (loading()) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Caricamento dungeon...</p>
+}
+@if (error()) {
+  <div class="callout danger"><span class="callout-icon">⚠</span><div>{{ error() }}</div></div>
+}
+@if (!loading() && groups().length === 0 && !error()) {
+  <p style="color:var(--text-muted);font-style:italic;padding:1rem 0">Nessun dungeon disponibile. Un admin deve prima creare le collection e aggiungere i dungeon.</p>
+}
+
+@for (g of groups(); track g.dungeon.id) {
+  <div class="dungeon-group">
+    <div class="dungeon-header" (click)="toggleGroup(g)">
+      <span class="bg-title">{{ g.dungeon.nome }}</span>
+      <span class="dungeon-stars">
+        @for (s of stars; track s) {
+          <span class="dstar" [class.filled]="s <= g.dungeon.difficolta">★</span>
+        }
+      </span>
+      @if (g.dungeon.bauli.length) {
+        <span class="group-armor-badge">{{ g.dungeon.bauli.length }} baul{{ g.dungeon.bauli.length !== 1 ? 'i' : 'e' }}</span>
+      }
+      @if (g.damageElement) {
+        <span class="group-damage-badge">Danno: <strong>{{ g.damageElement.type }}</strong></span>
+      }
+      @if (g.dungeon.protezione_elementale) {
+        <span class="group-armor-badge">Armor: <strong>{{ g.dungeon.protezione_elementale }}</strong></span>
+      }
+      @if (g.stats.count > 0) {
+        <span class="bg-count">{{ g.stats.count }} run</span>
+      }
+      <span class="bg-chevron">{{ g.open ? '▾' : '▸' }}</span>
+    </div>
+
+    @if (g.open) {
+      <div class="dungeon-body">
+
+        @if (g.dungeon.descrizione) {
+          <p class="dungeon-desc">{{ g.dungeon.descrizione }}</p>
+        }
+
+        <!-- Bauli -->
+        @if (g.dungeon.bauli.length) {
+          <div class="dungeon-section">
+            <div class="dungeon-section-title">🗝 Bauli</div>
+            <div class="bauli-grid">
+              @for (baule of g.dungeon.bauli; track $index) {
+                <div class="baule-card">
+                  <div class="baule-locks">
+                    @for (s of stars; track s) {
+                      <span class="lock-icon" [class.active]="s <= baule.lucchetti">🔒</span>
+                    }
+                  </div>
+                  <div class="baule-reward">Reward: <strong>{{ rewardLabel(baule.lucchetti) }}</strong></div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Info mappa + elementi -->
+        <div class="dungeon-info-row">
+          @if (g.dungeon.posizione_mappa) {
+            <div class="dungeon-info-chip">📍 {{ g.dungeon.posizione_mappa }}</div>
+          }
+          @if (g.dungeon.protezione_elementale) {
+            <div class="dungeon-info-chip prot">🛡 Protezione: <strong>{{ g.dungeon.protezione_elementale }}</strong></div>
+          }
+          @if (g.damageElement) {
+            <div class="dungeon-info-chip dmg">⚔ Danno migliore: <strong>{{ g.damageElement.type }}</strong></div>
+          }
+        </div>
+
+        @if (g.dungeon.screenshot) {
+          <div class="dungeon-screenshot">
+            <img [src]="g.dungeon.screenshot" [alt]="'Mappa ' + g.dungeon.nome" />
+          </div>
+        }
+
+        <!-- Bestiary link -->
+        <button class="filter-btn" style="margin-bottom:1rem" (click)="goToBestiary(g.dungeon.nome)">
+          📖 Vedi creature nel Bestiario
+        </button>
+
+        <!-- Statistiche loot (da run) -->
+        @if (g.stats.count > 0) {
+          <div class="dungeon-section">
+            <div class="dungeon-section-title">📊 Statistiche loot — media su {{ g.stats.count }} run</div>
+            <div class="loot-stats-grid">
+              <div class="loot-stat">
+                <span>💰 Monete</span>
+                <strong>{{ g.stats.avg_monete }}</strong>
+              </div>
+              <div class="loot-stat">
+                <span>⏱ Tempo</span>
+                <strong>{{ g.stats.avg_tempo }} min</strong>
+              </div>
+              <div class="loot-stat">
+                <span>👥 PG medi</span>
+                <strong>{{ g.stats.avg_pg }}</strong>
+              </div>
+              @for (p of g.stats.pelli; track p.nome) {
+                <div class="loot-stat">
+                  <span>{{ p.nome }}</span>
+                  <strong>{{ p.avg }}/run</strong>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Cronologia run -->
+        @if (g.runs.length) {
+          <div class="dungeon-section">
+            <div class="dungeon-section-title">🕐 Cronologia run</div>
+            <div class="runs-table">
+              <div class="run-row run-header">
+                <span>Data</span>
+                <span>Monete</span>
+                <span>Tempo</span>
+                <span>PG</span>
+                <span>Pelli</span>
+                <span>Party</span>
+              </div>
+              @for (run of g.runs; track run.id) {
+                <div class="run-row">
+                  <span>{{ run.data }}</span>
+                  <span>{{ run.monete }}</span>
+                  <span>{{ run.tempo }} min</span>
+                  <span>{{ run.pg_count }}</span>
+                  <span>
+                    @for (p of run.pelli; track p.nome) {
+                      <span class="pella-chip">{{ p.nome }} ×{{ p.quantita }}</span>
+                    }
+                    @if (!run.pelli?.length) { — }
+                  </span>
+                  <span>
+                    @for (part of run.partecipanti; track part.nome) {
+                      <span class="party-chip">{{ part.nome }} ({{ part.classe }})</span>
+                    }
+                    @if (!run.partecipanti?.length) { — }
+                  </span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        @if (g.dungeon.note) {
+          <div class="dungeon-note">{{ g.dungeon.note }}</div>
+        }
+
+      </div>
+    }
+  </div>
+}

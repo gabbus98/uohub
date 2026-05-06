@@ -2,6 +2,10 @@
   <app-creature-admin />
 } @else if (currentId() === 'admin-utenti') {
   <app-user-admin />
+} @else if (currentId() === 'admin-dungeon') {
+  <app-dungeon-admin />
+} @else if (currentId() === 'admin-db') {
+  <app-db-setup />
 } @else if (article(); as art) {
   @if (currentId() !== 'home' && currentId() !== 'tools') {
     @if (art.cat) {
@@ -53,6 +57,8 @@
 
   @if (currentId() === 'bestiario') {
     <app-bestiary />
+  } @else if (currentId() === 'dungeon') {
+    <app-dungeon />
   } @else if (currentId() === 'tools') {
     <app-tools-landing />
   } @else if (currentId() === 'tool-skill-calc') {
@@ -63,6 +69,8 @@
     <app-enchant-cost />
   } @else if (currentId() === 'tool-armor-cost') {
     <app-armor-cost />
+  } @else if (currentId() === 'tool-party-advisor') {
+    <app-party-advisor />
   } @else if (currentId() === 'archi-balestre') {
     <app-ranged-weapons />
   } @else {

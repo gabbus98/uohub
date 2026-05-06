@@ -378,24 +378,17 @@ export const ARTICLES: Record<string, Article> = {
 
   'dungeon': {
     cat: 'Luoghi', title: 'Dungeon',
-    desc: 'I dungeon dello shard: accesso, pericoli e bottino.',
+    desc: 'I dungeon dello shard: bauli, creature, loot e statistiche delle run.',
     tags: [{ t: 'Dungeon', cls: 'red' }, { t: 'PvP Libero', cls: 'red' }],
-    body: `
-    <div class="wiki-section">
-      <h2 class="wiki-h2">Caverne dell'Agonia</h2>
-      <div class="callout danger"><span class="callout-icon">☠</span><div>PvP completamente libero. Looting completo. Entrare equivale ad accettare ogni rischio.</div></div>
-      <p class="wiki-p">Il dungeon più recente, aperto con la Patch 1.4. Si articola in tre livelli di profondità crescente:</p>
-      <ul class="wiki-ul">
-        <li><strong>Livello 1:</strong> Golem e non-morti. Difficoltà media. Accessibile da soli.</li>
-        <li><strong>Livello 2:</strong> Predatori alpha e bestie alate. Gruppo consigliato (3+).</li>
-        <li><strong>Livello 3:</strong> accesso all'Abisso di Varroth. Raid obbligatorio (6+).</li>
-      </ul>
-      <h3 class="wiki-h3">Cripta di Solveth</h3>
-      <p class="wiki-p">Dungeon di non-morti. Ideale per skill di Healing e Spirit Speak. Drop: ossa rare, artefatti necromantici.</p>
-      <h3 class="wiki-h3">Miniera Abbandonata</h3>
-      <p class="wiki-p">Zona di Golem e elementali di terra. Ottima per Tinkering e Mining. Accesso da Careth.</p>
-    </div>`,
+    body: '',
     prev: { id: 'bestiario', title: 'Bestiario' }
+  },
+
+  'tool-party-advisor': {
+    cat: 'Tool', title: 'Party Advisor',
+    desc: 'Inserisci la composizione del tuo party e scopri quale dungeon massimizza il guadagno.',
+    tags: [{ t: 'Tool', cls: 'blue' }],
+    body: '',
   }
 
 };

@@ -1,6 +1,7 @@
 import { Component, signal, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CreatureService } from '../../services/creature.service';
+import { WikiService } from '../../services/wiki.service';
 import { DUNGEON_ARMOR_RECOMMENDATIONS } from '../../data/creatures.data';
 import { Creature, ResistanceType } from '../../models/article.model';
 
@@ -25,11 +26,20 @@ const CREATURE_TYPE_ORDER: Record<Creature['tipo'], number> = {
 })
 export class BestiaryComponent {
   private creatureService = inject(CreatureService);
+  private wiki = inject(WikiService);
 
   loading = this.creatureService.loading;
   error = this.creatureService.error;
 
   searchQuery = signal('');
+
+  constructor() {
+    const filter = this.wiki.bestiaryFilter();
+    if (filter) {
+      this.searchQuery.set(filter);
+      this.wiki.bestiaryFilter.set('');
+    }
+  }
   activeFilter = signal<'all' | 'comune' | 'non-comune' | 'raro' | 'boss'>('all');
   expandedCreature = signal<Creature | null>(null);
   resistanceTypes: ResistanceType[] = [

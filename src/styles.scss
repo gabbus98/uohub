@@ -462,3 +462,97 @@ code { font-family: 'JetBrains Mono', monospace; font-size: .82em; background: v
 .tl-desc { font-size: .85rem; color: var(--text-3); font-style: italic; }
 
 .sidebar-toggle { display: none; }
+
+/* DUNGEON */
+.dungeon-group { margin-bottom: 1.5rem; }
+.dungeon-header { display: flex; align-items: center; gap: .6rem; padding: .65rem 1rem; background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 7px; cursor: pointer; user-select: none; transition: border-color .2s, background .2s; margin-bottom: .75rem; flex-wrap: wrap; }
+.dungeon-header:hover { border-color: var(--accent); background: var(--bg-hover); }
+.dungeon-body { padding: 0 .25rem; }
+.dungeon-desc { color: var(--text-2); font-style: italic; margin-bottom: 1rem; }
+.dungeon-stars { display: flex; gap: .1rem; }
+.dstar { font-size: .9rem; color: var(--border-strong); transition: color .15s; }
+.dstar.filled { color: var(--gold); }
+.dungeon-section { margin: 1rem 0; }
+.dungeon-section-title { font-family: 'Cinzel', serif; font-size: .78rem; letter-spacing: .06em; color: var(--text-2); border-bottom: 1px solid var(--border); padding-bottom: .3rem; margin-bottom: .65rem; }
+.dungeon-info-row { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.dungeon-info-chip { font-family: 'JetBrains Mono', monospace; font-size: .68rem; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 4px; padding: .25rem .6rem; color: var(--text-2); }
+.dungeon-info-chip.prot { border-color: rgba(44,82,130,.4); color: var(--blue); }
+.dungeon-info-chip.dmg { border-color: rgba(212,105,58,.4); color: var(--accent); }
+.dungeon-screenshot { margin: .75rem 0; border-radius: 7px; overflow: hidden; border: 1px solid var(--border); }
+.dungeon-screenshot img { width: 100%; height: auto; display: block; max-height: 320px; object-fit: cover; }
+.dungeon-note { color: var(--text-3); font-style: italic; font-size: .88rem; margin-top: 1rem; padding: .65rem 1rem; background: var(--bg-card-alt); border-radius: 6px; }
+
+/* Bauli */
+.bauli-grid { display: flex; flex-wrap: wrap; gap: .65rem; }
+.baule-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 7px; padding: .75rem 1rem; min-width: 140px; }
+.baule-locks { display: flex; gap: .15rem; margin-bottom: .35rem; }
+.lock-icon { font-size: .85rem; opacity: .2; transition: opacity .15s; }
+.lock-icon.active { opacity: 1; }
+.baule-reward { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-3); letter-spacing: .06em; }
+.baule-reward strong { color: var(--gold); }
+
+/* Loot stats */
+.loot-stats-grid { display: flex; flex-wrap: wrap; gap: .6rem; }
+.loot-stat { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: .5rem .85rem; display: flex; flex-direction: column; min-width: 90px; }
+.loot-stat span { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase; }
+.loot-stat strong { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--accent); margin-top: .15rem; }
+
+/* Run table */
+.runs-table { display: flex; flex-direction: column; gap: .3rem; font-size: .82rem; overflow-x: auto; }
+.run-row { display: grid; grid-template-columns: 90px 80px 70px 50px 1fr 1fr; gap: .5rem; padding: .4rem .6rem; background: var(--bg-card); border-radius: 5px; align-items: start; }
+.run-header { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--text-3); letter-spacing: .08em; text-transform: uppercase; background: transparent !important; }
+.pella-chip, .party-chip { display: inline-block; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 3px; padding: .08rem .35rem; font-size: .72rem; margin: .08rem .1rem; color: var(--text-2); }
+
+/* Admin dungeon */
+.star-selector { display: flex; gap: .2rem; }
+.star-btn, .lock-btn { font-size: 1rem; cursor: pointer; opacity: .3; transition: opacity .15s, transform .15s; user-select: none; }
+.star-btn.active { opacity: 1; color: var(--gold); transform: scale(1.1); }
+.lock-btn.active { opacity: 1; transform: scale(1.1); }
+.baule-edit-row { display: flex; align-items: center; gap: .75rem; padding: .5rem .75rem; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 6px; margin-bottom: .4rem; flex-wrap: wrap; }
+.baule-edit-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-3); min-width: 55px; }
+.reward-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--gold); min-width: 80px; }
+.inline-row { display: flex; gap: .5rem; align-items: center; margin-bottom: .4rem; }
+.dungeon-stars-inline { display: flex; gap: .1rem; }
+.run-panel { margin-top: .5rem; }
+.run-panel-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: .5rem; }
+.runs-admin-list { display: flex; flex-direction: column; gap: .35rem; }
+.run-admin-row { display: flex; align-items: flex-start; gap: .75rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: .45rem .75rem; font-size: .82rem; flex-wrap: wrap; }
+.run-data { font-family: 'JetBrains Mono', monospace; font-size: .7rem; color: var(--text-3); min-width: 80px; }
+.run-pelli, .run-party { flex: 1; min-width: 120px; color: var(--text-2); }
+
+/* Party Advisor */
+.advisor-wrap { display: flex; flex-direction: column; gap: 2rem; }
+.advisor-builder { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+.advisor-section-title { font-family: 'Cinzel', serif; font-size: .88rem; color: var(--text); margin-bottom: .5rem; }
+.advisor-hint { color: var(--text-3); font-style: italic; font-size: .88rem; margin-bottom: 1rem; }
+.party-list { display: flex; flex-direction: column; gap: .45rem; margin-bottom: 1rem; }
+.party-member-row { display: flex; align-items: center; gap: .6rem; }
+.member-label { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--text-3); min-width: 35px; }
+.member-input { flex: 1; background: var(--bg); border: 1px solid var(--border-strong); border-radius: 5px; padding: .5rem .8rem; color: var(--text); font-family: 'Crimson Pro', serif; font-size: .95rem; outline: none; transition: border-color .2s; }
+.member-input:focus { border-color: var(--accent); }
+.advisor-actions { display: flex; gap: .65rem; flex-wrap: wrap; }
+.advisor-ranking { display: flex; flex-direction: column; gap: .85rem; }
+.rank-card { display: flex; align-items: flex-start; gap: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.1rem; transition: border-color .2s; flex-wrap: wrap; }
+.rank-card:hover { border-color: var(--accent); }
+.rank-card.no-data { opacity: .6; }
+.rank-badge { font-size: 1.5rem; min-width: 32px; text-align: center; padding-top: .1rem; }
+.rank-info { flex: 1; min-width: 160px; }
+.rank-name { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--text); margin-bottom: .35rem; }
+.rank-meta { display: flex; flex-wrap: wrap; gap: .35rem; }
+.rank-tag { font-family: 'JetBrains Mono', monospace; font-size: .62rem; background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 3px; padding: .12rem .4rem; color: var(--text-3); }
+.rank-tag.green { border-color: rgba(45,106,79,.4); color: var(--green); }
+.rank-tag.warn { border-color: rgba(154,112,16,.4); color: var(--gold); }
+.rank-stats { display: flex; flex-wrap: wrap; gap: .5rem; }
+.rank-stat { background: var(--bg-card-alt); border: 1px solid var(--border); border-radius: 5px; padding: .4rem .75rem; display: flex; flex-direction: column; min-width: 85px; }
+.rank-stat span { font-family: 'JetBrains Mono', monospace; font-size: .58rem; color: var(--text-3); letter-spacing: .06em; text-transform: uppercase; }
+.rank-stat strong { font-family: 'Cinzel', serif; font-size: .9rem; color: var(--accent); margin-top: .1rem; }
+
+/* DB Setup */
+.db-section { margin-bottom: 2rem; }
+.collection-grid { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .75rem; }
+.collection-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 7px; padding: 1rem 1.25rem; min-width: 200px; transition: border-color .2s; }
+.collection-card.ok { border-color: rgba(45,106,79,.5); }
+.collection-card.missing { border-color: rgba(123,29,29,.5); }
+.col-name { font-family: 'JetBrains Mono', monospace; font-size: .8rem; font-weight: 500; color: var(--text); margin-bottom: .35rem; }
+.col-status { font-size: .82rem; }
+.json-response pre { background: var(--bg-code); border: 1px solid var(--border); border-radius: 6px; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--text-2); overflow-x: auto; max-height: 400px; overflow-y: auto; white-space: pre-wrap; }
