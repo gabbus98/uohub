@@ -42,7 +42,13 @@ function toLegacySchema(schema: Record<string, unknown>) {
   const { fields: _, ...rest } = schema;
   return {
     ...rest,
-    schema: fields.map(field => ({ ...(field as Record<string, unknown>), options: {} })),
+    schema: fields.map(field => {
+      const typedField = field as Record<string, unknown>;
+      return {
+        ...typedField,
+        options: typedField['type'] === 'json' ? { maxSize: 2000000 } : {},
+      };
+    }),
   };
 }
 

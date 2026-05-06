@@ -152,7 +152,10 @@ export class DbSetupComponent {
     const { fields, ...rest } = schema;
     return {
       ...rest,
-      schema: fields.map(field => ({ ...field, options: {} })),
+      schema: fields.map(field => ({
+        ...field,
+        options: field.type === 'json' ? { maxSize: 2000000 } : {},
+      })),
     };
   }
 
